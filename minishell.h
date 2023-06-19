@@ -36,6 +36,7 @@ typedef struct s_cmd{
 	struct s_param		*args;
 	char				*input;
 	char				*output;
+	char				*append;
 	struct s_cmd		*next;
 }t_cmd,	*t_cmd_list;
 
@@ -61,6 +62,7 @@ void		add_param(t_params *params, char *param);
 void		add_operator(t_data *data, char operatorm, int *i);
 t_cmd		*new_cmd(void);
 void		handle_normal_char(t_data *data, int *i, int *param_len);
+void		handle_append(t_params params, t_cmd_list cmd_list);
 t_params	new_param(char *param);
 void		treat_input(t_data *data);
 char		*get_operator(char *input, int *i, char operator);

@@ -69,6 +69,7 @@ t_cmd	*new_cmd(void)
 	cmd->args = NULL;
 	cmd->input = NULL;
 	cmd->output = NULL;
+	cmd->append = NULL;
 	cmd->next = NULL;
 	return (cmd);
 }

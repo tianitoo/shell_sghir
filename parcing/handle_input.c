@@ -105,6 +105,7 @@ void	show_command(t_cmd_list cmd_list)
 		ft_printf("\n");
 		ft_printf("in: %s\n", tmp->input);
 		ft_printf("out: %s\n", tmp->output);
+		ft_printf("append: %s\n", tmp->append);
 		ft_printf("\n");
 		tmp = tmp->next;
 		ft_printf("=============================================\n");

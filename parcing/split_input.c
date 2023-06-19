@@ -39,33 +39,6 @@ void	treat_input(t_data *data)
 	}
 }
 
-	
-	// t_params	params;
-	// int			i;
-	// int			param_len;
-
-	// param_len = 0;
-	// i = 0;
-	// params = NULL;
-	// while (input[i])
-	// {
-	// 	// ft_printf("input[%d]: %c\n", i, input[i]);
-	// 	if (input[i] == '\"' || input[i] == '\'')
-	// 		handle_quotes(input, &i, &params);
-	// 	else if (input[i] == '<' || input[i] == '>')
-	// 		add_operator(&params, input[i], &i, input);
-	// 	else if (input[i] == '|')
-	// 		add_operator(&params, '|', &i, input);
-	// 	else
-	// 		handle_normal_char(input, &i, &param_len, &params);
-	// 	if (input[i] && input[i] == ' ')
-	// 		while (input[i] && input[i] == ' ')
-	// 			i++;
-	// }
-	// return (params);
-// }
-
-
 void	handle_normal_char(t_data *data, int *i, int *p_len)
 {
 	int		j;
@@ -98,10 +71,8 @@ char	*get_env_value(char *param, t_data *data)
 	while (*env)
 	{
 		if (ft_strncmp(*env, param, param_len) == 0 && (*env)[param_len] == '=')
-{
-				// ft_printf("env: |%s|\n", *env + param_len + 1);
-				return (free(param), *env + param_len + 1);
-}		env++;
+			return (free(param), ft_strdup(*env + param_len + 1));
+		env++;
 	}
 	free(param);
 	return (ft_strdup(""));
@@ -190,10 +161,7 @@ void	handle_dollar(t_data *data, int *i)
 			|| data->commande_line[*i + j] == '_'))
 	{
 		j++;
-		// ft_printf("j: %d\n", j);
 	}
-	// exit(0);
-	// ft_printf("i: %d\n", *i);
 	new_param = get_env_value(ft_substr(data->commande_line, *i, j), data);
 	*i += j;
 	add_param(&data->params, new_param);

@@ -33,11 +33,39 @@ void handle_redirection(t_params params, t_cmd_list cmd_list)
 		add_output(params, cmd_list);
 	// else if (params->parameter[0] == '<' && params->parameter[1] == '<')
 	// 	handle_heredoc(params, cmd_list);
-	// // else if (params->parameter[0] == '>' && params->parameter[1] == '>')
-	// // 	handle_append(params, cmd_list);
+	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
+		handle_append(params, cmd_list);
 	// // else if (params->parameter[0] == '<' && params->parameter[1] == '>'
 	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
 	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
+}
+
+void	handle_append(t_params params, t_cmd_list cmd_list)
+{
+	t_params	prev;
+
+	if (params->next != NULL)
+	{
+		ft_printf("params->next->parameter: %s\n", params->next->parameter);
+		cmd_list->append = params->next->parameter;
+		prev = params->prev;
+		if (prev == NULL)
+		{
+			if (params->next->next != NULL)
+				params = params->next->next;
+			else
+				params = NULL;
+		}
+		else
+		{
+			if (params->next->next != NULL)
+				prev->next = params->next->next;
+			else
+				prev->next = NULL;
+		}
+	}
+	else
+		prompt_error("minishell: syntax error near unexpected token `newline'");
 }
 
 void	add_input(t_params params, t_cmd_list cmd_list)
@@ -79,7 +107,7 @@ void	add_output(t_params params, t_cmd_list cmd_list)
 		{
 			if (params->next->next != NULL)
 				cmd_list->args = params->next->next;
-			else
+			else 
 				cmd_list->args = NULL;
 		}
 		else
