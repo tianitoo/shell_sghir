@@ -51,7 +51,7 @@ typedef struct s_data{
 void		get_input(t_data *data);
 char		**pipe_split(char *input);
 t_cmd_list	get_cmd_list(t_params params);
-void		handle_dollar(t_data *data, int *i);
+void		handle_dollar(t_data *data);
 void		add_cmd(t_cmd_list cmd_list, t_params param);
 char		*get_commande_line(void);
 char		*handle_dollar_in_quotes(char *param, t_data *data);

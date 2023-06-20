@@ -31,7 +31,10 @@ void	add_cmd(t_cmd_list cmd_list, t_params param)
 		if (param->parameter == NULL)
 			cmd_list->cmd = NULL;
 		else
+		{
 			cmd_list->cmd = param->parameter;
+			add_param(&cmd_list->args, param->parameter);
+		}
 	}
 	else
 	{

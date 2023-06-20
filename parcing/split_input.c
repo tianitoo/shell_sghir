@@ -16,25 +16,22 @@ void	treat_input(t_data *data)
 {
 	int			i;
 	int			param_len;
-	char		*input;
 
-	input = data->commande_line;
 	param_len = 0;
 	i = 0;
-	while (input[i])
+	handle_dollar(data);
+	while (data->commande_line[i])
 	{
-		if (input[i] == '$')
-			handle_dollar(data, &i);
-		else if (input[i] == '\"' || input[i] == '\'')
+		if (data->commande_line[i] == '\"' || data->commande_line[i] == '\'')
 			handle_quotes(data, &i);
-		else if (input[i] == '<' || input[i] == '>')
-			add_operator(data, input[i], &i);
-		else if (input[i] == '|')
+		else if (data->commande_line[i] == '<' || data->commande_line[i] == '>')
+			add_operator(data, data->commande_line[i], &i);
+		else if (data->commande_line[i] == '|')
 			add_operator(data, '|', &i);
-		else
+		else if (data->commande_line[i])
 			handle_normal_char(data, &i, &param_len);
-		if (input[i] && input[i] == ' ')
-			while (input[i] && input[i] == ' ')
+		if (data->commande_line[i] && data->commande_line[i] == ' ')
+			while (data->commande_line[i] && data->commande_line[i] == ' ')
 				i++;
 	}
 }
@@ -50,11 +47,18 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 		// check dollar
 		// if (data->commande_line[j] == '$')
 		// 	handle_dollar(data->commande_line, &j, p_len, &data->params);
+		// ft_printf("data->commande_line[j]: %c\n", data->commande_line[j]);
 		j++;
 		(*p_len)++;
 	}
 	param = ft_substr(data->commande_line, *i, *p_len);
-	// param = handle_dollar(param, data, i);
+	// ft_printf("data->commande_line: |%s|\n", data->commande_line);
+	// ft_printf("param_len: %d\n", *p_len);
+	// ft_printf("i: %d\n", *i);
+
+	// ft_printf("param: |%s|\n", param);
+	// sleep(1);
+	param = handle_dollar_in_quotes(param, data);
 	*i = j;
 	*p_len = 0;
 	add_param(&data->params, param);
@@ -67,7 +71,7 @@ char	*get_env_value(char *param, t_data *data)
 
 	param_len = ft_strlen(param);
 	env = data->env;
-	ft_printf("param: |%s|\n", param);
+	// ft_printf("param: |%s|\n", param);
 	while (*env)
 	{
 		if (ft_strncmp(*env, param, param_len) == 0 && (*env)[param_len] == '=')
@@ -118,7 +122,7 @@ char	*expand_variable(char *param, int *i, t_data *data)
 	}
 	else
 	{
-		while ( param[j] && !is_operator(param[j]))
+		while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
 			j++;
 		value = get_env_value(ft_substr(param, *i, j - *i), data);
 	}
@@ -133,6 +137,7 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 	char	*new_param;
 
 	i = 0;
+	new_param = ft_strdup("");
 	while (param[i])
 	{
 		if (param[i] == '$')
@@ -149,22 +154,40 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 	return (new_param);
 }
 
-void	handle_dollar(t_data *data, int *i)
+void	handle_dollar(t_data *data)
 {
+	int		i;
 	int		j;
 	char	*new_param;
+	char	*new_command_line;
+	char	quote;
 
+	i = 0;
 	j = 0;
-	*i += 1;
-	while (data->commande_line[*i + j]
-		&& (ft_isalnum(data->commande_line[*i + j])
-			|| data->commande_line[*i + j] == '_'))
+	new_param = ft_strdup("");
+	while (data->commande_line[i])
 	{
-		j++;
+		if (data->commande_line[i] == '\'')
+		{
+			quote = data->commande_line[i];
+			while (data->commande_line[i] && data->commande_line[i] != quote)
+				i++;
+		}
+		if (data->commande_line[i] == '$')
+		{
+			j = i;
+			new_param = expand_variable(data->commande_line, &i, data);
+			new_command_line = ft_calloc(ft_strlen(data->commande_line) - (i - j) + ft_strlen(new_param) + 1, sizeof(char));
+			j = ft_strlcat(new_command_line, data->commande_line, j + 1);
+			j = ft_strlcat(new_command_line, new_param, j + ft_strlen(new_param));
+			j = ft_strlcat(new_command_line, data->commande_line, ft_strlen(data->commande_line) - i);
+		}
+		else
+			i++;
+	// ft_printf("done\n");
 	}
-	new_param = get_env_value(ft_substr(data->commande_line, *i, j), data);
-	*i += j;
-	add_param(&data->params, new_param);
+	if (j)
+		data->commande_line = new_command_line;
 }
 
 void	handle_quotes(t_data *data, int *i)
@@ -186,7 +209,7 @@ void	handle_quotes(t_data *data, int *i)
 		prompt_error("Error: quote not closed");
 	param = ft_substr(data->commande_line, *i, lenght);
 	*i = j + 1;
-	if (quote == '\"')
-		param = handle_dollar_in_quotes(param, data);
+	// if (quote == '\"')
+	// 	param = handle_dollar_in_quotes(param, data);
 	add_param(&data->params, param);
 }

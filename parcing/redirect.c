@@ -46,7 +46,7 @@ void	handle_append(t_params params, t_cmd_list cmd_list)
 
 	if (params->next != NULL)
 	{
-		ft_printf("params->next->parameter: %s\n", params->next->parameter);
+		// ft_printf("params->next->parameter: %s\n", params->next->parameter);
 		cmd_list->append = params->next->parameter;
 		prev = params->prev;
 		if (prev == NULL)
