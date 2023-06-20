@@ -31,13 +31,38 @@ void handle_redirection(t_params params, t_cmd_list cmd_list)
 		add_input(params, cmd_list);
 	else if (params->parameter[0] == '>' && ft_strlen(params->parameter) == 1)
 		add_output(params, cmd_list);
-	// else if (params->parameter[0] == '<' && params->parameter[1] == '<')
-	// 	handle_heredoc(params, cmd_list);
+	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
+		handle_heredoc(params, cmd_list);
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
 		handle_append(params, cmd_list);
 	// // else if (params->parameter[0] == '<' && params->parameter[1] == '>'
 	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
 	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
+}
+
+void	handle_heredoc(t_params params, t_cmd_list cmd_list)
+{
+	if (params->next != NULL)
+	{
+		char	*line;
+		int		*end;
+
+		end = (int *)malloc(sizeof(int) * 2);
+		pipe(end);
+		line = readline("> ");
+		while (strcmp(line, params->next->parameter) != 0)
+		{
+			write(end[1], line, ft_strlen(line));
+			write(end[1], "\n", 1);
+			free(line);
+			line = readline("> ");
+		}
+		free(line);
+		close(end[1]);
+		cmd_list->input = ft_itoa(end[0]);
+	}
+	else
+		prompt_error("minishell: syntax error near unexpected token `newline'");
 }
 
 void	handle_append(t_params params, t_cmd_list cmd_list)
