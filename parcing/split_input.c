@@ -22,32 +22,37 @@ void	treat_input(t_data *data)
 	handle_dollar(data);
 	while (data->commande_line[i])
 	{
-		if (data->commande_line[i] == '\"' || data->commande_line[i] == '\'')
-			handle_quotes(data, &i);
+		if (data->commande_line[i])
+			handle_normal_char(data, &i, &param_len);
 		else if (data->commande_line[i] == '<' || data->commande_line[i] == '>')
 			add_operator(data, data->commande_line[i], &i);
 		else if (data->commande_line[i] == '|')
 			add_operator(data, '|', &i);
-		else if (data->commande_line[i])
-			handle_normal_char(data, &i, &param_len);
 		if (data->commande_line[i] && data->commande_line[i] == ' ')
 			while (data->commande_line[i] && data->commande_line[i] == ' ')
 				i++;
+		// i++;
 	}
 }
 
 void	handle_normal_char(t_data *data, int *i, int *p_len)
 {
 	int		j;
+	int		k;
 	char	*param;
 
 	j = *i;
-	while (data->commande_line[j] && !is_operator(data->commande_line[j]))
+	while (data->commande_line[j] && (!is_operator(data->commande_line[j]) || data->commande_line[j] == '\"' || data->commande_line[j] == '\''))
 	{
-		// check dollar
-		// if (data->commande_line[j] == '$')
-		// 	handle_dollar(data->commande_line, &j, p_len, &data->params);
-		// ft_printf("data->commande_line[j]: %c\n", data->commande_line[j]);
+		if (data->commande_line[j] == '\"' || data->commande_line[j] == '\'')
+		{
+			k = j;
+			handle_quotes(data, &j);
+			(*p_len) += j - k;
+			if (is_operator(data->commande_line[j]))
+				break;
+			
+		}
 		j++;
 		(*p_len)++;
 	}
@@ -58,7 +63,7 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 
 	// ft_printf("param: |%s|\n", param);
 	// sleep(1);
-	param = handle_dollar_in_quotes(param, data);
+	// param = handle_dollar_in_quotes(param, data);
 	*i = j;
 	*p_len = 0;
 	add_param(&data->params, param);
@@ -119,6 +124,7 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		}
 		else
 			value = ft_strdup("");
+		*i = j;
 	}
 	else
 	{
@@ -154,50 +160,65 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 	return (new_param);
 }
 
-void	handle_dollar(t_data *data)
+char	*expand_first_word(char *string, t_data *data)
 {
 	int		i;
-	int		j;
-	char	*new_param;
-	char	*new_command_line;
-	char	quote;
+	char	*new_string;
+	char	*value;
 
 	i = 0;
-	j = 0;
-	new_param = ft_strdup("");
-	while (data->commande_line[i])
+	new_string = ft_strdup("");
+	while (string[i] && !is_operator(string[i]) && string[i] != '$' && (ft_isalnum(string[i]) || string[i] == '_'))
 	{
-		if (data->commande_line[i] == '\'')
-		{
-			quote = data->commande_line[i];
-			while (data->commande_line[i] && data->commande_line[i] != quote)
-				i++;
-		}
-		if (data->commande_line[i] == '$')
-		{
-			j = i;
-			new_param = expand_variable(data->commande_line, &i, data);
-			new_command_line = ft_calloc(ft_strlen(data->commande_line) - (i - j) + ft_strlen(new_param) + 1, sizeof(char));
-			j = ft_strlcat(new_command_line, data->commande_line, j + 1);
-			j = ft_strlcat(new_command_line, new_param, j + ft_strlen(new_param));
-			j = ft_strlcat(new_command_line, data->commande_line, ft_strlen(data->commande_line) - i);
-		}
-		else
-			i++;
-	// ft_printf("done\n");
+		new_string = ft_strjoin_char(new_string, string[i]);
+		i++;
 	}
-	if (j)
-		data->commande_line = new_command_line;
+	value = get_env_value(new_string, data);
+	new_string = ft_strjoin(value, string + i, 1);
+	return (new_string);
+}
+
+void	handle_dollar(t_data *data)
+{
+	char	**split;
+	char	*new_string;
+	int		i;
+	int		j;
+
+	i = 0;
+	split = ft_split(data->commande_line, '$');
+	while (split[i])
+	{
+		if (i == 0)
+		{
+			if (data->commande_line[0] == '$')
+			{
+				split[0] = expand_first_word(split[0], data);
+			}
+		} else {
+			split[i] = expand_first_word(split[i], data);
+		}
+		ft_printf("hello\n");
+		i++;
+	}
+	j = 0;
+	new_string = ft_strdup("");
+	while (j < i)
+	{
+		new_string = ft_strjoin(new_string, split[j], 1);
+		j++;
+	}
+	data->commande_line = new_string;
 }
 
 void	handle_quotes(t_data *data, int *i)
 {
 	int		j;
-	char	*param;
 	char	quote;
 	int		lenght;
 
 	quote = data->commande_line[*i];
+	ft_memmove(&data->commande_line[*i], &data->commande_line[*i + 1], ft_strlen(&data->commande_line[*i + 1]));
 	lenght = 0;
 	j = ++(*i);
 	while (data->commande_line[j] && data->commande_line[j] != quote) 
@@ -205,11 +226,8 @@ void	handle_quotes(t_data *data, int *i)
 		j++;
 		lenght++;
 	}
+	ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));
 	if (!data->commande_line[j])
 		prompt_error("Error: quote not closed");
-	param = ft_substr(data->commande_line, *i, lenght);
-	*i = j + 1;
-	// if (quote == '\"')
-	// 	param = handle_dollar_in_quotes(param, data);
-	add_param(&data->params, param);
+	*i = j;
 }
