@@ -195,10 +195,17 @@ void	handle_dollar(t_data *data)
 			{
 				split[0] = expand_first_word(split[0], data);
 			}
-		} else {
+		} else
 			split[i] = expand_first_word(split[i], data);
+		j = 0;
+		while (split[i][j])
+		{
+			if (split[i][j] == '\'')
+			{
+				i = skip_unchanged_splits(split, i, j);
+			}
+			ft_printf("hello\n");
 		}
-		ft_printf("hello\n");
 		i++;
 	}
 	j = 0;

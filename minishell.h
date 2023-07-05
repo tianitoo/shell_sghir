@@ -19,7 +19,9 @@
 # include <stdlib.h>
 # include "./libft/libft.h"
 # include "./ft_printf/ft_printf.h"
- 
+
+#include <string.h>
+
 # define MAX_PATH 1024
 
 typedef struct s_param{
