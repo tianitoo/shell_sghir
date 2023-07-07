@@ -63,8 +63,8 @@ void	handle_params(t_cmd_list *cmd_list)
 		params = tmp->args;
 		while (params)
 		{
-			// if (params->parameter[0] == '>' || params->parameter[0] == '<')
-			// 	handle_redirection(params, tmp);
+			if (params->parameter[0] == '>' || params->parameter[0] == '<')
+				handle_redirection(params, tmp);
 			params = params->next;
 		}
 		tmp = tmp->next;
