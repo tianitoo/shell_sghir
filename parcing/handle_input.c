@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   handle_input.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/11 10:47:00 by hnait             #+#    #+#             */
-/*   Updated: 2023/06/13 10:53:25 by hnait            ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   handle_input.c									 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/05/11 10:47:00 by hnait			 #+#	#+#			 */
+/*   Updated: 2023/07/09 14:53:00 by hnait			###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -80,11 +80,13 @@ void	get_input(t_data *data)
 	if (data->params == NULL || g_exit_status != 0)
 		return ;
 	data->cmd_list = get_cmd_list(data->params);
-	ft_printf("commande_line:\n");
+	// ft_printf("commande_line:\n");
 	if (g_exit_status != 0)
 		exit(g_exit_status);
-	show_command(data->cmd_list);
+	// show_command(data->cmd_list);
 	// exec
+	if (data->cmd_list)
+			execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
 	free(data->commande_line);

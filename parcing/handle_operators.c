@@ -21,7 +21,6 @@ char	*get_operator(char *input, int *i, char operator)
 {
 	char	*param;
 
-	ft_printf("here %d\n", *i);
 	if (operator == '<' && input[*i + 1] == '<')
 	{
 			param = ft_strdup("<<");
@@ -107,7 +106,6 @@ t_cmd_list	get_cmd_list(t_params params)
 			break ;
 		tmp = tmp->next;
 	}
-	ft_printf("ls\n");
 	handle_params(&head);
 	return (head);
 }

@@ -46,7 +46,8 @@ LIBFTSRC = ./libft/ft_atoi.c\
 		./libft/ft_putstr_fd.c\
 		./libft/ft_putendl_fd.c\
 		./libft/ft_putnbr_fd.c\
-		./libft/libft.h
+		./libft/ft_strcmp.c\
+		./libft/libft.h\
 
 PRINTFSRC = ./ft_printf/ft_printf.c\
 		./ft_printf/ft_putchar.c\
@@ -61,6 +62,10 @@ SRC = parcing/handle_input.c\
 		parcing/redirect.c\
 		parcing/fill_cmd_list.c\
 		parcing/split_input.c\
+		execution/execute.c\
+		execution/echo.c\
+		execution/cd.c\
+		utils/args_double_pointer.c\
 
 
 

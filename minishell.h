@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/02 10:50:23 by hnait             #+#    #+#             */
-/*   Updated: 2023/06/12 14:05:33 by hnait            ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   minishell.h										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/06/02 10:50:23 by hnait			 #+#	#+#			 */
+/*   Updated: 2023/07/09 16:25:06 by hnait			###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
@@ -78,6 +78,15 @@ void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
 void		handle_redirection(t_params params, t_cmd_list cmd_list);
 void		handle_params(t_cmd_list *cmd_list);
+
+
+void		execute(t_data *data);
+void		ft_cd(t_params params, char **env);
+int			ft_echo(t_params params);
+
+char		**args_double_pointer(t_params params);
+char		*get_variable(char **envp, char *var);
+
 
 #endif
 

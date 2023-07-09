@@ -21,6 +21,7 @@ ft_split\
 ft_strlcat\
 ft_strlen\
 ft_strnstr\
+ft_strcmp\
 ft_strrchr\
 ft_strchr\
 ft_strlcpy\

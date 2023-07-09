@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   split_input.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/02 10:40:09 by hnait             #+#    #+#             */
-/*   Updated: 2023/06/12 15:17:38 by hnait            ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   split_input.c									  :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/06/02 10:40:09 by hnait			 #+#	#+#			 */
+/*   Updated: 2023/07/09 14:55:42 by hnait			###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -31,7 +31,6 @@ void	treat_input(t_data *data)
 		if (data->commande_line[i] && data->commande_line[i] == ' ')
 			while (data->commande_line[i] && data->commande_line[i] == ' ')
 				i++;
-		ft_printf("here %d %c\n", i, data->commande_line[i]);
 		// i++;
 	}
 }
@@ -200,7 +199,6 @@ void	handle_quotes(t_data *data, int *i)
 	quote = data->commande_line[*i];
 	ft_memmove(&data->commande_line[*i], &data->commande_line[*i + 1], ft_strlen(&data->commande_line[*i + 1]));
 	data->commande_line[ft_strlen(data->commande_line)- 1] = 0;
-	ft_printf("%d\n", data->commande_line);
 	lenght = 0;
 	j = ++(*i);
 	while (data->commande_line[j] && data->commande_line[j] != quote) 
