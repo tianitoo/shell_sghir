@@ -22,7 +22,7 @@ void	treat_input(t_data *data)
 	handle_dollar(data);
 	while (data->commande_line[i])
 	{
-		if (data->commande_line[i])
+		if (data->commande_line[i] && !is_operator(data->commande_line[i]))
 			handle_normal_char(data, &i, &param_len);
 		else if (data->commande_line[i] == '<' || data->commande_line[i] == '>')
 			add_operator(data, data->commande_line[i], &i);
@@ -31,6 +31,7 @@ void	treat_input(t_data *data)
 		if (data->commande_line[i] && data->commande_line[i] == ' ')
 			while (data->commande_line[i] && data->commande_line[i] == ' ')
 				i++;
+		ft_printf("here %d %c\n", i, data->commande_line[i]);
 		// i++;
 	}
 }

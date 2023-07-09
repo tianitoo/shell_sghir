@@ -22,6 +22,11 @@ char	*get_commande_line(void)
 	char		*input;
 
 	input = readline("minishell$ ");
+	if (input == NULL)
+	{
+		ft_printf("exit\n");
+		exit(0);
+	}
 	return (input);
 }
 
@@ -72,11 +77,12 @@ void	get_input(t_data *data)
 	data->commande_line = ft_strdup(get_commande_line());
 	add_history(data->commande_line);
 	treat_input(data);
-	if (data->params == NULL)
+	if (data->params == NULL || g_exit_status != 0)
 		return ;
 	data->cmd_list = get_cmd_list(data->params);
-	handle_params(&data->cmd_list);
 	ft_printf("commande_line:\n");
+	if (g_exit_status != 0)
+		exit(g_exit_status);
 	show_command(data->cmd_list);
 	// exec
 	free_cmd_list(&data->cmd_list);

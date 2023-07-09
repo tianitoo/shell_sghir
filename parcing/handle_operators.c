@@ -3,8 +3,7 @@
 
 int	is_operator(char c)
 {
-	if (c == '|' || c == '>' || c == '<' || c == '"'
-		|| c == '\'' || c == ' ' || c == '\n')
+	if (c == '|' || c == '>' || c == '<' || c == ' ' || c == '\n')
 		return (1);
 	return (0);
 }
@@ -13,6 +12,7 @@ void	add_operator(t_data *data, char operator, int *i)
 {
 	char	*param;
 
+	ft_printf("%c\n", operator);
 	param = get_operator(data->commande_line, i, operator);
 	add_param(&(data->params), param);
 }
@@ -21,6 +21,7 @@ char	*get_operator(char *input, int *i, char operator)
 {
 	char	*param;
 
+	ft_printf("here %d\n", *i);
 	if (operator == '<' && input[*i + 1] == '<')
 	{
 			param = ft_strdup("<<");
@@ -38,6 +39,7 @@ char	*get_operator(char *input, int *i, char operator)
 	else
 		param = ft_substr(input, *i, 1);
 	(*i)++;
+	ft_printf("hello\n");
 	return (param);
 }
 
@@ -105,5 +107,7 @@ t_cmd_list	get_cmd_list(t_params params)
 			break ;
 		tmp = tmp->next;
 	}
+	ft_printf("ls\n");
+	handle_params(&head);
 	return (head);
 }

@@ -24,6 +24,8 @@
 
 # define MAX_PATH 1024
 
+int	g_exit_status;
+
 typedef struct s_param{
 	int				is_operator;
 	int				in_quote;
