@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int ft_echo(t_params params)
 {
@@ -21,7 +21,7 @@ int ft_echo(t_params params)
 	int is_notn;
 	int j;
 
-	args = args_double_pointer(params);
+	args = args_to_double_pointer(params);
 	is_notn = 0;
 	newline = 0;
 	i = 1;

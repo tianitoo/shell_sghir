@@ -6,12 +6,12 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/09 16:59:33 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/10 11:45:48 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 void	update_env(char *var_name, char *var_value, char **env)
 {
@@ -40,7 +40,7 @@ void	ft_cd(t_params params, char **env)
 	char	*oldpwd;
 	char	*pwd;
 
-	args = args_double_pointer(params);
+	args = args_to_double_pointer(params);
 	oldpwd = getcwd(NULL, 0);
 	if (args[1] == NULL)
 	{

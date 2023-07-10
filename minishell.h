@@ -82,9 +82,13 @@ void		handle_params(t_cmd_list *cmd_list);
 
 void		execute(t_data *data);
 void		ft_cd(t_params params, char **env);
+void		write_env(t_data *data);
 int			ft_echo(t_params params);
+void		ft_pwd(void);
+void		ft_export(t_data *data);
 
-char		**args_double_pointer(t_params params);
+t_params	double_pointer_to_args(char **double_pointer);
+char		**args_to_double_pointer(t_params params);
 char		*get_variable(char **envp, char *var);
 
 

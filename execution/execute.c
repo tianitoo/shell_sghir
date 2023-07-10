@@ -18,14 +18,14 @@ int	is_builtin(char *cmd)
 		return (1);
 	else if (ft_strcmp(cmd, "cd") == 0)
 		return (1);
-	// else if (ft_strcmp(cmd, "pwd") == 0)
-	// 	return (1);
-	// else if (ft_strcmp(cmd, "export") == 0)
-	// 	return (1);
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "export") == 0)
+		return (1);
 	// else if (ft_strcmp(cmd, "unset") == 0)
 	// 	return (1);
-	// else if (ft_strcmp(cmd, "env") == 0)
-	// 	return (1);
+	else if (ft_strcmp(cmd, "env") == 0)
+		return (1);
 	// else if (ft_strcmp(cmd, "exit") == 0)
 	// 	return (1);
 	return (0);
@@ -37,14 +37,14 @@ void	execute_builtin(t_data *data)
 		ft_echo(data->cmd_list->args);
 	else if (ft_strcmp(data->cmd_list->cmd, "cd") == 0)
 		ft_cd(data->cmd_list->args, data->env);
-	// else if (ft_strcmp(data->cmd_list->cmd, "pwd") == 0)
-	// 	ft_pwd();
-	// else if (ft_strcmp(data->cmd_list->cmd, "export") == 0)
-	// 	ft_export(data->cmd_list->args);
+	else if (ft_strcmp(data->cmd_list->cmd, "pwd") == 0)
+		ft_pwd();
+	else if (ft_strcmp(data->cmd_list->cmd, "export") == 0)
+		ft_export(data);
 	// else if (ft_strcmp(data->cmd_list->cmd, "unset") == 0)
 	// 	ft_unset(data->cmd_list->args);
-	// else if (ft_strcmp(data->cmd_list->cmd, "env") == 0)
-	// 	ft_env(data->cmd_list->args);
+	else if (ft_strcmp(data->cmd_list->cmd, "env") == 0)
+		write_env(data);
 	// else if (ft_strcmp(data->cmd_list->cmd, "exit") == 0)
 	// 	ft_exit(data->cmd_list->args);
 }
@@ -54,7 +54,7 @@ void	execute_cmd(t_data *data)
 	int		status;
 	char	**args;
 
-	args = args_double_pointer(data->cmd_list->args);
+	args = args_to_double_pointer(data->cmd_list->args);
 	pid = fork();
 	if (pid == 0)
 	{

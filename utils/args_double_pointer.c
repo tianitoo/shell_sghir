@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	**args_double_pointer(t_params params)
+char	**args_to_double_pointer(t_params params)
 {
 	int	 i;
 	int		args_count;
@@ -30,11 +30,12 @@ char	**args_double_pointer(t_params params)
 	args = (char **)ft_calloc(sizeof(char *), (args_count + 1));
 	while (params)
 	{
+		ft_printf("params->parameter = %s, i = %d\n", params->parameter, i);
 		args[i] = ft_strdup(params->parameter);
 		params = params->next;
 		i++;
 	}
-	args[i] = 0;
+	args[i] = NULL;
 	return (args);
 
 }

@@ -63,9 +63,13 @@ SRC = parcing/handle_input.c\
 		parcing/fill_cmd_list.c\
 		parcing/split_input.c\
 		execution/execute.c\
-		execution/echo.c\
-		execution/cd.c\
+		execution/built_in/echo.c\
+		execution/built_in/cd.c\
+		execution/built_in/pwd.c\
+		execution/built_in/env.c\
+		execution/built_in/export.c\
 		utils/args_double_pointer.c\
+		utils/double_pointer_args.c\
 
 
 
