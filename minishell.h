@@ -26,6 +26,13 @@
 
 int	g_exit_status;
 
+typedef struct s_env{
+	char	*key;
+	char	*value;
+	int		exported;
+	struct s_env	*next;
+}t_env;
+
 typedef struct s_param{
 	int				is_operator;
 	int				in_quote;
@@ -47,11 +54,13 @@ typedef struct s_cmd{
 typedef struct s_data{
 	t_cmd_list	cmd_list;
 	t_params	params;
+	t_env		*linked_env;
+	char		**env;
 	int			last_command_status;
 	char		*commande_line;
-	char		**env;
 }t_data;
 
+// parcing
 void		get_input(t_data *data);
 char		**pipe_split(char *input);
 void		handle_heredoc(t_params params, t_cmd_list cmd_list);
@@ -80,13 +89,18 @@ void		handle_redirection(t_params params, t_cmd_list cmd_list);
 void		handle_params(t_cmd_list *cmd_list);
 
 
-void		execute(t_data *data);
+//builtins
 void		ft_cd(t_params params, char **env);
 void		write_env(t_data *data);
 int			ft_echo(t_params params);
 void		ft_pwd(void);
 void		ft_export(t_data *data);
 
+//execution
+void		execute(t_data *data);
+void		add_env(t_env *env, char *key, char *value);
+
+//utils
 t_params	double_pointer_to_args(char **double_pointer);
 char		**args_to_double_pointer(t_params params);
 char		*get_variable(char **envp, char *var);
