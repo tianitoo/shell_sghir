@@ -22,8 +22,8 @@ int	is_builtin(char *cmd)
 		return (1);
 	else if (ft_strcmp(cmd, "export") == 0)
 		return (1);
-	// else if (ft_strcmp(cmd, "unset") == 0)
-	// 	return (1);
+	else if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
 	else if (ft_strcmp(cmd, "env") == 0)
 		return (1);
 	// else if (ft_strcmp(cmd, "exit") == 0)
@@ -41,8 +41,8 @@ void	execute_builtin(t_data *data)
 		ft_pwd();
 	else if (ft_strcmp(data->cmd_list->cmd, "export") == 0)
 		ft_export(data);
-	// else if (ft_strcmp(data->cmd_list->cmd, "unset") == 0)
-	// 	ft_unset(data->cmd_list->args);
+	else if (ft_strcmp(data->cmd_list->cmd, "unset") == 0)
+		ft_unset(data);
 	else if (ft_strcmp(data->cmd_list->cmd, "env") == 0)
 		write_env(data);
 	// else if (ft_strcmp(data->cmd_list->cmd, "exit") == 0)

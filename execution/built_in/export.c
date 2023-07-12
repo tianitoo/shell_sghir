@@ -101,7 +101,6 @@ void	 add_to_env(t_data *data)
 	
 	key = find_key(data->params->next->parameter);
 	env_params = double_pointer_to_args(env);
-		ft_printf("key exists\n");
 	if (!key_exists(env_params, key))
 	{
 		add_param(&env_params, data->params->next->parameter);
@@ -115,11 +114,9 @@ void	 add_to_env(t_data *data)
 
 void	ft_export(t_data *data)
 {
-	// int		i;
 	t_env	*env;
 
-	env = data->linked_env; 
-	// i = 0;
+	env = data->linked_env;
 	if (data->params->next == NULL)
 	{
 		while (env)

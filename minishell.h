@@ -96,6 +96,8 @@ void		write_env(t_data *data);
 int			ft_echo(t_params params);
 void		ft_pwd(void);
 void		ft_export(t_data *data);
+void		ft_unset(t_data *data);
+
 
 //execution
 void		execute(t_data *data);
@@ -105,6 +107,8 @@ void		add_env(t_env *env, char *key, char *value);
 t_params	double_pointer_to_args(char **double_pointer);
 char		**args_to_double_pointer(t_params params);
 char		*get_variable(char **envp, char *var);
+char		*find_key(char *str);
+
 
 
 #endif
