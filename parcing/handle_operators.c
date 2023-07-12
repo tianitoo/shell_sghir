@@ -38,7 +38,6 @@ char	*get_operator(char *input, int *i, char operator)
 	else
 		param = ft_substr(input, *i, 1);
 	(*i)++;
-	ft_printf("hello\n");
 	return (param);
 }
 
