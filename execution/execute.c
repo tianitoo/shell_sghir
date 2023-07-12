@@ -66,8 +66,8 @@ void	execute_cmd(t_data *data)
 	else
 	{
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			g_exit_status = WEXITSTATUS(status);
+		// if (WIFEXITED(status))
+			// g_exit_status = WEXITSTATUS(status);
 	}
 }
 

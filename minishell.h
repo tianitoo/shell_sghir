@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/wait.h>
 # include "./libft/libft.h"
 # include "./ft_printf/ft_printf.h"
 
@@ -24,7 +25,7 @@
 
 # define MAX_PATH 1024
 
-int	g_exit_status;
+// int	g_exit_status = 0;
 
 typedef struct s_env{
 	char	*key;

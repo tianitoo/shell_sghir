@@ -18,6 +18,7 @@ t_params	double_pointer_to_args(char **double_pointer)
 	int			i;
 
 	i = 0;
+	params = NULL;
 	while (double_pointer[i])
 	{
 		add_param(&params, double_pointer[i]);

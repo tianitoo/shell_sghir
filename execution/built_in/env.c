@@ -23,22 +23,8 @@ void	write_env(t_data *data)
 	{
 		if (ft_strchr(env[i], '='))
 		{
-			ft_printf(env[i]);
-			ft_printf("\n");
+			ft_printf("%s\n", env[i]);
 		}
 		i++;
 	}
-}
-
-int	check_slvl(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i++])
-	{
-		if (!ft_strncmp("SHLVL=", env[i], ft_strlen("SHLVL=")))
-			return (1);
-	}
-	return (0);
 }

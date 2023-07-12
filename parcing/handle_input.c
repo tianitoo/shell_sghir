@@ -77,12 +77,12 @@ void	get_input(t_data *data)
 	data->commande_line = ft_strdup(get_commande_line());
 	add_history(data->commande_line);
 	treat_input(data);
-	if (data->params == NULL || g_exit_status != 0)
+	if (data->params == NULL)// || g_exit_status != 0)
 		return ;
 	data->cmd_list = get_cmd_list(data->params);
 	// ft_printf("commande_line:\n");
-	if (g_exit_status != 0)
-		exit(g_exit_status);
+	// if (g_exit_status != 0)
+	// 	exit(g_exit_status);
 	// show_command(data->cmd_list);
 	// exec
 	if (data->cmd_list)

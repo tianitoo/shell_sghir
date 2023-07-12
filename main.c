@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-int	g_exit_status = 0;
 
 char	*get_variable(char **envp, char *var)
 {
@@ -34,38 +33,38 @@ char	*get_variable(char **envp, char *var)
 	return (NULL);
 }
 
-void	handle_sigint(int sig)
-{
-	if (sig == SIGINT)
-	{
-		g_exit_status = 1;
-		// rl_on_new_line();
-		write(1, "\n", 1);
-		// ft_printf("helloo\n");
-		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
-	}
-}
+// void	handle_sigint(int sig)
+// {
+// 	if (sig == SIGINT)
+// 	{
+// 		g_exit_status = 1;
+// 		// rl_on_new_line();
+// 		write(1, "\n", 1);
+// 		// ft_printf("helloo\n");
+// 		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
+// 	}
+// }
 
-void	sigquit_handler(int sig)
-{
-	if (sig == SIGQUIT)
-	{
-		g_exit_status = 131;
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		// rl_replace_line("jskdjfkj", 0);
-		// rl_on_new_line();
-	}
-}
-void	heredoc_sigint_handler(int sig)
-{
-	if (sig == SIGINT)
-	{
-		g_exit_status = 1;
-		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-		// rl_replace_line("f", 0);
-		// rl_on_new_line();
-	}
-}
+// void	sigquit_handler(int sig)
+// {
+// 	if (sig == SIGQUIT)
+// 	{
+// 		g_exit_status = 131;
+// 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+// 		// rl_replace_line("jskdjfkj", 0);
+// 		// rl_on_new_line();
+// 	}
+// }
+// void	heredoc_sigint_handler(int sig)
+// {
+// 	if (sig == SIGINT)
+// 	{
+// 		g_exit_status = 1;
+// 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+// 		// rl_replace_line("f", 0);
+// 		// rl_on_new_line();
+// 	}
+// }
 
 t_env	*new_env(char *key, char *value)
 {
@@ -176,8 +175,8 @@ int	main(int argc, char **argv, char **envp)
 	data->env = envp;
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
-		signal(SIGINT, handle_sigint);
+		// signal(SIGQUIT, SIG_IGN);
+		// signal(SIGINT, handle_sigint);
 		get_input(data);
 	}
 	return (0);
