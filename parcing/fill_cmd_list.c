@@ -70,9 +70,13 @@ t_cmd	*new_cmd(void)
 		return (prompt_error("malloc error"), NULL);
 	cmd->cmd = NULL;
 	cmd->args = NULL;
-	cmd->input = NULL;
-	cmd->output = NULL;
-	cmd->append = NULL;
+	cmd->input = -1;
+	cmd->output = -1;
+	cmd->append = -1;
+	cmd->pip = (int *)malloc(sizeof(int) * 2);
+	if (cmd->pip == NULL)
+		return (prompt_error("malloc error"), NULL);
+	pipe(cmd->pip);
 	cmd->next = NULL;
 	return (cmd);
 }

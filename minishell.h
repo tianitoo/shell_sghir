@@ -46,9 +46,10 @@ typedef struct s_param{
 typedef struct s_cmd{
 	char				*cmd;
 	struct s_param		*args;
-	char				*input;
-	char				*output;
-	char				*append;
+	int					input;
+	int					output;
+	int					append;
+	int					*pip;
 	struct s_cmd		*next;
 }t_cmd,	*t_cmd_list;
 
@@ -96,6 +97,7 @@ void		write_env(t_data *data);
 int			ft_echo(t_params params);
 void		ft_pwd(void);
 void		ft_export(t_data *data);
+void		ft_exit(t_data *data);
 void		ft_unset(t_data *data);
 
 
@@ -106,6 +108,7 @@ void		add_env(t_env *env, char *key, char *value);
 //utils
 t_params	double_pointer_to_args(char **double_pointer);
 char		**args_to_double_pointer(t_params params);
+char		*get_env_value(char *param, t_data *data);
 char		*get_variable(char **envp, char *var);
 char		*find_key(char *str);
 

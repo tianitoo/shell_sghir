@@ -61,10 +61,10 @@ void	free_cmd_list(t_cmd_list *cmd_list)
 		next = tmp->next;
 		// free(tmp->cmd);
 		// free_params(&tmp->args);
-		if (tmp->input)
-			free(tmp->input);
-		if (tmp->output)
-			free(tmp->output);
+		// if (tmp->input)
+		// 	free(tmp->input);
+		// if (tmp->output)
+		// 	free(tmp->output);
 		// free(tmp->args);
 		free(tmp);
 		tmp = next;
@@ -86,7 +86,7 @@ void	get_input(t_data *data)
 	// show_command(data->cmd_list);
 	// exec
 	if (data->cmd_list)
-			execute(data);
+		execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
 	free(data->commande_line);

@@ -59,7 +59,7 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list)
 		}
 		free(line);
 		close(end[1]);
-		cmd_list->input = ft_itoa(end[0]);
+		cmd_list->input = end[0];
 	}
 	else
 		prompt_error("minishell: syntax error near unexpected token `newline'");
@@ -68,11 +68,17 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list)
 void	handle_append(t_params params, t_cmd_list cmd_list)
 {
 	t_params	prev;
+	int			fd;
 
 	if (params->next != NULL)
 	{
-		// ft_printf("params->next->parameter: %s\n", params->next->parameter);
-		cmd_list->append = params->next->parameter;
+		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
+		if (fd == -1)
+		{
+			ft_printf("%s: no such file or directory\n", params->next->parameter);
+			return ;
+		}
+		cmd_list->append = fd;
 		prev = params->prev;
 		if (prev == NULL)
 		{
@@ -96,10 +102,17 @@ void	handle_append(t_params params, t_cmd_list cmd_list)
 void	add_input(t_params params, t_cmd_list cmd_list)
 {
 	t_params	prev;
+	int			fd;
 
 	if (params->next != NULL)
 	{
-		cmd_list->input = params->next->parameter;
+		fd = open(params->next->parameter, O_RDONLY);
+		if (fd == -1)
+		{
+			ft_printf("%s: no such file or directory\n", params->next->parameter);
+			return ;
+		}
+		cmd_list->input = fd;
 		prev = params->prev;
 		if (prev == NULL)
 		{
@@ -123,10 +136,17 @@ void	add_input(t_params params, t_cmd_list cmd_list)
 void	add_output(t_params params, t_cmd_list cmd_list)
 {
 	t_params	prev;
+	int			fd;
 
 	if (params->next != NULL)
 	{
-		cmd_list->output = params->next->parameter;
+		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (fd == -1)
+		{
+			ft_printf("%s: no such file or directory\n", params->next->parameter);
+			return ;
+		}
+		cmd_list->output = fd;
 		prev = params->prev;
 		if (prev == NULL)
 		{

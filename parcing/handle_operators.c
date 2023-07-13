@@ -12,7 +12,7 @@ void	add_operator(t_data *data, char operator, int *i)
 {
 	char	*param;
 
-	ft_printf("%c\n", operator);
+	// ft_printf("%c\n", operator);
 	param = get_operator(data->commande_line, i, operator);
 	add_param(&(data->params), param);
 }
