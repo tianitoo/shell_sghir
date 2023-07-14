@@ -96,13 +96,19 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	if (pid == 0)
 	{
 		if (cmd_list->next != NULL && cmd_list->output == -1)
+		{
+			close(cmd_list->next->pip[0]);
 			dup2(cmd_list->next->pip[1], 1);
-		else if (cmd_list->output != -1)
-			dup2(cmd_list->output, 1);
+		}
+		// else if (cmd_list->output != -1)
+		// 	dup2(cmd_list->output, 1);
 		if (cmd_list->input == -1 && cmd_list->prev != NULL)
+		{
+			close(cmd_list->pip[1]);
 			dup2(cmd_list->pip[0], 0);
-		else if (cmd_list->input != -1)
-			dup2(cmd_list->input, 0);
+		}
+		// else if (cmd_list->input != -1)
+		// 	dup2(cmd_list->input, 0);
 		if (execve(cmd, args, data->env) == -1)
 		{
 			ft_putstr_fd("Error: execve failed\n", 2);
@@ -127,11 +133,17 @@ void	execute(t_data *data)
 		while (cmd_list)
 		{
 			if (cmd_list->cmd)
+			{
 				pid = execute_cmd(data, cmd_list);
-			cmd_list = cmd_list->next;
+				close(cmd_list->pip[1]);
+				close(cmd_list->pip[0]);
+				// waitpid(pid, NULL, 0);
+				cmd_list = cmd_list->next;
+			}
 		}
+		waitpid(pid, NULL, 0);
+		while (wait(NULL) != -1)
+			;
 		cmd_list = data->cmd_list;
-		ft_printf("hello____________________________\n");
 	}
-	waitpid(pid, NULL, 0);
 }
