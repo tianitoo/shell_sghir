@@ -51,6 +51,7 @@ typedef struct s_cmd{
 	int					append;
 	int					*pip;
 	struct s_cmd		*next;
+	struct s_cmd		*prev;
 }t_cmd,	*t_cmd_list;
 
 typedef struct s_data{

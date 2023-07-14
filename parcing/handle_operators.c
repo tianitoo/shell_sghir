@@ -96,6 +96,7 @@ t_cmd_list	get_cmd_list(t_params params)
 		if (tmp->parameter[0] == '|')
 		{
 			cmd_list->next = new_cmd();
+			cmd_list->next->prev = cmd_list;
 			cmd_list = cmd_list->next;
 			cmd_list->next = NULL;
 		}

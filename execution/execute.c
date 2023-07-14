@@ -84,7 +84,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	return (cmd);
 }
 
-void	execute_cmd(t_data *data, t_cmd_list cmd_list)
+int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 {
 	pid_t		pid;
 	char		**args;
@@ -95,22 +95,29 @@ void	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (cmd_list->next != NULL)
-		{
-			dup2(cmd_list->pip[1], 1);
-			if (cmd_list->input == -1)
-				dup2(cmd_list->pip[0], 0);
-		}
+		if (cmd_list->next != NULL && cmd_list->output == -1)
+			dup2(cmd_list->next->pip[1], 1);
+		else if (cmd_list->output != -1)
+			dup2(cmd_list->output, 1);
+		if (cmd_list->input == -1 && cmd_list->prev != NULL)
+			dup2(cmd_list->pip[0], 0);
+		else if (cmd_list->input != -1)
+			dup2(cmd_list->input, 0);
 		if (execve(cmd, args, data->env) == -1)
+		{
 			ft_putstr_fd("Error: execve failed\n", 2);
+			exit(1);
+		}
 	}
 	else if (pid < 0)
-		ft_putstr_fd("Error: fork failed\n", 2);
+		ft_putstr_fd("Error:d fork failed\n", 2);
+	return pid;
 }
 
 void	execute(t_data *data)
 {
 	t_cmd_list	cmd_list;
+	pid_t		pid;
 
 	cmd_list = data->cmd_list;
 	if (is_builtin(data->cmd_list->cmd))
@@ -120,9 +127,11 @@ void	execute(t_data *data)
 		while (cmd_list)
 		{
 			if (cmd_list->cmd)
-				execute_cmd(data, cmd_list);
+				pid = execute_cmd(data, cmd_list);
 			cmd_list = cmd_list->next;
 		}
-		wait(NULL);
+		cmd_list = data->cmd_list;
+		ft_printf("hello____________________________\n");
 	}
+	waitpid(pid, NULL, 0);
 }
