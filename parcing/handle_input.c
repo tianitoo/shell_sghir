@@ -83,10 +83,10 @@ void	get_input(t_data *data)
 	// ft_printf("commande_line:\n");
 	// if (g_exit_status != 0)
 	// 	exit(g_exit_status);
-	// show_command(data->cmd_list);
+	show_command(data->cmd_list);
 	// exec
-	if (data->cmd_list)
-		execute(data);
+	// if (data->cmd_list)
+	// 	execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
 	free(data->commande_line);
@@ -102,6 +102,7 @@ void	show_command(t_cmd_list cmd_list)
 	tmp = cmd_list;
 	while (tmp)
 	{
+		ft_printf("=============================================\n");
 		ft_printf("cmd: %s\n", tmp->cmd);
 		tmp_params = tmp->args;
 		ft_printf("args:\n");
@@ -111,9 +112,9 @@ void	show_command(t_cmd_list cmd_list)
 			tmp_params = tmp_params->next;
 		}
 		ft_printf("\n");
-		ft_printf("in: %s\n", tmp->input);
-		ft_printf("out: %s\n", tmp->output);
-		ft_printf("append: %s\n", tmp->append);
+		ft_printf("in: %d\n", tmp->input);
+		ft_printf("out: %d\n", tmp->output);
+		ft_printf("append: %d\n", tmp->append);
 		ft_printf("\n");
 		tmp = tmp->next;
 		ft_printf("=============================================\n");

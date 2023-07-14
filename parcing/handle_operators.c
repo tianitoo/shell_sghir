@@ -12,7 +12,6 @@ void	add_operator(t_data *data, char operator, int *i)
 {
 	char	*param;
 
-	// ft_printf("%c\n", operator);
 	param = get_operator(data->commande_line, i, operator);
 	add_param(&(data->params), param);
 }
@@ -95,6 +94,11 @@ t_cmd_list	get_cmd_list(t_params params)
 		}
 		if (tmp->parameter[0] == '|')
 		{
+			if (tmp->next == NULL)
+			{
+				prompt_error("syntax error near unexpected token `|'");
+				return (NULL);
+			}
 			cmd_list->next = new_cmd();
 			cmd_list->next->prev = cmd_list;
 			cmd_list = cmd_list->next;

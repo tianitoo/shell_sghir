@@ -53,8 +53,11 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 				break;
 			
 		}
-		j++;
-		(*p_len)++;
+		else
+		{
+			j++;
+			(*p_len)++;
+		}
 	}
 	param = ft_substr(data->commande_line, *i, *p_len);
 	// ft_printf("data->commande_line: |%s|\n", data->commande_line);
@@ -197,19 +200,24 @@ void	handle_quotes(t_data *data, int *i)
 	int		lenght;
 
 	quote = data->commande_line[*i];
+	// ft_printf("quote: %c\n", quote);
 	ft_memmove(&data->commande_line[*i], &data->commande_line[*i + 1], ft_strlen(&data->commande_line[*i + 1]));
-	data->commande_line[ft_strlen(data->commande_line)- 1] = 0;
+	data->commande_line[ft_strlen(data->commande_line) - 1] = 0;
 	lenght = 0;
-	j = ++(*i);
+	j = (*i);
 	while (data->commande_line[j] && data->commande_line[j] != quote) 
 	{
+		// ft_printf("char: %c\n", data->commande_line[j]);
 		j++;
 		lenght++;
 	}
 	if (!data->commande_line[j])
 		prompt_error("Error: quote not closed");
-	ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));
-	data->commande_line[ft_strlen(data->commande_line) - 1] = 0;
+	else
+	{
+		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));
+		data->commande_line[ft_strlen(data->commande_line) - 1] = 0;
+	}
 	// data->commande_line[j] = 0;
 	*i = j;
 }
