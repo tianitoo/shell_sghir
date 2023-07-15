@@ -59,37 +59,38 @@ typedef struct s_data{
 	t_params	params;
 	t_env		*linked_env;
 	char		**env;
-	int			last_command_status;
 	char		*commande_line;
+	int			last_command_status;
+	int			parsing_error;
+
 }t_data;
 
 // parcing
 void		get_input(t_data *data);
 char		**pipe_split(char *input);
-void		handle_heredoc(t_params params, t_cmd_list cmd_list);
-t_cmd_list	get_cmd_list(t_params params);
+void		handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
+t_cmd_list	get_cmd_list(t_data *data);
 void		handle_dollar(t_data *data);
 void		add_cmd(t_cmd_list cmd_list, t_params param);
 char		*get_commande_line(void);
 char		*handle_dollar_in_quotes(char *param, t_data *data);
 int			is_redirect_operator(t_params param);
 void		add_output(t_params params, t_cmd_list cmd_list);
-void		add_input(t_params params, t_cmd_list cmd_list);
+void		add_input(t_params params, t_cmd_list cmd_list, t_data *data);
 void		add_param(t_params *params, char *param);
 void		add_operator(t_data *data, char operatorm, int *i);
-t_cmd		*new_cmd(void);
+t_cmd		*new_cmd(t_data *data);
 void		handle_normal_char(t_data *data, int *i, int *param_len);
-void		handle_append(t_params params, t_cmd_list cmd_list);
+void		handle_append(t_params params, t_cmd_list cmd_list, t_data *data);
 t_params	new_param(char *param);
 void		treat_input(t_data *data);
 char		*get_operator(char *input, int *i, char operator);
 int			is_operator(char c);
-void		prompt_error(char *error);
 char		*get_param(char *input, int *i, char operator);
 void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
-void		handle_redirection(t_params params, t_cmd_list cmd_list);
-void		handle_params(t_cmd_list *cmd_list);
+void		handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
+void		handle_params(t_cmd_list *cmd_list, t_data *data);
 
 
 //builtins
@@ -112,6 +113,7 @@ char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(char **envp, char *var);
 char		*find_key(char *str);
+void		prompt_error(char *error, t_data *data);
 
 
 

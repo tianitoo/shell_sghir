@@ -80,7 +80,10 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	paths = ft_split(path, ':');
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
 	if (cmd == NULL)
-		cmd = ft_strdup(data->cmd_list->cmd);
+	{
+		ft_putstr_fd("Error: command not found\n", 2);
+		exit(127);
+	}
 	return (cmd);
 }
 

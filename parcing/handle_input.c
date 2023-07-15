@@ -12,8 +12,9 @@
 
 #include "../minishell.h"
 
-void	prompt_error(char *error)
+void	prompt_error(char *error, t_data *data)
 {
+	data->parsing_error = 1;
 	ft_printf("%s\n", error);
 }
 
@@ -79,14 +80,14 @@ void	get_input(t_data *data)
 	treat_input(data);
 	if (data->params == NULL)// || g_exit_status != 0)
 		return ;
-	data->cmd_list = get_cmd_list(data->params);
+	data->cmd_list = get_cmd_list(data);
 	// ft_printf("commande_line:\n");
 	// if (g_exit_status != 0)
 	// 	exit(g_exit_status);
-	show_command(data->cmd_list);
+	// show_command(data->cmd_list);
 	// exec
-	// if (data->cmd_list)
-	// 	execute(data);
+	if (data->cmd_list && data->parsing_error == 0 && data->cmd_list->cmd && data->cmd_list->cmd[0] != '\0')
+		execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
 	free(data->commande_line);
@@ -103,12 +104,12 @@ void	show_command(t_cmd_list cmd_list)
 	while (tmp)
 	{
 		ft_printf("=============================================\n");
-		ft_printf("cmd: %s\n", tmp->cmd);
+		ft_printf("cmd: |%s|\n", tmp->cmd);
 		tmp_params = tmp->args;
 		ft_printf("args:\n");
 		while (tmp_params)
 		{
-			ft_printf("%s\n", tmp_params->parameter);
+			ft_printf(" arg: |%s| len: %d\n", tmp_params->parameter, ft_strlen(tmp_params->parameter));
 			tmp_params = tmp_params->next;
 		}
 		ft_printf("\n");

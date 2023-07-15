@@ -22,25 +22,25 @@ int is_redirect_operator(t_params param)
 	return (0);
 }
 
-void handle_redirection(t_params params, t_cmd_list cmd_list)
+void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	// t_params	prev;
 	// t_params	tmp;
 
 	if (params->parameter[0] == '<' && ft_strlen(params->parameter) == 1)
-		add_input(params, cmd_list);
+		add_input(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && ft_strlen(params->parameter) == 1)
 		add_output(params, cmd_list);
 	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
-		handle_heredoc(params, cmd_list);
+		handle_heredoc(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
-		handle_append(params, cmd_list);
+		handle_append(params, cmd_list, data);
 	// // else if (params->parameter[0] == '<' && params->parameter[1] == '>'
 	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
 	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
 }
 
-void	handle_heredoc(t_params params, t_cmd_list cmd_list)
+void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	if (params->next != NULL)
 	{
@@ -62,10 +62,10 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list)
 		cmd_list->input = end[0];
 	}
 	else
-		prompt_error("minishell: syntax error near unexpected token `newline'");
+		prompt_error("minishell: syntax error near unexpected token `newline'", data);
 }
 
-void	handle_append(t_params params, t_cmd_list cmd_list)
+void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	prev;
 	int			fd;
@@ -96,10 +96,10 @@ void	handle_append(t_params params, t_cmd_list cmd_list)
 		}
 	}
 	else
-		prompt_error("minishell: syntax error near unexpected token `newline'");
+		prompt_error("minishell: syntax error near unexpected token `newline'", data);
 }
 
-void	add_input(t_params params, t_cmd_list cmd_list)
+void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	prev;
 	int			fd;
@@ -130,7 +130,7 @@ void	add_input(t_params params, t_cmd_list cmd_list)
 		}
 	}
 	else
-		prompt_error("minishell: syntax error near unexpected token `newline'");
+		prompt_error("minishell: syntax error near unexpected token `newline'", data);
 }
 
 void	add_output(t_params params, t_cmd_list cmd_list)

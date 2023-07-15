@@ -51,7 +51,7 @@ t_params	new_param(char *param)
 	return (new);
 }
 
-void	handle_params(t_cmd_list *cmd_list)
+void	handle_params(t_cmd_list *cmd_list, t_data *data)
 {
 	t_cmd_list	tmp;
 	t_params	params;
@@ -63,19 +63,21 @@ void	handle_params(t_cmd_list *cmd_list)
 		while (params)
 		{
 			if (params->parameter[0] == '>' || params->parameter[0] == '<')
-				handle_redirection(params, tmp);
+				handle_redirection(params, tmp, data);
 			params = params->next;
 		}
 		tmp = tmp->next;
 	}
 }
 
-t_cmd_list	get_cmd_list(t_params params)
+t_cmd_list	get_cmd_list(t_data *data)
 {
 	t_params	tmp;
+	t_params	params;
 	t_cmd_list	cmd_list;
 	t_cmd_list	head;
-
+	
+	params = data->params;
 	cmd_list = NULL;
 	tmp = params;
 	while (tmp)
@@ -84,10 +86,10 @@ t_cmd_list	get_cmd_list(t_params params)
 		{
 			if (tmp->parameter[0] == '|')
 			{
-				prompt_error("syntax error near unexpected token `|'");
+				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
 			}
-			cmd_list = new_cmd();
+			cmd_list = new_cmd(data);
 			if (cmd_list == NULL)
 				return (NULL);
 			head = cmd_list;
@@ -96,10 +98,10 @@ t_cmd_list	get_cmd_list(t_params params)
 		{
 			if (tmp->next == NULL)
 			{
-				prompt_error("syntax error near unexpected token `|'");
+				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
 			}
-			cmd_list->next = new_cmd();
+			cmd_list->next = new_cmd(data);
 			cmd_list->next->prev = cmd_list;
 			cmd_list = cmd_list->next;
 			cmd_list->next = NULL;
@@ -110,6 +112,6 @@ t_cmd_list	get_cmd_list(t_params params)
 			break ;
 		tmp = tmp->next;
 	}
-	handle_params(&head);
+	handle_params(&head, data);
 	return (head);
 }

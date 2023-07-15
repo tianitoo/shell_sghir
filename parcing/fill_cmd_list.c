@@ -14,19 +14,19 @@
 
 void	add_cmd(t_cmd_list cmd_list, t_params param)
 {
-	// ft_printf("add_cmd param->parameter: %s\n", param->parameter);
-	if (is_redirect_operator(param))
-	{
-		handle_redirection(param, cmd_list);
-		if (param->next->next != NULL)
-		{
-			param->next = param->next->next;
-			param->next->prev = param;
-		}
-		else
-			param->next = NULL;
-	}
-	else if (cmd_list->cmd == NULL)
+	// check if this is needed _________________________________________
+	// if (is_redirect_operator(param))
+	// {
+	// 	handle_redirection(param, cmd_list);
+	// 	if (param->next->next != NULL)
+	// 	{
+	// 		param->next = param->next->next;
+	// 		param->next->prev = param;
+	// 	}
+	// 	else
+	// 		param->next = NULL;
+	// }
+	if (cmd_list->cmd == NULL)
 	{
 		if (param->parameter == NULL)
 			cmd_list->cmd = NULL;
@@ -61,13 +61,13 @@ void	add_param(t_params *params, char *param)
 	}
 }
 
-t_cmd	*new_cmd(void)
+t_cmd	*new_cmd(t_data *data)
 {
 	t_cmd	*cmd;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (cmd == NULL)
-		return (prompt_error("malloc error"), NULL);
+		return (prompt_error("malloc error", data), NULL);
 	cmd->cmd = NULL;
 	cmd->args = NULL;
 	cmd->input = -1;
@@ -75,7 +75,7 @@ t_cmd	*new_cmd(void)
 	cmd->append = -1;
 	cmd->pip = (int *)malloc(sizeof(int) * 2);
 	if (cmd->pip == NULL)
-		return (prompt_error("malloc error"), NULL);
+		return (prompt_error("malloc error", data), NULL);
 	pipe(cmd->pip);
 	cmd->next = NULL;
 	return (cmd);
