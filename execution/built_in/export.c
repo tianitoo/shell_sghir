@@ -12,19 +12,27 @@
 
 #include "../../minishell.h"
 
-void	add_var_to_env(t_params env_params, t_env *linked_env)
+void	add_var_to_env(char **env, t_env *linked_env)
 {
-	t_params	tmp;
-	char		*key;
-	char		*value;
+	int		i;
+	t_env	*tmp;
+	char	**new_env;
 
-	tmp = env_params;
-	while (tmp->next)
-		tmp = tmp->next;
-	key = ft_substr(tmp->parameter, 0, ft_strchr(tmp->parameter, '=') - tmp->parameter);
-	value = ft_substr(tmp->parameter, ft_strchr(tmp->parameter, '=') - tmp->parameter + 1,
-				ft_strlen(tmp->parameter) - ft_strlen(key));
-	add_env(linked_env, key, value);
+	i = 0;
+	tmp = linked_env;
+	while (env[i])
+		i++;
+	new_env = malloc(sizeof(char *) * (i + 2));
+	i = 0;
+	while (env[i])
+	{
+		new_env[i] = ft_strdup(env[i]);
+		i++;
+	}
+	new_env[i] = ft_strdup(tmp->key);
+	new_env[i + 1] = NULL;
+	free_ss(env);
+	env = new_env;
 }
 
 char	*find_key(char *str)
@@ -44,7 +52,7 @@ void	update_param(t_params env_params, char *key, char *new_param)
 	t_params	tmp;
 
 	tmp = env_params;
-	while (tmp->next)
+	while (tmp)
 	{
 		if (ft_strncmp(find_key(tmp->parameter), key, ft_strlen(key)) == 0)
 		{
@@ -55,31 +63,14 @@ void	update_param(t_params env_params, char *key, char *new_param)
 	}
 }
 
-void	update_linked_env(t_env *linked_env, char *key, char *new_param)
-{
-	t_env	*tmp;
-	char	*value;
 
-	tmp = linked_env;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->key, key) == 0)
-		{
-			value = ft_substr(new_param, ft_strchr(new_param, '=') - new_param + 1,
-				ft_strlen(new_param) - ft_strlen(key));
-			tmp->value = value;
-			break ;
-		}
-		tmp = tmp->next;
-	}
-}
 
 int	key_exists(t_params env_params, char *key)
 {
 	t_params	tmp;
 
 	tmp = env_params;
-	while (tmp->next)
+	while (tmp)
 	{
 		if (ft_strncmp(find_key(tmp->parameter), key, ft_strlen(key)) == 0)
 			return (1);
@@ -104,10 +95,10 @@ void	 add_to_env(t_data *data)
 	if (!key_exists(env_params, key))
 	{
 		add_param(&env_params, data->params->next->parameter);
-		add_var_to_env(env_params, linked_env);
+		free_ss(env);
 	} else {
 		update_param(env_params, key, data->params->next->parameter);
-		update_linked_env(linked_env, key, data->params->next->parameter);
+		free_ss(env);
 	}
 	data->env = args_to_double_pointer(env_params);
 }

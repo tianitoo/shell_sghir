@@ -162,6 +162,25 @@ t_env	*get_env(char **envp)
 	return (env);
 }
 
+char	**clone_double_pointer(char **envp)
+{
+	char	**env;
+	int		i;
+
+	i = 0;
+	while (envp[i])
+		i++;
+	env = malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	while (envp[i])
+	{
+		env[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	env[i] = NULL;
+	return (env);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		*data;
@@ -172,7 +191,7 @@ int	main(int argc, char **argv, char **envp)
 	// data->env = (char **) malloc(sizeof(char *) * sizeof(envp));
 	data = malloc(sizeof(t_data));
 	data->linked_env = get_env(envp);
-	data->env = envp;
+	data->env = clone_double_pointer(envp);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);
