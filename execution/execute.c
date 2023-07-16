@@ -82,7 +82,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	if (cmd == NULL)
 	{
 		ft_putstr_fd("Error: command not found\n", 2);
-		exit(127);
+		return (NULL);
 	}
 	return (cmd);
 }
@@ -94,6 +94,8 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	char		*cmd;
 
 	cmd = get_cmd_path(data, cmd_list);
+	if (cmd == NULL)
+		return (-2);
 	args = args_to_double_pointer(cmd_list->args);
 	pid = fork();
 	if (pid == 0)
@@ -103,15 +105,15 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			close(cmd_list->next->pip[0]);
 			dup2(cmd_list->next->pip[1], 1);
 		}
-		// else if (cmd_list->output != -1)
-		// 	dup2(cmd_list->output, 1);
+		else if (cmd_list->output != -1)
+			dup2(cmd_list->output, 1);
 		if (cmd_list->input == -1 && cmd_list->prev != NULL)
 		{
 			close(cmd_list->pip[1]);
 			dup2(cmd_list->pip[0], 0);
 		}
-		// else if (cmd_list->input != -1)
-		// 	dup2(cmd_list->input, 0);
+		else if (cmd_list->input != -1)
+			dup2(cmd_list->input, 0);
 		if (execve(cmd, args, data->env) == -1)
 		{
 			ft_putstr_fd("Error: execve failed\n", 2);

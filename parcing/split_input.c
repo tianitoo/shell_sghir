@@ -188,8 +188,10 @@ void	handle_dollar(t_data *data)
 			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 1);
 		}
 		else
-			{new_command_line = ft_strjoin_char(new_command_line, command_line[i]);
-		i++;}
+		{
+			new_command_line = ft_strjoin_char(new_command_line, command_line[i]);
+			i++;
+		}
 	}
 	data->commande_line = new_command_line;
 }

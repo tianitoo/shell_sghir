@@ -76,7 +76,8 @@ void	free_cmd_list(t_cmd_list *cmd_list)
 void	get_input(t_data *data)
 {
 	data->commande_line = ft_strdup(get_commande_line());
-	add_history(data->commande_line);
+	if (data->commande_line && ft_strlen(data->commande_line) > 0)
+		add_history(data->commande_line);
 	treat_input(data);
 	if (data->params == NULL)// || g_exit_status != 0)
 		return ;
