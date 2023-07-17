@@ -181,17 +181,35 @@ char	**clone_double_pointer(char **envp)
 	return (env);
 }
 
+char	**get_unset_env(void)
+{
+	char	**env;
+	char	*pwd;
+
+	env = (char **) malloc(sizeof(char *) * 4);
+	pwd = getcwd(NULL, 0);
+	env[0] = ft_strjoin("PWD=", pwd, 0);
+	env[1] = ft_strdup("SHLVL=1");
+	env[2] = ft_strdup("_=/usr/bin/env");
+	env[3] = NULL;
+	return (env);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		*data;
-
+	char		**env;
 	(void)argc;
 	(void)argv;
 	// (void)envp;
 	// data->env = (char **) malloc(sizeof(char *) * sizeof(envp));
 	data = malloc(sizeof(t_data));
-	data->linked_env = get_env(envp);
-	data->env = clone_double_pointer(envp);
+	if (envp[0] == NULL)
+		env = get_unset_env();
+	else
+		env = envp;
+	data->linked_env = get_env(env);
+	data->env = clone_double_pointer(env);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);

@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/12 11:37:09 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/17 05:11:45 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@ void	ft_unset(t_data *data)
 	char	*key;
 	int		i;
 
+	if (data->params->next == NULL)
+		return ;
 	key = data->params->next->parameter;
 	i = 0;
 	linked_env = data->linked_env;
 	double_pointer_env = data->env;
 	while (linked_env)
-	{
+	{ 
 		if (ft_strcmp(linked_env->key, key) == 0)
 		{
 			tmp_linked_env = linked_env;

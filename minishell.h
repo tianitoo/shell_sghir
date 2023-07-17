@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/wait.h>
+# include <dirent.h>
 # include "./libft/libft.h"
 # include "./ft_printf/ft_printf.h"
 
@@ -87,6 +88,7 @@ void		treat_input(t_data *data);
 char		*get_operator(char *input, int *i, char operator);
 int			is_operator(char c);
 char		*get_param(char *input, int *i, char operator);
+t_params	get_last_param(t_params params);
 void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
 void		handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);

@@ -35,11 +35,24 @@ void	treat_input(t_data *data)
 	}
 }
 
+t_params	get_last_param(t_params params)
+{
+	t_params	tmp;
+
+	tmp = params;
+	if (tmp == NULL)
+		return (NULL);
+	while (tmp->next)
+		tmp = tmp->next;
+	return (tmp);
+}
+
 void	handle_normal_char(t_data *data, int *i, int *p_len)
 {
 	int		j;
 	int		k;
 	char	*param;
+	t_params	last_param;
 
 	j = *i;
 	while (data->commande_line[j] && (!is_operator(data->commande_line[j]) || data->commande_line[j] == '\"' || data->commande_line[j] == '\''))
@@ -70,7 +83,8 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 	*i = j;
 	*p_len = 0;
 	add_param(&data->params, param);
-	
+	last_param = get_last_param(data->params);
+	last_param->is_operator = 0;
 }
 
 char	*get_env_value(char *param, t_data *data)
@@ -132,12 +146,20 @@ char	*expand_variable(char *param, int *i, t_data *data)
 	}
 	else
 	{
-		while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
-			j++;
-		value = get_env_value(ft_substr(param, *i, j - *i), data);
+		if (ft_isalnum(param[j]) || param[j] == '_')
+		{
+			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
+				j++;
+			value = get_env_value(ft_substr(param, *i, j - *i), data);
+			*i = j;
+		}
+		else
+		{
+			(*i)++;
+			value = ft_strdup("$");
+		}
 	}
 	new_param = ft_strjoin(new_param, value, 1);
-	*i = j;
 	return (new_param);
 }
 

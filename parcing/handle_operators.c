@@ -10,10 +10,13 @@ int	is_operator(char c)
 
 void	add_operator(t_data *data, char operator, int *i)
 {
-	char	*param;
+	char		*param;
+	t_params	tmp;
 
 	param = get_operator(data->commande_line, i, operator);
 	add_param(&(data->params), param);
+	tmp = get_last_param(data->params);
+	tmp->is_operator = 1;
 }
 
 char	*get_operator(char *input, int *i, char operator)
@@ -62,7 +65,7 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 		params = tmp->args;
 		while (params)
 		{
-			if (params->parameter[0] == '>' || params->parameter[0] == '<')
+			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
 				handle_redirection(params, tmp, data);
 			params = params->next;
 		}
@@ -84,7 +87,7 @@ t_cmd_list	get_cmd_list(t_data *data)
 	{
 		if (cmd_list == NULL)
 		{
-			if (tmp->parameter[0] == '|')
+			if (tmp->parameter[0] == '|' && tmp->is_operator == 1)
 			{
 				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
@@ -94,7 +97,7 @@ t_cmd_list	get_cmd_list(t_data *data)
 				return (NULL);
 			head = cmd_list;
 		}
-		if (tmp->parameter[0] == '|')
+		if (tmp->parameter[0] == '|' && tmp->is_operator == 1)
 		{
 			if (tmp->next == NULL)
 			{

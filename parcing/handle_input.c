@@ -87,7 +87,7 @@ void	get_input(t_data *data)
 	// 	exit(g_exit_status);
 	// show_command(data->cmd_list);
 	// exec
-	if (data->cmd_list && data->parsing_error == 0 && data->cmd_list->cmd && data->cmd_list->cmd[0] != '\0')
+	if (data->cmd_list && data->parsing_error == 0 && data->cmd_list->cmd)
 		execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);

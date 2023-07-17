@@ -54,18 +54,40 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	int		i;
 	char	*cmd_path;
 	char	*tmp;
+	DIR		*dir;
 
 	i = 0;
+	dir = opendir(cmd);
+	if (dir != NULL)
+	{
+		ft_printf("Error: %s: is a directory\n", cmd);
+		(void)closedir(dir);
+		exit(1);
+	}
+	if (cmd[0] == '/' || cmd[0] == '.')
+		return (cmd);
+	if (paths == NULL)
+	{
+		ft_printf("Error: %s: no such file or directory\n", cmd);
+		exit(1);
+	}
+	if (ft_strlen(cmd) == 0)
+	{
+		ft_putstr_fd("Error: command not found\n", 2);
+		exit(1);
+	}
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/", 0);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
-		if (access(cmd_path, F_OK) == 0)
+		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
 			return (cmd_path);
+		
 		free(cmd_path);
 		i++;
 	}
-	return (NULL);
+	ft_printf("Error: %s: command not found\n", cmd);
+	exit(1);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -93,13 +115,13 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	char		**args;
 	char		*cmd;
 
-	cmd = get_cmd_path(data, cmd_list);
-	if (cmd == NULL)
-		return (-2);
-	args = args_to_double_pointer(cmd_list->args);
 	pid = fork();
 	if (pid == 0)
 	{
+		cmd = get_cmd_path(data, cmd_list);
+		if (cmd == NULL)
+			return (-2);
+		args = args_to_double_pointer(cmd_list->args);
 		if (cmd_list->next != NULL && cmd_list->output == -1)
 		{
 			close(cmd_list->next->pip[0]);
@@ -116,7 +138,7 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			dup2(cmd_list->input, 0);
 		if (execve(cmd, args, data->env) == -1)
 		{
-			ft_putstr_fd("Error: execve failed\n", 2);
+			perror("Error");
 			exit(1);
 		}
 	}
@@ -140,9 +162,9 @@ void	execute(t_data *data)
 			if (cmd_list->cmd)
 			{
 				pid = execute_cmd(data, cmd_list);
+				// waitpid(pid, NULL, 0);
 				close(cmd_list->pip[1]);
 				close(cmd_list->pip[0]);
-				// waitpid(pid, NULL, 0);
 				cmd_list = cmd_list->next;
 			}
 		}
