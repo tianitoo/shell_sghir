@@ -14,7 +14,8 @@
 
 void	prompt_error(char *error, t_data *data)
 {
-	data->parsing_error = 1;
+	if (data)
+		data->parsing_error = 1;
 	ft_printf("%s\n", error);
 }
 

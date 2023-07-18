@@ -45,7 +45,7 @@ int ft_echo(t_params params)
 			printf(" ");
 		i++;
 	}
-	if (newline == 0)
+	if (newline == 0 || is_notn == 1)
 		printf("\n");
 	return (0);
 }

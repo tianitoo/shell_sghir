@@ -81,13 +81,13 @@ int	key_exists(t_params env_params, char *key)
 
 void	 add_to_env(t_data *data)
 {
-	t_env	*linked_env;
+	// t_env	*linked_env;
 	char	**env;
 	char	*key;
 	t_params	env_params;
 	// t_params	tmp;
 
-	linked_env = data->linked_env;
+	// linked_env = data->linked_env;
 	env = data->env;
 	
 	key = find_key(data->params->next->parameter);

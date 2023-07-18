@@ -163,4 +163,6 @@ void	add_output(t_params params, t_cmd_list cmd_list)
 				prev->next = NULL;
 		}
 	}
+	else
+		prompt_error("minishell: syntax error near unexpected token `newline'", NULL);
 }
