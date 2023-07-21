@@ -76,7 +76,7 @@ void		add_cmd(t_cmd_list cmd_list, t_params param);
 char		*get_commande_line(void);
 char		*handle_dollar_in_quotes(char *param, t_data *data);
 int			is_redirect_operator(t_params param);
-void		add_output(t_params params, t_cmd_list cmd_list);
+void		add_output(t_params params, t_cmd_list cmd_list, t_data *data);
 void		add_input(t_params params, t_cmd_list cmd_list, t_data *data);
 void		add_param(t_params *params, char *param);
 void		add_operator(t_data *data, char operatorm, int *i);

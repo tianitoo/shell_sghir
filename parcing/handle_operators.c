@@ -135,6 +135,11 @@ t_cmd_list	get_cmd_list(t_data *data)
 				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
 			}
+			if (handling_param->next->is_operator == 1 && handling_param->next->parameter[0] == '|')
+			{
+				prompt_error("syntax error near unexpected token `||'", data);
+				return (NULL);
+			}
 			cmd_list->next = new_cmd(data);
 			cmd_list->next->prev = cmd_list;
 			cmd_list = cmd_list->next;

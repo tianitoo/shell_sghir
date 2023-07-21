@@ -214,6 +214,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		// signal(SIGQUIT, SIG_IGN);
 		// signal(SIGINT, handle_sigint);
+		data->parsing_error = 0;
 		get_input(data);
 	}
 	return (0);

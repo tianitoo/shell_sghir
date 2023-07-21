@@ -27,7 +27,7 @@ void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->parameter[0] == '<' && ft_strlen(params->parameter) == 1)
 		add_input(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && ft_strlen(params->parameter) == 1)
-		add_output(params, cmd_list);
+		add_output(params, cmd_list, data);
 	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
 		handle_heredoc(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
@@ -39,11 +39,16 @@ void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 
 void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
+	char	*line;
+	int		*end;
+
 	if (params->next != NULL)
 	{
-		char	*line;
-		int		*end;
-
+		if (params->next->is_operator == 1)
+		{
+			prompt_error("minishell: syntax error near unexpected token `newline'", data);
+			return ;
+		}
 		end = (int *)malloc(sizeof(int) * 2);
 		pipe(end);
 		line = readline("> ");
@@ -56,6 +61,8 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		}
 		free(line);
 		close(end[1]);
+		params->prev->next = params->next->next;
+		params->next->next->prev = params->prev;
 		cmd_list->input = end[0];
 	}
 	else
@@ -65,10 +72,23 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	prev;
+	DIR			*dir;
 	int			fd;
 
 	if (params->next != NULL)
 	{
+		if (params->next->is_operator == 1)
+		{
+			prompt_error("minishell: syntax error near unexpected token `newline'", data);
+			return ;
+		}
+		dir = opendir(params->next->parameter);
+		if (dir != NULL)
+		{
+			closedir(dir);
+			printf("%s: is a directory\n", params->next->parameter);
+			return ;
+		}
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (fd == -1)
 		{
@@ -100,9 +120,22 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	prev;
 	int			fd;
+	DIR			*dir;
 
 	if (params->next != NULL)
 	{
+		if (params->next->is_operator == 1)
+		{
+			prompt_error("minishell: syntax error near unexpected token `newline'", data);
+			return ;
+		}
+		dir = opendir(params->next->parameter);
+		if (dir != NULL)
+		{
+			closedir(dir);
+			printf("%s: is a directory\n", params->next->parameter);
+			return ;
+		}
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
 		{
@@ -130,13 +163,26 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 		prompt_error("minishell: syntax error near unexpected token `newline'", data);
 }
 
-void	add_output(t_params params, t_cmd_list cmd_list)
+void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	prev;
 	int			fd;
+	DIR			*dir;
 
 	if (params->next != NULL)
 	{
+		if (params->next->is_operator == 1)
+		{
+			prompt_error("minishell: syntax error near unexpected token `newline'", data);
+			return ;
+		}
+		dir = opendir(params->next->parameter);
+		if (dir != NULL)
+		{
+			closedir(dir);
+			printf("%s: is a directory\n", params->next->parameter);
+			return ;
+		}
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
 		{
