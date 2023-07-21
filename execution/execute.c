@@ -57,13 +57,6 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	DIR		*dir;
 
 	i = 0;
-	dir = opendir(cmd);
-	if (dir != NULL)
-	{
-		ft_printf("Error: %s: is a directory\n", cmd);
-		(void)closedir(dir);
-		exit(1);
-	}
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
 	if (paths == NULL)
@@ -84,6 +77,13 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 			return (cmd_path);
 		free(cmd_path);
 		i++;
+	}
+	dir = opendir(cmd);
+	if (dir != NULL)
+	{
+		ft_printf("Error: %s: is a directory\n", cmd);
+		(void)closedir(dir);
+		exit(1);
 	}
 	ft_printf("Error: %s: command not found\n", cmd);
 	exit(1);
