@@ -3,6 +3,7 @@
         "__locale": "c",
         "string": "c",
         "locale": "c",
-        "ft_printf.h": "c"
+        "ft_printf.h": "c",
+        "minishell.h": "c"
     }
 }

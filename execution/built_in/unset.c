@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sacharai <sacharai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/17 05:11:45 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/21 02:34:28 by sacharai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	ft_unset(t_data *data)
 {
 	t_env	*linked_env;
 	t_env	*tmp_linked_env;
+	t_env	*tmp1_linked_env;
 	char	**double_pointer_env;
 	char	*tmp_char;
 	char	*key;
@@ -37,22 +38,26 @@ void	ft_unset(t_data *data)
 	i = 0;
 	linked_env = data->linked_env;
 	double_pointer_env = data->env;
-	while (linked_env)
+	tmp_linked_env = linked_env;
+	while (tmp_linked_env)
 	{ 
-		if (ft_strcmp(linked_env->key, key) == 0)
+		if (ft_strcmp(tmp_linked_env->key, key) == 0)
 		{
-			tmp_linked_env = linked_env;
-			linked_env = linked_env->next;
+			while (linked_env->next != tmp_linked_env)
+				linked_env = linked_env->next;
+			tmp1_linked_env = tmp_linked_env->next;
+			linked_env->next = tmp1_linked_env;
 			free(tmp_linked_env->key);
 			free(tmp_linked_env->value);
 			free(tmp_linked_env);
 			break ;
 		}
-		linked_env = linked_env->next;
+		tmp_linked_env = tmp_linked_env->next;
 	}
 	while (double_pointer_env[i])
 	{
-		if (ft_strncmp(find_key(double_pointer_env[i]), key, ft_strlen(key)) == 0)
+		if (ft_strncmp(find_key(double_pointer_env[i]),
+				key, ft_strlen(key)) == 0)
 		{
 			tmp_char = double_pointer_env[i];
 			move_pointers_back(double_pointer_env, i);

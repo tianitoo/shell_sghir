@@ -63,8 +63,6 @@ void	update_param(t_params env_params, char *key, char *new_param)
 	}
 }
 
-
-
 int	key_exists(t_params env_params, char *key)
 {
 	t_params	tmp;
