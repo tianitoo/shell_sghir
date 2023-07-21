@@ -15,38 +15,38 @@
 
 int ft_echo(t_params params)
 {
-	char **args;
-	int i;
-	int newline;
-	int is_notn;
-	int j;
+	char	**args;
+	int		i;
+	int		newline;
+	int		is_notn;
+	int		j;
 
 	args = args_to_double_pointer(params);
 	is_notn = 0;
 	newline = 0;
 	i = 1;
 	j = 1;
-	if(args[i] != NULL && strncmp(args[i], "-n",2) == 0)
+	if (args[i] != NULL && ft_strncmp(args[i], "-n", 2) == 0)
 	{
 		while (args[i][j] == 'n')
 		{
 			newline++;
 			j++;
 		}
-		if(args[i][j] != '\0')
+		if (args[i][j] != '\0')
 			is_notn = 1;
 	}
-	if(args[i] != NULL && newline > 0 && is_notn == 0)
+	if (args[i] != NULL && newline > 0 && is_notn == 0)
 		i++;
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		ft_printf("%s", args[i]);
 		if (args[i + 1])
-			printf(" ");
+			ft_printf(" ");
 		i++;
 	}
 	if (newline == 0 || is_notn == 1)
-		printf("\n");
+		ft_printf("\n");
 	return (0);
 }
 

@@ -42,7 +42,7 @@ typedef struct s_param{
 	char			*parameter;
 	struct s_param	*next;
 	struct s_param	*prev;
-}t_param,	*t_params;
+}t_param,	* t_params;
 
 typedef struct s_cmd{
 	char				*cmd;

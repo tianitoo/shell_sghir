@@ -31,21 +31,21 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-void	execute_builtin(t_data *data)
+void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 {
-	if (ft_strcmp(data->cmd_list->cmd, "echo") == 0)
-		ft_echo(data->cmd_list->args);
-	else if (ft_strcmp(data->cmd_list->cmd, "cd") == 0)
-		ft_cd(data->cmd_list->args, data->env);
-	else if (ft_strcmp(data->cmd_list->cmd, "pwd") == 0)
+	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
+		ft_echo(cmd_list->args);
+	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
+		ft_cd(cmd_list->args, data->env);
+	else if (ft_strcmp(cmd_list->cmd, "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp(data->cmd_list->cmd, "export") == 0)
+	else if (ft_strcmp(cmd_list->cmd, "export") == 0)
 		ft_export(data);
-	else if (ft_strcmp(data->cmd_list->cmd, "unset") == 0)
+	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
 		ft_unset(data);
-	else if (ft_strcmp(data->cmd_list->cmd, "env") == 0)
+	else if (ft_strcmp(cmd_list->cmd, "env") == 0)
 		write_env(data);
-	else if (ft_strcmp(data->cmd_list->cmd, "exit") == 0)
+	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
 		ft_exit(data);
 }
 
@@ -82,7 +82,6 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 		cmd_path = ft_strjoin(tmp, cmd, 1);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
 			return (cmd_path);
-		
 		free(cmd_path);
 		i++;
 	}
@@ -153,11 +152,11 @@ void	execute(t_data *data)
 	pid_t		pid;
 
 	cmd_list = data->cmd_list;
-	if (is_builtin(data->cmd_list->cmd))
-		execute_builtin(data);
-	else
+	while (cmd_list)
 	{
-		while (cmd_list)
+		if (is_builtin(cmd_list->cmd))
+			execute_builtin(data, cmd_list);
+		else
 		{
 			if (cmd_list->cmd)
 			{
@@ -165,12 +164,11 @@ void	execute(t_data *data)
 				// waitpid(pid, NULL, 0);
 				close(cmd_list->pip[1]);
 				close(cmd_list->pip[0]);
-				cmd_list = cmd_list->next;
 			}
 		}
 		waitpid(pid, NULL, 0);
 		while (wait(NULL) != -1)
 			;
-		cmd_list = data->cmd_list;
+		cmd_list = cmd_list->next;
 	}
 }
