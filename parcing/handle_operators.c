@@ -66,28 +66,59 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 		while (params)
 		{
 			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
-				handle_redirection(params, tmp, data);
+					handle_redirection(params, tmp, data);
 			params = params->next;
 		}
 		tmp = tmp->next;
 	}
 }
 
+t_params	clone_t_params(t_params params)
+{
+	t_params	new;
+
+	new = malloc(sizeof(t_param));
+	new->parameter = ft_strdup(params->parameter);
+	new->is_operator = params->is_operator;
+	new->in_double_quote = params->in_double_quote;
+	new->in_quote = params->in_quote;
+	new->next = NULL;
+	new->prev = NULL;
+	return (new);
+}
+
+void	add_param_to_cmd(t_cmd_list cmd_list, t_params param)
+{
+	t_params	last_param;
+
+	if (cmd_list->args == NULL)
+	{
+		cmd_list->cmd = ft_strdup(param->parameter);
+		cmd_list->args = clone_t_params(param);
+	}
+	else
+	{
+		last_param = get_last_param(cmd_list->args);
+		last_param->next = clone_t_params(param);
+		last_param->next->prev = last_param;
+	}
+}
+
 t_cmd_list	get_cmd_list(t_data *data)
 {
-	t_params	tmp;
-	t_params	params;
+	t_params	handling_param;
+	t_params	unhandled_params;
 	t_cmd_list	cmd_list;
 	t_cmd_list	head;
 	
-	params = data->params;
+	unhandled_params = data->params;
 	cmd_list = NULL;
-	tmp = params;
-	while (tmp)
+	handling_param = unhandled_params;
+	while (handling_param)
 	{
 		if (cmd_list == NULL)
 		{
-			if (tmp->parameter[0] == '|' && tmp->is_operator == 1)
+			if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
 			{
 				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
@@ -97,9 +128,9 @@ t_cmd_list	get_cmd_list(t_data *data)
 				return (NULL);
 			head = cmd_list;
 		}
-		if (tmp->parameter[0] == '|' && tmp->is_operator == 1)
+		if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
 		{
-			if (tmp->next == NULL)
+			if (handling_param->next == NULL)
 			{
 				prompt_error("syntax error near unexpected token `|'", data);
 				return (NULL);
@@ -110,10 +141,10 @@ t_cmd_list	get_cmd_list(t_data *data)
 			cmd_list->next = NULL;
 		}
 		else
-			add_cmd(cmd_list, tmp);
-		if (tmp->next == NULL)
+			add_param_to_cmd(cmd_list, handling_param);
+		if (handling_param->next == NULL)
 			break ;
-		tmp = tmp->next;
+		handling_param = handling_param->next;
 	}
 	handle_params(&head, data);
 	return (head);

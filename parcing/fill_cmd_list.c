@@ -14,18 +14,8 @@
 
 void	add_cmd(t_cmd_list cmd_list, t_params param)
 {
-	// check if this is needed _________________________________________
-	// if (is_redirect_operator(param))
-	// {
-	// 	handle_redirection(param, cmd_list);
-	// 	if (param->next->next != NULL)
-	// 	{
-	// 		param->next = param->next->next;
-	// 		param->next->prev = param;
-	// 	}
-	// 	else
-	// 		param->next = NULL;
-	// }
+	t_params	last_param;
+
 	if (cmd_list->cmd == NULL)
 	{
 		if (param->parameter == NULL)
@@ -33,7 +23,9 @@ void	add_cmd(t_cmd_list cmd_list, t_params param)
 		else
 		{
 			cmd_list->cmd = param->parameter;
+			last_param = get_last_param(cmd_list->args);
 			add_param(&cmd_list->args, param->parameter);
+			get_last_param(cmd_list->args)->prev = last_param;
 		}
 	}
 	else
@@ -41,8 +33,6 @@ void	add_cmd(t_cmd_list cmd_list, t_params param)
 		add_param(&cmd_list->args, param->parameter);
 		param = param->next;
 	}
-	// ft_printf("add_cmd param 2 3 ->parameter: %s\n", param->parameter);
-
 }
 
 void	add_param(t_params *params, char *param)

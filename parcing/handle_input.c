@@ -111,7 +111,7 @@ void	show_command(t_cmd_list cmd_list)
 		ft_printf("args:\n");
 		while (tmp_params)
 		{
-			ft_printf(" arg: |%s| len: %d\n", tmp_params->parameter, ft_strlen(tmp_params->parameter));
+			ft_printf(" arg: |%s| len: %d is_operator: %d\n", tmp_params->parameter, ft_strlen(tmp_params->parameter), tmp_params->is_operator);
 			tmp_params = tmp_params->next;
 		}
 		ft_printf("\n");

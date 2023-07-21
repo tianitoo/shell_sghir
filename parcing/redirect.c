@@ -24,9 +24,6 @@ int is_redirect_operator(t_params param)
 
 void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 {
-	// t_params	prev;
-	// t_params	tmp;
-
 	if (params->parameter[0] == '<' && ft_strlen(params->parameter) == 1)
 		add_input(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && ft_strlen(params->parameter) == 1)
