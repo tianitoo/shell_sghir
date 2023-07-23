@@ -60,13 +60,14 @@ t_cmd	*new_cmd(t_data *data)
 		return (prompt_error("malloc error", data), NULL);
 	cmd->cmd = NULL;
 	cmd->args = NULL;
+	cmd->prev = NULL;
+	cmd->next = NULL;
 	cmd->input = -1;
 	cmd->output = -1;
 	cmd->append = -1;
 	cmd->pip = (int *)malloc(sizeof(int) * 2);
 	if (cmd->pip == NULL)
 		return (prompt_error("malloc error", data), NULL);
-	pipe(cmd->pip);
 	cmd->next = NULL;
 	return (cmd);
 }

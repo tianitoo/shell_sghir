@@ -123,18 +123,33 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		args = args_to_double_pointer(cmd_list->args);
 		if (cmd_list->next != NULL && cmd_list->output == -1)
 		{
-			close(cmd_list->next->pip[0]);
 			dup2(cmd_list->next->pip[1], 1);
 		}
 		else if (cmd_list->output != -1)
+		{
 			dup2(cmd_list->output, 1);
+			close(cmd_list->output);
+		}
 		if (cmd_list->input == -1 && cmd_list->prev != NULL)
 		{
-			close(cmd_list->pip[1]);
 			dup2(cmd_list->pip[0], 0);
 		}
 		else if (cmd_list->input != -1)
+		{
 			dup2(cmd_list->input, 0);
+			close(cmd_list->input);
+		}
+		if (cmd_list->next != NULL)
+		{
+			close(cmd_list->next->pip[0]);
+			close(cmd_list->next->pip[1]);
+		}
+		while (cmd_list->prev != NULL)
+		{
+			close(cmd_list->pip[0]);
+			close(cmd_list->pip[1]);
+			cmd_list = cmd_list->prev;
+		}
 		if (execve(cmd, args, data->env) == -1)
 		{
 			perror("Error");
@@ -149,26 +164,33 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 void	execute(t_data *data)
 {
 	t_cmd_list	cmd_list;
-	pid_t		pid;
+	// pid_t		pid;
 
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
+		if (cmd_list->next != NULL)
+			pipe(cmd_list->next->pip);
 		if (is_builtin(cmd_list->cmd))
 			execute_builtin(data, cmd_list);
 		else
 		{
 			if (cmd_list->cmd)
 			{
-				pid = execute_cmd(data, cmd_list);
+				execute_cmd(data, cmd_list);
 				// waitpid(pid, NULL, 0);
-				close(cmd_list->pip[1]);
-				close(cmd_list->pip[0]);
 			}
 		}
-		waitpid(pid, NULL, 0);
-		while (wait(NULL) != -1)
-			;
+		// waitpid(pid, NULL, 0);
 		cmd_list = cmd_list->next;
 	}
+	cmd_list = data->cmd_list->next;
+	while (cmd_list != NULL)
+	{
+		close(cmd_list->pip[0]);
+		close(cmd_list->pip[1]);
+		cmd_list = cmd_list->next;
+	}
+	while (waitpid(-1, NULL, 0) != -1)
+		;
 }

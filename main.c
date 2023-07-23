@@ -171,6 +171,8 @@ char	**clone_double_pointer(char **envp)
 	while (envp[i])
 		i++;
 	env = malloc(sizeof(char *) * (i + 1));
+	if (env == NULL)
+		return (NULL);
 	i = 0;
 	while (envp[i])
 	{

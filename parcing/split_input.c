@@ -64,7 +64,6 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 			(*p_len) += j - k;
 			if (is_operator(data->commande_line[j]))
 				break;
-			
 		}
 		else
 		{
