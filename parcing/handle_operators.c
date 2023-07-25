@@ -59,6 +59,8 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 	t_cmd_list	tmp;
 	t_params	params;
 
+	(void)data;
+
 	tmp = *cmd_list;
 	while (tmp)
 	{
@@ -69,6 +71,11 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 					handle_redirection(params, tmp, data);
 			params = params->next;
 		}
+		if (tmp->cmd == NULL)
+		{
+			tmp->cmd = ft_strdup(tmp->args->parameter);
+		}
+		
 		tmp = tmp->next;
 	}
 }
@@ -92,10 +99,7 @@ void	add_param_to_cmd(t_cmd_list cmd_list, t_params param)
 	t_params	last_param;
 
 	if (cmd_list->args == NULL)
-	{
-		cmd_list->cmd = ft_strdup(param->parameter);
 		cmd_list->args = clone_t_params(param);
-	}
 	else
 	{
 		last_param = get_last_param(cmd_list->args);

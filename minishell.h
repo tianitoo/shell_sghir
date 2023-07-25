@@ -116,6 +116,7 @@ char		*get_env_value(char *param, t_data *data);
 char		*get_variable(char **envp, char *var);
 char		*find_key(char *str);
 void		prompt_error(char *error, t_data *data);
+t_params	delete_param(t_params *params);
 
 
 
