@@ -169,16 +169,19 @@ void	execute(t_data *data)
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
-		if (cmd_list->next != NULL)
-			pipe(cmd_list->next->pip);
-		if (is_builtin(cmd_list->cmd))
-			execute_builtin(data, cmd_list);
-		else
+		if (cmd_list->parsing_error == 0)
 		{
-			if (cmd_list->cmd)
+			if (cmd_list->next != NULL)
+				pipe(cmd_list->next->pip);
+			if (is_builtin(cmd_list->cmd))
+				execute_builtin(data, cmd_list);
+			else
 			{
-				execute_cmd(data, cmd_list);
-				// waitpid(pid, NULL, 0);
+				if (cmd_list->cmd)
+				{
+					execute_cmd(data, cmd_list);
+					// waitpid(pid, NULL, 0);
+				}
 			}
 		}
 		// waitpid(pid, NULL, 0);

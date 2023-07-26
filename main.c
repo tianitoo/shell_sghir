@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+int		g_exit_status;
 
 char	*get_variable(char **envp, char *var)
 {
@@ -33,17 +34,18 @@ char	*get_variable(char **envp, char *var)
 	return (NULL);
 }
 
-// void	handle_sigint(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		g_exit_status = 1;
-// 		// rl_on_new_line();
-// 		write(1, "\n", 1);
-// 		// ft_printf("helloo\n");
-// 		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 	}
-// }
+void	handle_sigint(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_exit_status = 1;
+		// rl_on_new_line();
+		// rl_replace_line();
+		// write(1, "\n", 1);
+		// ft_printf("helloo\n");
+		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	}
+}
 
 // void	sigquit_handler(int sig)
 // {

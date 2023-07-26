@@ -49,10 +49,10 @@ typedef struct s_cmd{
 	struct s_param		*args;
 	int					input;
 	int					output;
-	int					append;
 	int					*pip;
 	struct s_cmd		*next;
 	struct s_cmd		*prev;
+	int					parsing_error;
 }t_cmd,	*t_cmd_list;
 
 typedef struct s_data{
@@ -63,8 +63,9 @@ typedef struct s_data{
 	char		*commande_line;
 	int			last_command_status;
 	int			parsing_error;
-
 }t_data;
+
+//void rl_replace_line (const char *, int);
 
 // parcing
 void		get_input(t_data *data);
@@ -115,7 +116,7 @@ char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(char **envp, char *var);
 char		*find_key(char *str);
-void		prompt_error(char *error, t_data *data);
+void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data);
 t_params	delete_param(t_params *params);
 
 
