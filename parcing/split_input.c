@@ -236,7 +236,7 @@ void	handle_quotes(t_data *data, int *i)
 		lenght++;
 	}
 	if (!data->commande_line[j])
-		prompt_error("Error: quote not closed", data);
+		prompt_error("Error: quote not closed", NULL, data);
 	else
 	{
 		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));

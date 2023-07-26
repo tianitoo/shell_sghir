@@ -14,6 +14,8 @@
 
 #include "../../minishell.h"
 
+int	g_exit_status;
+
 void	ft_pwd(void)
 {
 	char *cwd;
@@ -21,8 +23,7 @@ void	ft_pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		ft_printf("error: could not get current directory\n");
-		return ;
+		cwd = getenv("PWD");
 	}
 	ft_putstr_fd(cwd, 1);
 	ft_printf("\n");

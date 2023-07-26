@@ -76,7 +76,7 @@ int	key_exists(t_params env_params, char *key)
 	}
 	return (0);
 }
-
+	
 void	 add_to_env(t_data *data)
 {
 	// t_env	*linked_env;
@@ -99,6 +99,14 @@ void	 add_to_env(t_data *data)
 		free_ss(env);
 	}
 	data->env = args_to_double_pointer(env_params);
+	// print data->env
+	ft_printf("data->env:\n");
+	int i = 0;
+	while (data->env[i])
+	{
+		ft_printf("%s\n", data->env[i]);
+		i++;
+	}
 }
 
 void	ft_export(t_data *data)

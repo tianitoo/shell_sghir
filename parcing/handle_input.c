@@ -12,10 +12,12 @@
 
 #include "../minishell.h"
 
-void	prompt_error(char *error, t_data *data)
+void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data)
 {
 	if (data)
 		data->parsing_error = 1;
+	if (cmd_list)
+		cmd_list->parsing_error = 1;
 	ft_printf("%s\n", error);
 }
 
@@ -88,7 +90,7 @@ void	get_input(t_data *data)
 	// 	exit(g_exit_status);
 	// show_command(data->cmd_list);
 	// exec
-	if (data->cmd_list && data->parsing_error == 0 && data->cmd_list->cmd)
+	if (data->cmd_list && data->cmd_list->cmd && data->parsing_error == 0)
 		execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
