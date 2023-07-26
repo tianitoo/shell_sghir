@@ -82,7 +82,7 @@ void	get_input(t_data *data)
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
 		add_history(data->commande_line);
 	treat_input(data);
-	if (data->params == NULL)// || g_exit_status != 0)
+	if (data->params == NULL || data->parsing_error == 1)
 		return ;
 	data->cmd_list = get_cmd_list(data);
 	// ft_printf("commande_line:\n");

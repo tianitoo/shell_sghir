@@ -157,7 +157,7 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		}
 	}
 	else if (pid < 0)
-		ft_putstr_fd("Error:d fork failed\n", 2);
+		prompt_error("Error: forkgh failed", NULL, data);
 	return pid;
 }
 
@@ -169,7 +169,7 @@ void	execute(t_data *data)
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
-		if (cmd_list->parsing_error == 0)
+		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
 		{
 			if (cmd_list->next != NULL)
 				pipe(cmd_list->next->pip);
@@ -187,6 +187,16 @@ void	execute(t_data *data)
 		// waitpid(pid, NULL, 0);
 		cmd_list = cmd_list->next;
 	}
+	cmd_list = data->cmd_list;
+	while (cmd_list)
+	{
+		if (cmd_list->input != -1 && cmd_list->input != 0)
+			close(cmd_list->input);
+		if (cmd_list->output != -1 && cmd_list->output != 0)
+			close(cmd_list->output);
+		cmd_list = cmd_list->next;
+	}
+	
 	cmd_list = data->cmd_list->next;
 	while (cmd_list != NULL)
 	{

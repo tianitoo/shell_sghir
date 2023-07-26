@@ -74,8 +74,7 @@ SRC = parcing/handle_input.c\
 		utils/args_double_pointer.c\
 		utils/double_pointer_args.c\
 		utils/params_utils.c\
-
-
+		main.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -87,10 +86,10 @@ $(LIBFT): $(LIBFTSRC)
 $(PRINTF): $(PRINTFSRC)
 	$(MK) -C ./ft_printf
 
-$(NAME): $(LIBFT) $(PRINTF) $(OBJ) main.c
-		cc main.c $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS)
+$(NAME): $(LIBFT) $(PRINTF) $(OBJ)
+		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a -L ~/.brew/opt/readline/lib $(FLAGS)
 %.o : %.c $(HEAD)
-	$(CC) -Wall -Wextra -Werror -c $< -o $@
+	$(CC) -Wall -Wextra -Werror -c -I ~/.brew/opt/readline/include $< -o $@
 clean:
 		$(RM) $(OBJ)
 		$(RM) main.o

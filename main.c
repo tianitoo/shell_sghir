@@ -39,9 +39,11 @@ void	handle_sigint(int sig)
 	if (sig == SIGINT)
 	{
 		g_exit_status = 1;
-		// rl_on_new_line();
-		// rl_replace_line();
-		// write(1, "\n", 1);
+		
+		write(1, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
 		// ft_printf("helloo\n");
 		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	}
@@ -57,16 +59,17 @@ void	handle_sigint(int sig)
 // 		// rl_on_new_line();
 // 	}
 // }
-// void	heredoc_sigint_handler(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		g_exit_status = 1;
-// 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 		// rl_replace_line("f", 0);
-// 		// rl_on_new_line();
-// 	}
-// }
+int a = 0;
+void	heredoc_sigint_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		g_exit_status = 1;
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+		// rl_replace_line("f", 0);
+		rl_on_new_line();
+	}
+}
 
 t_env	*new_env(char *key, char *value)
 {
@@ -217,8 +220,8 @@ int	main(int argc, char **argv, char **envp)
 	data->declare = get_env(env);
 	while (1)
 	{
-		// signal(SIGQUIT, SIG_IGN);
-		// signal(SIGINT, handle_sigint);
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
 		get_input(data);
 	}

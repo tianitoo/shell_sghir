@@ -8,6 +8,27 @@
         "array": "c",
         "iterator": "c",
         "string_view": "c",
-        "vector": "c"
+        "vector": "c",
+        "stdio.h": "c",
+        "dirent.h": "c",
+        "readline.h": "c",
+        "history.h": "c",
+        "string.h": "c",
+        "__bit_reference": "c",
+        "__functional_base": "c",
+        "__node_handle": "c",
+        "algorithm": "c",
+        "atomic": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "__memory": "c",
+        "functional": "c",
+        "limits": "c",
+        "memory": "c",
+        "optional": "c",
+        "ratio": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c"
     }
 }
