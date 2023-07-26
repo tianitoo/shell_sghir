@@ -66,13 +66,8 @@ int	key_exists(t_params env_params, char *key)
 	}
 	return (0);
 }
-<<<<<<< HEAD
 
-void	add_to_env(t_data *data)
-=======
-	
 void	 add_to_env(t_data *data)
->>>>>>> 65e6edafcc810533518e5fd9498ed273fd6499eb
 {
 	// t_env	*linked_env;
 	char	**env;
