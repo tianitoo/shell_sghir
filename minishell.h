@@ -49,7 +49,6 @@ typedef struct s_cmd{
 	struct s_param		*args;
 	int					input;
 	int					output;
-	int					append;
 	int					*pip;
 	struct s_cmd		*next;
 	struct s_cmd		*prev;
@@ -65,6 +64,8 @@ typedef struct s_data{
 	int			last_command_status;
 	int			parsing_error;
 }t_data;
+
+//void rl_replace_line (const char *, int);
 
 // parcing
 void		get_input(t_data *data);

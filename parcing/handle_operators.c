@@ -72,7 +72,10 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 			params = params->next;
 		}
 		if (tmp->cmd == NULL)
-			tmp->cmd = ft_strdup(tmp->args->parameter);
+		{
+			if (tmp->args && tmp->args->parameter)
+				tmp->cmd = ft_strdup(tmp->args->parameter);
+		}
 		tmp = tmp->next;
 	}
 }

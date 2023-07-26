@@ -65,7 +65,6 @@ t_cmd	*new_cmd(t_data *data)
 	cmd->parsing_error = 0;
 	cmd->input = -1;
 	cmd->output = -1;
-	cmd->append = -1;
 	cmd->pip = (int *)malloc(sizeof(int) * 2);
 	if (cmd->pip == NULL)
 		return (prompt_error("malloc error", NULL, data), NULL);

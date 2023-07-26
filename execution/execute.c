@@ -169,7 +169,7 @@ void	execute(t_data *data)
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
-		if ( cmd_list->parsing_error == 0)
+		if (cmd_list->parsing_error == 0)
 		{
 			if (cmd_list->next != NULL)
 				pipe(cmd_list->next->pip);

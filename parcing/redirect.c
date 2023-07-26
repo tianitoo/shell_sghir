@@ -40,10 +40,12 @@ void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	next;
+	t_params	prev;
 	char	*line;
 	int		*end;
 
 	next = params->next;
+	prev = params->prev;
 	if (next != NULL)
 	{
 		if (next->is_operator == 1)
@@ -63,9 +65,13 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		}
 		free(line);
 		close(end[1]);
-		params->prev->next = params->next->next;
-		params->next->next->prev = params->prev;
 		cmd_list->input = end[0];
+		if (prev)
+			params->prev->next = next->next;
+		if (prev == NULL)
+			cmd_list->args = next->next;
+		if (next->next)
+			next->next->prev = prev;
 	}
 	else
 		prompt_error("minishell: syntax error", NULL, data);
@@ -101,7 +107,7 @@ void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 			ft_printf("%s: no such file or directory", next->parameter);
 			prompt_error(" ", cmd_list, NULL);
 		}
-		cmd_list->append = fd;
+		cmd_list->output = fd;
 		if (prev)
 			params->prev->next = next->next;
 		if (prev == NULL)

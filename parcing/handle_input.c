@@ -90,6 +90,7 @@ void	get_input(t_data *data)
 	// 	exit(g_exit_status);
 	// show_command(data->cmd_list);
 	// exec
+		// ft_printf("parcing_error: %d\n", data->parsing_error);
 	if (data->cmd_list && data->cmd_list->cmd && data->parsing_error == 0)
 		execute(data);
 	free_cmd_list(&data->cmd_list);
@@ -119,7 +120,6 @@ void	show_command(t_cmd_list cmd_list)
 		ft_printf("\n");
 		ft_printf("in: %d\n", tmp->input);
 		ft_printf("out: %d\n", tmp->output);
-		ft_printf("append: %d\n", tmp->append);
 		ft_printf("\n");
 		tmp = tmp->next;
 		ft_printf("=============================================\n");

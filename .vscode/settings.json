@@ -4,6 +4,10 @@
         "string": "c",
         "locale": "c",
         "ft_printf.h": "c",
-        "minishell.h": "c"
+        "minishell.h": "c",
+        "array": "c",
+        "iterator": "c",
+        "string_view": "c",
+        "vector": "c"
     }
 }
