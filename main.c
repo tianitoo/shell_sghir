@@ -214,6 +214,7 @@ int	main(int argc, char **argv, char **envp)
 		env = envp;
 	data->linked_env = get_env(env);
 	data->env = clone_double_pointer(env);
+	data->declare = get_env(env);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);

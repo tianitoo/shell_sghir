@@ -59,6 +59,7 @@ typedef struct s_data{
 	t_cmd_list	cmd_list;
 	t_params	params;
 	t_env		*linked_env;
+	t_env		*declare;
 	char		**env;
 	char		*commande_line;
 	int			last_command_status;
