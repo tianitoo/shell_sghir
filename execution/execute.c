@@ -40,7 +40,7 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	else if (ft_strcmp(cmd_list->cmd, "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd_list->cmd, "export") == 0)
-		ft_export(data);
+		ft_export1(data);
 	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
 		ft_unset(data);
 	else if (ft_strcmp(cmd_list->cmd, "env") == 0)

@@ -6,7 +6,7 @@
 /*   By: sacharai <sacharai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/21 02:34:28 by sacharai         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:19:36 by sacharai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_unset(t_data *data)
 	double_pointer_env = data->env;
 	tmp_linked_env = linked_env;
 	while (tmp_linked_env)
-	{ 
+	{
 		if (ft_strcmp(tmp_linked_env->key, key) == 0)
 		{
 			while (linked_env->next != tmp_linked_env)

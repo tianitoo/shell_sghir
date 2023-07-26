@@ -31,21 +31,11 @@ void	add_var_to_env(char **env, t_env *linked_env)
 	}
 	new_env[i] = ft_strdup(tmp->key);
 	new_env[i + 1] = NULL;
-	free_ss(env);
+	free_ss(env);	
 	env = new_env;
 }
 
-char	*find_key(char *str)
-{
-	char	*key;
-	int		i;
 
-	i = 0;
-	while (str[i] != '=')
-		i++;
-	key = ft_substr(str, 0, i);
-	return (key);
-}
 
 void	update_param(t_params env_params, char *key, char *new_param)
 {
@@ -77,7 +67,7 @@ int	key_exists(t_params env_params, char *key)
 	return (0);
 }
 
-void	 add_to_env(t_data *data)
+void	add_to_env(t_data *data)
 {
 	// t_env	*linked_env;
 	char	**env;
@@ -87,14 +77,16 @@ void	 add_to_env(t_data *data)
 
 	// linked_env = data->linked_env;
 	env = data->env;
-	
 	key = find_key(data->params->next->parameter);
+	// exit(1);
 	env_params = double_pointer_to_args(env);
 	if (!key_exists(env_params, key))
 	{
 		add_param(&env_params, data->params->next->parameter);
 		free_ss(env);
-	} else {
+	}
+	else
+	{
 		update_param(env_params, key, data->params->next->parameter);
 		free_ss(env);
 	}
@@ -108,11 +100,13 @@ void	ft_export(t_data *data)
 	env = data->linked_env;
 	if (data->params->next == NULL)
 	{
+		printf("=====================================\n");
 		while (env)
 		{
 			ft_printf("declare -x %s=\"%s\"\n", env->key, env->value);
 			env = env->next;
 		}
+		printf("=====================================\n");
 	}
 	else if (ft_strchr(data->params->next->parameter, '='))
 		add_to_env(data);
