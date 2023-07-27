@@ -6,47 +6,48 @@
 /*   By: sacharai <sacharai@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/27 19:14:10 by sacharai         ###   ########.fr       */
+/*   Updated: 2023/07/27 20:24:06 by sacharai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../../minishell.h"
 
-void	update_env(char *var_name, char *var_value, char **env)
+void	update_env(char *var_name, char *var_value, t_env *env)
 {
-	int		i;
 	char	*tmp;
 
-	i = 0;
-	while (env[i])
+	while (env)
 	{
-		if (ft_strncmp(env[i], var_name, ft_strlen(var_name)) == 0)
+		if (ft_strcmp(env->key, var_name) == 0)
 		{
-			tmp = ft_strjoin(var_name, "=", 0);
-			// free(env[i]);
-			env[i] = ft_strjoin(tmp, var_value, 0);
+			tmp = env->value;
+			env->value = ft_strdup(var_value);
 			free(tmp);
 			break ;
 		}
-		i++;
+		env = env->next;
 	}
 }
 
-void	ft_cd(t_params params, char **env)
+void	ft_cd(t_params params, t_data *data)
 {
 	char	**args;
 	char	*path;
 	char	*oldpwd;
 	char	*pwd;
+	t_env	*env;
 
+	env = data->linked_env;
 	args = args_to_double_pointer(params);
 	oldpwd = getcwd(NULL, 0);
 	if (args[1] == NULL)
 	{
-		if (chdir(get_variable(env, "HOME")) == -1
-			|| chdir(get_variable(env, "home")) == -1)
+		if (chdir(get_variable(env, "HOME")) == -1)
+		{
 			ft_printf("cd: HOME not set\n");
+			return ;
+		}
 	}
 	else if (args[1][0] == '-' && args[1][1] == '\0')
 	{

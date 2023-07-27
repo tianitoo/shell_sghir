@@ -22,48 +22,35 @@ char	move_pointers_back(char **double_pointer_env, int i)
 	return (1);
 }
 
-void	ft_unset(t_data *data)
+void	ft_unset(t_data *data, t_cmd *cmd_list)
 {
-	t_env	*linked_env;
-	t_env	*tmp_linked_env;
-	t_env	*tmp1_linked_env;
-	char	**double_pointer_env;
-	char	*tmp_char;
-	char	*key;
-	int		i;
+	t_env		*env;
+	t_env		*prev;
+	t_params	params;
+	char		*var_name;
 
-	if (data->params->next == NULL)
-		return ;
-	key = data->params->next->parameter;
-	i = 0;
-	linked_env = data->linked_env;
-	double_pointer_env = data->env;
-	tmp_linked_env = linked_env;
-	while (tmp_linked_env)
+	prev = NULL;
+	params = cmd_list->args->next;
+	while (params)
 	{
-		if (ft_strcmp(tmp_linked_env->key, key) == 0)
+		env = data->linked_env;
+		var_name = params->parameter;
+		while (env)
 		{
-			while (linked_env->next != tmp_linked_env)
-				linked_env = linked_env->next;
-			tmp1_linked_env = tmp_linked_env->next;
-			linked_env->next = tmp1_linked_env;
-			free(tmp_linked_env->key);
-			free(tmp_linked_env->value);
-			free(tmp_linked_env);
-			break ;
+			if (ft_strcmp(env->key, var_name) == 0)
+			{
+				if (prev == NULL)
+					data->linked_env = env->next;
+				else
+					prev->next = env->next;
+				free(env->key);
+				free(env->value);
+				free(env);
+				break ;
+			}
+			prev = env;
+			env = env->next;
 		}
-		tmp_linked_env = tmp_linked_env->next;
-	}
-	while (double_pointer_env[i])
-	{
-		if (ft_strncmp(find_key(double_pointer_env[i]),
-				key, ft_strlen(key)) == 0)
-		{
-			tmp_char = double_pointer_env[i];
-			move_pointers_back(double_pointer_env, i);
-			free(tmp_char);
-			break ;
-		}
-		i++;
+		params = params->next;
 	}
 }

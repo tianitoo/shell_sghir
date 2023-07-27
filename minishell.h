@@ -76,7 +76,6 @@ typedef struct s_data{
 	t_params	params;
 	t_env		*linked_env;
 	t_env		*declare;
-	char		**env;
 	char		*commande_line;
 	int			last_command_status;
 	int			parsing_error;
@@ -114,13 +113,13 @@ void		handle_params(t_cmd_list *cmd_list, t_data *data);
 
 
 //builtins
-void		ft_cd(t_params params, char **env);
+void		ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
 int			ft_echo(t_params params);
 void		ft_pwd(void);
 void		ft_export(t_data *data);
 void		ft_exit(t_data *data);
-void		ft_unset(t_data *data);
+void		ft_unset(t_data *data, t_cmd *cmd_list);
 
 
 //execution
@@ -129,12 +128,15 @@ void		add_env(t_env *env, char *key, char *value);
 
 //utils
 t_params	double_pointer_to_args(char **double_pointer);
+char		**env_to_double_pointer(t_env *env);
 char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
-char		*get_variable(char **envp, char *var);
+char		*get_variable(t_env *env, char *var);
 char		*find_key(char *str);
 void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data);
 t_params	delete_param(t_params *params);
+t_env		*new_env(char *key, char *value);
+t_env		*get_env(char **envp);
 
 
 
