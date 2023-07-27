@@ -68,7 +68,6 @@ SRC = parcing/handle_input.c\
 		execution/built_in/pwd.c\
 		execution/built_in/env.c\
 		execution/built_in/export.c\
-		execution/built_in/export1.c\
 		execution/built_in/exit.c\
 		execution/built_in/unset.c\
 		utils/args_double_pointer.c\

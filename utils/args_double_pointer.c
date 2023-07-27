@@ -36,5 +36,31 @@ char	**args_to_double_pointer(t_params params)
 	}
 	args[i] = NULL;
 	return (args);
+}
 
+char	**env_to_double_pointer(t_env *env)
+{
+	int	 i;
+	int		env_count;
+	char	**envp;
+	t_env	*tmp;
+
+	i = 0;
+	tmp = env;
+	env_count = 0;
+	while (tmp)
+	{
+		env_count++;
+		tmp = tmp->next;
+	}
+	envp = (char **)ft_calloc(sizeof(char *), (env_count + 1));
+	while (env)
+	{
+		envp[i] = ft_strjoin(env->key, "=", 0);
+		envp[i] = ft_strjoin(envp[i], env->value, 0);
+		env = env->next;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
 }

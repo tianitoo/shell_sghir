@@ -14,18 +14,15 @@
 
 void	write_env(t_data *data)
 {
-	char	**env;
-	int		i;
+	t_env	*env;
 
-	env = data->env;
-	i = 0;
-	while (env[i])
+	env = data->linked_env;
+	while (env)
 	{
-		if (ft_strchr(env[i], '='))
+		if (env->value != NULL)
 		{
-			ft_printf("%s\n", env[i]);
+			ft_printf("%s=%s\n", env->key, env->value);
 		}
-		i++;
+		env = env->next;
 	}
-	printf("here\n");
 }

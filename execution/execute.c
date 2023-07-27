@@ -36,13 +36,13 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
 		ft_echo(cmd_list->args);
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
-		ft_cd(cmd_list->args, data->env);
+		ft_cd(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(cmd_list->cmd, "export") == 0)
 		ft_export(data);
 	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
-		ft_unset(data);
+		ft_unset(data, cmd_list);
 	else if (ft_strcmp(cmd_list->cmd, "env") == 0)
 		write_env(data);
 	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
@@ -92,11 +92,11 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 {
 	char	*cmd;
-	char	**env;
 	char	*path;
 	char	**paths;
+	t_env	*env;
 
-	env = data->env;
+	env = data->linked_env;
 	path = get_variable(env, "PATH");
 	paths = ft_split(path, ':');
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
@@ -141,6 +141,7 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 {
 	pid_t		pid;
 	char		**args;
+	char		**env;
 	char		*cmd;
 
 	pid = fork();
@@ -156,8 +157,9 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		if (cmd == NULL)
 			return (-2);
 		args = args_to_double_pointer(cmd_list->args);
+		env = env_to_double_pointer(data->linked_env);
 		pipes_work(cmd_list);
-		if (execve(cmd, args, data->env) == -1)
+		if (execve(cmd, args, env) == -1)
 		{
 			perror("Error");
 			exit(1);

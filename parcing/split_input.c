@@ -94,19 +94,21 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 
 char	*get_env_value(char *param, t_data *data)
 {
-	char	**env;
-	int		param_len;
+	t_env	*env;
+	char	*value;
+	char	*key;
 
-	param_len = ft_strlen(param);
-	env = data->env;
-	// ft_printf("param: |%s|\n", param);
-	while (*env)
+	env = data->linked_env;
+	while (env)
 	{
-		if (ft_strncmp(*env, param, param_len) == 0 && (*env)[param_len] == '=')
-			return (free(param), ft_strdup(*env + param_len + 1));
-		env++;
+		key = env->key;
+		if (ft_strcmp(key, param) == 0)
+		{
+			value = env->value;
+			return (value);
+		}
+		env = env->next;
 	}
-	free(param);
 	return (ft_strdup(""));
 }
 

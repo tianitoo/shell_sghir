@@ -39,6 +39,8 @@ void	add_param(t_params *params, char *param)
 {
 	t_params	tmp;
 
+	// print env_params
+	
 	if (*params == NULL)
 		*params = new_param(param);
 	else
@@ -49,6 +51,7 @@ void	add_param(t_params *params, char *param)
 		tmp->next = new_param(param);
 		tmp->next->prev = tmp;
 	}
+	
 }
 
 t_cmd	*new_cmd(t_data *data)

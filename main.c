@@ -14,22 +14,20 @@
 
 // t_exit	*g_exit;
 
-char	*get_variable(char **envp, char *var)
+char	*get_variable(t_env *env, char *var)
 {
-	int		i;
+	t_env	*tmp;
 	char	*path;
 
-	i = 0;
-	while (envp[i])
+	tmp = env;
+	while (tmp)
 	{
-		if (ft_strncmp(envp[i], var, ft_strlen(var)) == 0)
+		if (ft_strcmp(tmp->key, var) == 0)
 		{
-			path = ft_substr(envp[i], ft_strlen(var) + 1,
-					ft_strlen(envp[i]) - ft_strlen(var));
-			
+			path = tmp->value;
 			return (path);
 		}
-		i++;
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
@@ -167,27 +165,6 @@ t_env	*get_env(char **envp)
 	return (env);
 }
 
-char	**clone_double_pointer(char **envp)
-{
-	char	**env;
-	int		i;
-
-	i = 0;
-	while (envp[i])
-		i++;
-	env = malloc(sizeof(char *) * (i + 1));
-	if (env == NULL)
-		return (NULL);
-	i = 0;
-	while (envp[i])
-	{
-		env[i] = ft_strdup(envp[i]);
-		i++;
-	}
-	env[i] = NULL;
-	return (env);
-}
-
 char	**get_unset_env(void)
 {
 	char	**env;
@@ -212,15 +189,12 @@ int	main(int argc, char **argv, char **envp)
 	// g_exit = malloc(sizeof(t_exit));
 	// g_exit->g_exit_status = 0;
 	// (void)envp;
-	// data->env = (char **) malloc(sizeof(char *) * sizeof(envp));
 	data = malloc(sizeof(t_data));
 	if (envp[0] == NULL)
 		env = get_unset_env();
 	else
 		env = envp;
 	data->linked_env = get_env(env);
-	data->env = clone_double_pointer(env);
-	data->declare = get_env(env);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);

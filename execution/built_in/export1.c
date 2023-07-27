@@ -28,7 +28,7 @@ void	ft_export1(t_data *data)
 	//t_env	*env;
 	t_env	*declare;
 	char	*key;
-	int     keylen;
+	// int     keylen;
 	
 	// env = data->linked_env;
 	declare = data->declare;
@@ -37,9 +37,7 @@ void	ft_export1(t_data *data)
 	if (data->params->next)
 	{
 		key = find_key(data->params->next->parameter);
-		ft_printf("SEG\n");
-		keylen = ft_keylen(key);
-		ft_printf("key = %s, keylen = %d\n", key, keylen);
+		// keylen = ft_keylen(key);l
 	}
 	else
 	{
