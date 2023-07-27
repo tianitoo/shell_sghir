@@ -108,32 +108,17 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	return (cmd);
 }
 
-int	execute_cmd(t_data *data, t_cmd_list cmd_list)
+void	pipes_work(t_cmd_list cmd_list)
 {
-	pid_t		pid;
-	char		**args;
-	char		*cmd;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		cmd = get_cmd_path(data, cmd_list);
-		if (cmd == NULL)
-			return (-2);
-		args = args_to_double_pointer(cmd_list->args);
-		if (cmd_list->next != NULL && cmd_list->output == -1)
-		{
+	if (cmd_list->next != NULL && cmd_list->output == -1)
 			dup2(cmd_list->next->pip[1], 1);
-		}
 		else if (cmd_list->output != -1)
 		{
 			dup2(cmd_list->output, 1);
 			close(cmd_list->output);
 		}
 		if (cmd_list->input == -1 && cmd_list->prev != NULL)
-		{
 			dup2(cmd_list->pip[0], 0);
-		}
 		else if (cmd_list->input != -1)
 		{
 			dup2(cmd_list->input, 0);
@@ -150,6 +135,28 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			close(cmd_list->pip[1]);
 			cmd_list = cmd_list->prev;
 		}
+}
+
+int	execute_cmd(t_data *data, t_cmd_list cmd_list)
+{
+	pid_t		pid;
+	char		**args;
+	char		*cmd;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		if (is_builtin(cmd_list->cmd))
+		{
+			pipes_work(cmd_list);
+			execute_builtin(data, cmd_list);
+			exit(0);
+		}
+		cmd = get_cmd_path(data, cmd_list);
+		if (cmd == NULL)
+			return (-2);
+		args = args_to_double_pointer(cmd_list->args);
+		pipes_work(cmd_list);
 		if (execve(cmd, args, data->env) == -1)
 		{
 			perror("Error");
@@ -173,18 +180,14 @@ void	execute(t_data *data)
 		{
 			if (cmd_list->next != NULL)
 				pipe(cmd_list->next->pip);
-			if (is_builtin(cmd_list->cmd))
+			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL)
 				execute_builtin(data, cmd_list);
 			else
 			{
 				if (cmd_list->cmd)
-				{
 					execute_cmd(data, cmd_list);
-					// waitpid(pid, NULL, 0);
-				}
 			}
 		}
-		// waitpid(pid, NULL, 0);
 		cmd_list = cmd_list->next;
 	}
 	cmd_list = data->cmd_list;
@@ -196,7 +199,6 @@ void	execute(t_data *data)
 			close(cmd_list->output);
 		cmd_list = cmd_list->next;
 	}
-	
 	cmd_list = data->cmd_list->next;
 	while (cmd_list != NULL)
 	{
@@ -204,6 +206,7 @@ void	execute(t_data *data)
 		close(cmd_list->pip[1]);
 		cmd_list = cmd_list->next;
 	}
+
 	while (waitpid(-1, NULL, 0) != -1)
 		;
 }
