@@ -19,7 +19,7 @@ void	treat_input(t_data *data)
 
 	param_len = 0;
 	i = 0;
-	handle_dollar(data);
+	handle_dollar(NULL, data);
 	while (data->commande_line[i])
 	{
 		if (data->commande_line[i] && !is_operator(data->commande_line[i]))
@@ -28,8 +28,8 @@ void	treat_input(t_data *data)
 			add_operator(data, data->commande_line[i], &i);
 		else if (data->commande_line[i] == '|')
 			add_operator(data, '|', &i);
-		if (data->commande_line[i] && data->commande_line[i] == ' ')
-			while (data->commande_line[i] && data->commande_line[i] == ' ')
+		if (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
+			while (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
 				i++;
 		// i++;
 	}
@@ -55,6 +55,7 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 	t_params	last_param;
 
 	j = *i;
+	k = -1;
 	while (data->commande_line[j] && (!is_operator(data->commande_line[j]) || data->commande_line[j] == '\"' || data->commande_line[j] == '\''))
 	{
 		if (data->commande_line[j] == '\"' || data->commande_line[j] == '\'')
@@ -84,6 +85,11 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 	add_param(&data->params, param);
 	last_param = get_last_param(data->params);
 	last_param->is_operator = 0;
+	if (k != -1)
+	{
+		last_param->in_quote = 1;
+		last_param->in_double_quote = 1;
+	}
 }
 
 char	*get_env_value(char *param, t_data *data)
@@ -185,7 +191,7 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 	return (new_param);
 }
 
-void	handle_dollar(t_data *data)
+void	handle_dollar(char **heredoc_input, t_data *data)
 {
 	int		i;
 	int		in_quote;
@@ -196,7 +202,10 @@ void	handle_dollar(t_data *data)
 	new_command_line = ft_strdup("");
 	in_quote = 0;
 	in_double_quotes = 0;
-	command_line = data->commande_line;
+	if (heredoc_input)
+		command_line = *heredoc_input;
+	else
+		command_line = data->commande_line;
 	i = 0;
 	while (command_line[i])
 	{
@@ -214,7 +223,10 @@ void	handle_dollar(t_data *data)
 			i++;
 		}
 	}
-	data->commande_line = new_command_line;
+	if (heredoc_input)
+		*heredoc_input = new_command_line;
+	else
+		data->commande_line = new_command_line;
 }
 
 void	handle_quotes(t_data *data, int *i)

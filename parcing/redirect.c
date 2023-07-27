@@ -42,7 +42,7 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	t_params	next;
 	t_params	prev;
 	char	*line;
-	int		*end;
+	int		*pip;
 
 	next = params->next;
 	prev = params->prev;
@@ -53,19 +53,21 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 			prompt_error("minishell: syntax error", NULL, data);
 			return ;
 		}
-		end = (int *)malloc(sizeof(int) * 2);
-		pipe(end);
+		pip = (int *)malloc(sizeof(int) * 2);
+		pipe(pip);
 		line = readline("> ");
+		if (next->in_double_quote == -1 && next->in_quote == -1)
 		while (strcmp(line, next->parameter) != 0)
 		{
-			write(end[1], line, ft_strlen(line));
-			write(end[1], "\n", 1);
+			handle_dollar(&line, data);
+			write(pip[1], line, ft_strlen(line));
+			write(pip[1], "\n", 1);
 			free(line);
 			line = readline("> ");
 		}
 		free(line);
-		close(end[1]);
-		cmd_list->input = end[0];
+		close(pip[1]);
+		cmd_list->input = pip[0];
 		if (prev)
 			params->prev->next = next->next;
 		if (prev == NULL)

@@ -27,8 +27,23 @@
 
 # define MAX_PATH 1024
 
-// int	g_exit_status = 0;
 
+typedef struct s_file_descriptors{
+	int		fd;
+	struct s_file_descriptors	*next;
+}t_file_descriptors;
+typedef struct s_garbage{
+	void			*ptr;
+	struct s_garbage	*next;
+}t_garbage;
+
+typedef struct s_exit{
+	int				g_exit_status;
+	t_garbage		*garbage;
+	t_file_descriptors	*file_descriptors;
+}t_exit;
+
+// t_exit	*g_exit;
 typedef struct s_env{
 	char	*key;
 	char	*value;
@@ -74,7 +89,7 @@ void		get_input(t_data *data);
 char		**pipe_split(char *input);
 void		handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
 t_cmd_list	get_cmd_list(t_data *data);
-void		handle_dollar(t_data *data);
+void		handle_dollar(char **heredoc_input, t_data *data);
 void		add_cmd(t_cmd_list cmd_list, t_params param);
 char		*get_commande_line(void);
 char		*handle_dollar_in_quotes(char *param, t_data *data);

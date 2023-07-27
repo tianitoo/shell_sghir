@@ -3,7 +3,7 @@
 
 int	is_operator(char c)
 {
-	if (c == '|' || c == '>' || c == '<' || c == ' ' || c == '\n')
+	if (c == '|' || c == '>' || c == '<' || c == ' ' || c == '\n' || c == '\t')
 		return (1);
 	return (0);
 }
@@ -51,6 +51,9 @@ t_params	new_param(char *param)
 	new->parameter = param;
 	new->next = NULL;
 	new->prev = NULL;
+	new->is_operator = 0;
+	new->in_double_quote = -1;
+	new->in_quote = -1;
 	return (new);
 }
 
@@ -65,7 +68,7 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 	while (tmp)
 	{
 		params = tmp->args;
-		while (params && tmp->parsing_error == 0)
+		while (params && tmp->parsing_error == 0 && data->parsing_error == 0)
 		{
 			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
 					handle_redirection(params, tmp, data);
@@ -155,6 +158,7 @@ t_cmd_list	get_cmd_list(t_data *data)
 			break ;
 		handling_param = handling_param->next;
 	}
-	handle_params(&head, data);
+	if (data->parsing_error == 0)
+		handle_params(&head, data);
 	return (head);
 }

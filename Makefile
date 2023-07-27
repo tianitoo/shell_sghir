@@ -87,9 +87,9 @@ $(PRINTF): $(PRINTFSRC)
 	$(MK) -C ./ft_printf
 
 $(NAME): $(LIBFT) $(PRINTF) $(OBJ)
-		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a -L ~/.brew/opt/readline/lib $(FLAGS)
+		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS)
 %.o : %.c $(HEAD)
-	$(CC) -Wall -Wextra -Werror -c -I ~/.brew/opt/readline/include $< -o $@
+	$(CC) -Wall -Wextra -Werror -c $< -o $@
 clean:
 		$(RM) $(OBJ)
 		$(RM) main.o

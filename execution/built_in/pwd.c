@@ -14,7 +14,7 @@
 
 #include "../../minishell.h"
 
-int	g_exit_status;
+// int	g_exit_status;
 
 void	ft_pwd(void)
 {
