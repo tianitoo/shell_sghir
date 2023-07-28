@@ -91,7 +91,7 @@ void	get_input(t_data *data)
 	// show_command(data->cmd_list);
 	// exec
 		// ft_printf("parcing_error: %d\n", data->parsing_error);
-	if (data->cmd_list && data->cmd_list->cmd && data->parsing_error == 0)
+	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
 	free_cmd_list(&data->cmd_list);
 	free_params(&data->params);

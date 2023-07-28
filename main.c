@@ -179,6 +179,27 @@ char	**get_unset_env(void)
 	return (env);
 }
 
+void	add_garbage(void *ptr)
+{
+	t_garbage	*tmp;
+
+	tmp = g_exit->garbage;
+	if (tmp == NULL)
+	{
+		g_exit->garbage = malloc(sizeof(t_garbage));
+		g_exit->garbage->ptr = ptr;
+		g_exit->garbage->next = NULL;
+		return ;
+	}
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = malloc(sizeof(t_garbage));
+	tmp->next->ptr = ptr;
+	tmp->next->next = NULL;
+}
+
+
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		*data;
@@ -186,6 +207,8 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+	g_exit = malloc(sizeof(t_exit));
+	g_exit->g_exit_status = 0;
 	// g_exit = malloc(sizeof(t_exit));
 	// g_exit->g_exit_status = 0;
 	// (void)envp;

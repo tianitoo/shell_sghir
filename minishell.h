@@ -28,6 +28,7 @@
 # define MAX_PATH 1024
 
 
+
 typedef struct s_file_descriptors{
 	int		fd;
 	struct s_file_descriptors	*next;
@@ -42,6 +43,7 @@ typedef struct s_exit{
 	t_garbage		*garbage;
 	t_file_descriptors	*file_descriptors;
 }t_exit;
+t_exit	*g_exit;
 
 // t_exit	*g_exit;
 typedef struct s_env{
@@ -117,7 +119,7 @@ void		ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
 int			ft_echo(t_params params);
 void		ft_pwd(void);
-void		ft_export(t_data *data);
+void		ft_export(t_cmd_list cmd_list, t_data *data);
 void		ft_exit(t_data *data);
 void		ft_unset(t_data *data, t_cmd *cmd_list);
 
@@ -132,10 +134,11 @@ char		**env_to_double_pointer(t_env *env);
 char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(t_env *env, char *var);
-char		*find_key(char *str);
+char		*find_key(char *str, t_data *data);
 void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data);
 t_params	delete_param(t_params *params);
 t_env		*new_env(char *key, char *value);
+char		*get_value(char *variable);
 t_env		*get_env(char **envp);
 
 

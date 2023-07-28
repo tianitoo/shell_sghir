@@ -215,7 +215,7 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 			in_double_quotes = !in_double_quotes;
 		if (!in_double_quotes && command_line[i] == '\'')
 			in_quote = !in_quote;
-		if (!in_quote && command_line[i] == '$')
+		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
 			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 1);
 		}
