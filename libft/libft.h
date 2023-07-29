@@ -19,24 +19,6 @@
 # include <fcntl.h> 
 # include <unistd.h>
 
-
-typedef struct s_file_descriptors{
-	int		fd;
-	struct s_file_descriptors	*next;
-}t_file_descriptors;
-typedef struct s_garbage{
-	void			*ptr;
-	struct s_garbage	*next;
-}t_garbage;
-
-typedef struct s_exit{
-	int				g_exit_status;
-	t_garbage		*garbage;
-	t_file_descriptors	*file_descriptors;
-}t_exit;
-t_exit	*g_exit;
-
-
 typedef struct s_list
 {
 	void			*content;

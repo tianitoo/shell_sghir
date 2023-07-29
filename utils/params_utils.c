@@ -19,9 +19,9 @@ void	show_params(t_params *params)
 
 t_params	delete_param(t_params *params)
 {
-	t_params	tmp;
+	// t_params	tmp;
 
-	tmp = *params;
+	// tmp = *params;
 
 	// show_params(params);*
 	show_params(params);

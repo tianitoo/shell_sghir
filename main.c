@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-// t_exit	*g_exit;
+t_exit	*g_exit = NULL;
 
 char	*get_variable(t_env *env, char *var)
 {

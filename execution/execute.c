@@ -125,9 +125,10 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 
 	env = data->linked_env;
 	path = get_variable(env, "PATH");
-	if (path == NULL)
-		prompt_error("Error: no such file or directory", cmd_list, NULL);
-	paths = ft_split(path, ':');
+	if (path != NULL)
+		paths = ft_split(path, ':');
+	else
+		paths = NULL;
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
 	if (cmd == NULL)
 	{
@@ -174,6 +175,13 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	char		**env;
 	char		*cmd;
 
+	if (cmd_list->cmd[0] == '/' || cmd_list->cmd[0] == '.')
+		cmd = ft_strdup(cmd_list->cmd);
+	else
+		cmd = get_cmd_path(data, cmd_list);
+	if (cmd == NULL)
+		return (-2);
+	ft_printf("cmd: %s\n", cmd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -183,12 +191,6 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			execute_builtin(data, cmd_list);
 			exit(0);
 		}
-		if (cmd_list->cmd[0] == '/' || cmd_list->cmd[0] == '.')
-			cmd = ft_strdup(cmd_list->cmd);
-		else
-			cmd = get_cmd_path(data, cmd_list);
-		if (cmd == NULL)
-			return (-2);
 		args = args_to_double_pointer(cmd_list->args);
 		env = env_to_double_pointer(data->linked_env);
 		pipes_work(cmd_list);
