@@ -33,6 +33,22 @@ int	is_builtin(char *cmd)
 
 void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 {
+	int	input;
+	int	output;
+
+	if (cmd_list->input != -1)
+	{
+		input = dup(0);
+		dup2(cmd_list->input, 0);
+		close(cmd_list->input);
+	}
+	if (cmd_list->output != -1)
+	{
+		output = dup(1);
+		dup2(cmd_list->output, 1);
+		close(cmd_list->output);
+	}
+	pipes_work(cmd_list);
 	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
 		ft_echo(cmd_list->args);
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
@@ -47,6 +63,16 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 		write_env(data);
 	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
 		ft_exit(data);
+	if (cmd_list->input != -1)
+	{
+		dup2(input, 0);
+		close(input);
+	}
+	if (cmd_list->output != -1)
+	{
+		dup2(output, 1);
+		close(output);
+	}
 }
 
 char *get_cmd_path_from_paths(char **paths, char *cmd)
@@ -72,7 +98,7 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/", 0);
-		add_garbage(tmp);
+		// add_garbagee(tmp);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
 		add_garbage(cmd_path);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
@@ -99,6 +125,8 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 
 	env = data->linked_env;
 	path = get_variable(env, "PATH");
+	if (path == NULL)
+		prompt_error("Error: no such file or directory", cmd_list, NULL);
 	paths = ft_split(path, ':');
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
 	if (cmd == NULL)
@@ -113,30 +141,30 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 void	pipes_work(t_cmd_list cmd_list)
 {
 	if (cmd_list->next != NULL && cmd_list->output == -1)
-			dup2(cmd_list->next->pip[1], 1);
-		else if (cmd_list->output != -1)
-		{
-			dup2(cmd_list->output, 1);
-			close(cmd_list->output);
-		}
-		if (cmd_list->input == -1 && cmd_list->prev != NULL)
-			dup2(cmd_list->pip[0], 0);
-		else if (cmd_list->input != -1)
-		{
-			dup2(cmd_list->input, 0);
-			close(cmd_list->input);
-		}
-		if (cmd_list->next != NULL)
-		{
-			close(cmd_list->next->pip[0]);
-			close(cmd_list->next->pip[1]);
-		}
-		while (cmd_list->prev != NULL)
-		{
-			close(cmd_list->pip[0]);
-			close(cmd_list->pip[1]);
-			cmd_list = cmd_list->prev;
-		}
+		dup2(cmd_list->next->pip[1], 1);
+	else if (cmd_list->output != -1)
+	{
+		dup2(cmd_list->output, 1);
+		close(cmd_list->output);
+	}
+	if (cmd_list->input == -1 && cmd_list->prev != NULL)
+		dup2(cmd_list->pip[0], 0);
+	else if (cmd_list->input != -1)
+	{
+		dup2(cmd_list->input, 0);
+		close(cmd_list->input);
+	}
+	if (cmd_list->next != NULL)
+	{
+		close(cmd_list->next->pip[0]);
+		close(cmd_list->next->pip[1]);
+	}
+	while (cmd_list->prev != NULL)
+	{
+		close(cmd_list->pip[0]);
+		close(cmd_list->pip[1]);
+		cmd_list = cmd_list->prev;
+	}
 }
 
 int	execute_cmd(t_data *data, t_cmd_list cmd_list)
@@ -155,7 +183,10 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			execute_builtin(data, cmd_list);
 			exit(0);
 		}
-		cmd = get_cmd_path(data, cmd_list);
+		if (cmd_list->cmd[0] == '/' || cmd_list->cmd[0] == '.')
+			cmd = ft_strdup(cmd_list->cmd);
+		else
+			cmd = get_cmd_path(data, cmd_list);
 		if (cmd == NULL)
 			return (-2);
 		args = args_to_double_pointer(cmd_list->args);
@@ -184,13 +215,14 @@ void	execute(t_data *data)
 		{
 			if (cmd_list->next != NULL)
 				pipe(cmd_list->next->pip);
-			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL)
+			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
 				execute_builtin(data, cmd_list);
 			else
 			{
 				if (cmd_list->cmd)
 					execute_cmd(data, cmd_list);
 			}
+
 		}
 		cmd_list = cmd_list->next;
 	}
@@ -210,7 +242,7 @@ void	execute(t_data *data)
 		close(cmd_list->pip[1]);
 		cmd_list = cmd_list->next;
 	}
-
 	while (waitpid(-1, NULL, 0) != -1)
 		;
+
 }

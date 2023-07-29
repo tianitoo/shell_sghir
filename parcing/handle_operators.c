@@ -40,7 +40,6 @@ char	*get_operator(char *input, int *i, char operator)
 	else
 		param = ft_substr(input, *i, 1);
 	(*i)++;
-	add_garbage(param);
 	return (param);
 }
 

@@ -13,7 +13,7 @@
 
 #include "../../minishell.h"
 
-int ft_echo(t_params params)
+void	ft_echo(t_params params)
 {
 	char	**args;
 	int		i;
@@ -47,7 +47,6 @@ int ft_echo(t_params params)
 	}
 	if (newline == 0 || is_notn == 1)
 		ft_printf("\n");
-	return (0);
 }
 
 // int main(int ac, char **av)

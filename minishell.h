@@ -99,7 +99,7 @@ void		handle_params(t_cmd_list *cmd_list, t_data *data);
 //builtins
 void		ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
-int			ft_echo(t_params params);
+void		ft_echo(t_params params);
 void		ft_pwd(void);
 void		ft_export(t_cmd_list cmd_list, t_data *data);
 void		ft_exit(t_data *data);
@@ -108,6 +108,7 @@ void		ft_unset(t_data *data, t_cmd *cmd_list);
 
 //execution
 void		execute(t_data *data);
+void		pipes_work(t_cmd_list cmd_list);
 void		add_env(t_env *env, char *key, char *value);
 
 //utils

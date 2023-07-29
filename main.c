@@ -137,6 +137,20 @@ void	sort_env(t_env *env)
 	}
 }
 
+t_env	*get_env_by_key(t_env *env, char *key)
+{
+	t_env	*tmp;
+
+	tmp = env;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->key, key) == 0)
+			return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
 t_env	*get_env(char **envp)
 {
 	t_env	*env;
@@ -161,7 +175,12 @@ t_env	*get_env(char **envp)
 			add_env(tmp, key, value);
 		i++;
 	}
-	sort_env(env);
+	tmp = get_env_by_key(env, "SHLVL");
+	i = ft_atoi(tmp->value);
+	i++;
+	free(tmp->value);
+	tmp->value = ft_itoa(i);
+	// sort_env(env);
 	return (env);
 }
 
@@ -188,9 +207,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	g_exit = malloc(sizeof(t_exit));
 	g_exit->g_exit_status = 0;
-	// g_exit = malloc(sizeof(t_exit));
-	// g_exit->g_exit_status = 0;
-	// (void)envp;
 	data = malloc(sizeof(t_data));
 	if (envp[0] == NULL)
 		env = get_unset_env();
