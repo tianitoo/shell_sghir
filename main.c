@@ -179,27 +179,6 @@ char	**get_unset_env(void)
 	return (env);
 }
 
-void	add_garbage(void *ptr)
-{
-	t_garbage	*tmp;
-
-	tmp = g_exit->garbage;
-	if (tmp == NULL)
-	{
-		g_exit->garbage = malloc(sizeof(t_garbage));
-		g_exit->garbage->ptr = ptr;
-		g_exit->garbage->next = NULL;
-		return ;
-	}
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = malloc(sizeof(t_garbage));
-	tmp->next->ptr = ptr;
-	tmp->next->next = NULL;
-}
-
-
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		*data;
@@ -220,10 +199,11 @@ int	main(int argc, char **argv, char **envp)
 	data->linked_env = get_env(env);
 	while (1)
 	{
-		// signal(SIGQUIT, SIG_IGN);
+		// signal(SIGQUIT, SIG_IGN);No such file or directory
 		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
 		get_input(data);
+		free_garbage();
 	}
 	return (0);
 }

@@ -72,10 +72,11 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/", 0);
+		add_garbage(tmp);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
+		add_garbage(cmd_path);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
 			return (cmd_path);
-		free(cmd_path);
 		i++;
 	}
 	dir = opendir(cmd);
@@ -105,6 +106,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 		ft_putstr_fd("Error: command not found\n", 2);
 		return (NULL);
 	}
+	free_ss(paths);
 	return (cmd);
 }
 

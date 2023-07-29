@@ -35,6 +35,7 @@ void	free_ss(char **ss)
 	while (*ss)
 	{
 		free(*ss);
+		*ss = NULL;
 		ss++;
 	}
 }

@@ -54,18 +54,21 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 			return ;
 		}
 		pip = (int *)malloc(sizeof(int) * 2);
+		if (!pip)
+			prompt_error("minishell: malloc error", NULL, data);
+		add_garbage(pip);
 		pipe(pip);
 		line = readline("> ");
+		add_garbage(line);
 		if (next->in_double_quote == -1 && next->in_quote == -1)
 		while (strcmp(line, next->parameter) != 0)
 		{
 			handle_dollar(&line, data);
 			write(pip[1], line, ft_strlen(line));
 			write(pip[1], "\n", 1);
-			free(line);
 			line = readline("> ");
+			add_garbage(line);
 		}
-		free(line);
 		close(pip[1]);
 		cmd_list->input = pip[0];
 		if (prev)

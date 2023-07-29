@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sacharai <sacharai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/21 14:19:36 by sacharai         ###   ########.fr       */
+/*   Updated: 2023/07/28 16:32:59 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,6 @@ void	ft_unset(t_data *data, t_cmd *cmd_list)
 					data->linked_env = env->next;
 				else
 					prev->next = env->next;
-				free(env->key);
-				free(env->value);
-				free(env);
 				break ;
 			}
 			prev = env;

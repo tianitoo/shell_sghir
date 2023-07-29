@@ -52,9 +52,17 @@ void	update_param(t_data *data, char *key, char *new_param)
 		if (ft_strcmp(find_key(key, data), tmp->key) == 0)
 		{
 			if (new_param[ft_strlen(key)] == '+')
-				tmp->value = ft_strjoin(tmp->value, value, 1);
+			{
+				if (tmp->value)
+					tmp->value = ft_strjoin(tmp->value, value, 1);
+				else
+					tmp->value = ft_strdup(value);
+			}
 			else
+			{
 				tmp->value = ft_strdup(value);
+			}
+			add_garbage(tmp->value);
 		}
 		tmp = tmp->next;
 	}
@@ -85,8 +93,8 @@ char	*get_value(char *variable)
 	if (variable[i] == '\0')
 		return (NULL);
 	value = ft_substr(variable, i + 1, ft_strlen(variable));
-	if(!value)
-		ft_strdup("");
+	if (!value)
+		return (NULL);
 	return (value);
 }
 

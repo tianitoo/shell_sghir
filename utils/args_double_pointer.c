@@ -28,9 +28,11 @@ char	**args_to_double_pointer(t_params params)
 		tmp = tmp->next;
 	}
 	args = (char **)ft_calloc(sizeof(char *), (args_count + 1));
+	add_garbage(args);
 	while (params)
 	{
 		args[i] = ft_strdup(params->parameter);
+		add_garbage(args[i]);
 		params = params->next;
 		i++;
 	}
@@ -57,7 +59,9 @@ char	**env_to_double_pointer(t_env *env)
 	while (env)
 	{
 		envp[i] = ft_strjoin(env->key, "=", 0);
+		add_garbage(envp[i]);
 		envp[i] = ft_strjoin(envp[i], env->value, 0);
+		add_garbage(envp[i]);
 		env = env->next;
 		i++;
 	}

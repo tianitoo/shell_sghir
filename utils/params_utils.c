@@ -24,7 +24,6 @@ t_params	delete_param(t_params *params)
 	tmp = *params;
 
 	// show_params(params);*
-	ft_printf("showing params before delete\n");
 	show_params(params);
 	if ((*params)->prev == NULL)
 	{
@@ -47,10 +46,8 @@ t_params	delete_param(t_params *params)
 		else
 			(*params)->prev->next = NULL;
 	}
-	ft_printf("showing params after delete\n");
 	show_params(params);
-	ft_printf("parameter |%s|\n", (*params)->parameter);
-	free(tmp->parameter);
-	free(tmp);
+	// free(tmp->parameter);
+	// free(tmp);
 	return (*params);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sacharai <sacharai@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/27 20:24:06 by sacharai         ###   ########.fr       */
+/*   Updated: 2023/07/29 11:33:45 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	update_env(char *var_name, char *var_value, t_env *env)
 			tmp = env->value;
 			env->value = ft_strdup(var_value);
 			free(tmp);
+			tmp = NULL;
 			break ;
 		}
 		env = env->next;
@@ -41,6 +42,7 @@ void	ft_cd(t_params params, t_data *data)
 	env = data->linked_env;
 	args = args_to_double_pointer(params);
 	oldpwd = getcwd(NULL, 0);
+	add_garbage(oldpwd);
 	if (args[1] == NULL)
 	{
 		if (chdir(get_variable(env, "HOME")) == -1)
@@ -68,10 +70,13 @@ void	ft_cd(t_params params, t_data *data)
 		if (chdir(path) == -1)
 			ft_printf("cd: %s: No such file or directory\n", path);
 		free(path);
+		path = NULL;
 	}
 	pwd = getcwd(NULL, 0);
 	update_env("OLDPWD", oldpwd, env);
 	update_env("PWD", pwd, env);
 	free(oldpwd);
+	oldpwd = NULL;
 	free(pwd);
+	pwd = NULL;
 }

@@ -40,6 +40,7 @@ char	*get_operator(char *input, int *i, char operator)
 	else
 		param = ft_substr(input, *i, 1);
 	(*i)++;
+	add_garbage(param);
 	return (param);
 }
 
@@ -54,6 +55,7 @@ t_params	new_param(char *param)
 	new->is_operator = 0;
 	new->in_double_quote = -1;
 	new->in_quote = -1;
+	// add_garbag//e(new);
 	return (new);
 }
 
@@ -77,7 +79,10 @@ void	handle_params(t_cmd_list *cmd_list, t_data *data)
 		if (tmp->cmd == NULL)
 		{
 			if (tmp->args && tmp->args->parameter)
+			{
 				tmp->cmd = ft_strdup(tmp->args->parameter);
+				add_garbage(tmp->cmd);
+			}
 		}
 		tmp = tmp->next;
 	}
@@ -88,7 +93,9 @@ t_params	clone_t_params(t_params params)
 	t_params	new;
 
 	new = malloc(sizeof(t_param));
+	add_garbage(new);
 	new->parameter = ft_strdup(params->parameter);
+	add_garbage(new->parameter);
 	new->is_operator = params->is_operator;
 	new->in_double_quote = params->in_double_quote;
 	new->in_quote = params->in_quote;

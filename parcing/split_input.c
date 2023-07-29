@@ -73,13 +73,6 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 		}
 	}
 	param = ft_substr(data->commande_line, *i, *p_len);
-	// ft_printf("data->commande_line: |%s|\n", data->commande_line);
-	// ft_printf("param_len: %d\n", *p_len);
-	// ft_printf("i: %d\n", *i);
-
-	// ft_printf("param: |%s|\n", param);
-	// sleep(1);
-	// param = handle_dollar_in_quotes(param, data);
 	*i = j;
 	*p_len = 0;
 	add_param(&data->params, param);
@@ -109,7 +102,9 @@ char	*get_env_value(char *param, t_data *data)
 		}
 		env = env->next;
 	}
-	return (ft_strdup(""));
+	value = ft_strdup("");
+	add_garbage(value);
+	return (value);
 }
 
 char	*ft_strjoin_char(char *s1, char c)
@@ -119,6 +114,8 @@ char	*ft_strjoin_char(char *s1, char c)
 
 	i = 0;
 	new_str = malloc(ft_strlen(s1) + 2);
+	if (!new_str)
+		return (NULL);
 	while (s1[i])
 	{
 		new_str[i] = s1[i];
@@ -126,25 +123,30 @@ char	*ft_strjoin_char(char *s1, char c)
 	}
 	new_str[i++] = c;
 	new_str[i] = '\0';
-	free(s1);
+	// free(s1);
+	add_garbage(new_str);
 	return (new_str);
 }
 
 char	*expand_variable(char *param, int *i, t_data *data)
 {
 	int		j;
+	char	*tmp;
 	char	*value;
 	char	*new_param;
 
 	j = ++*i;
 	new_param = ft_strdup("");
+	add_garbage(new_param);
 	if (param[j] == '{')
 	{
 		while (param[j] && param[j] != '}')
 			j++;
 		if (param[j] == '}')
 		{
-			value = get_env_value(ft_substr(param, *i + 1, j - *i - 1), data);
+			tmp = ft_substr(param, *i + 1, j - *i - 1);
+			add_garbage(tmp);
+			value = get_env_value(tmp, data);
 			j++;
 		}
 		else
@@ -157,7 +159,9 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		{
 			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
 				j++;
-			value = get_env_value(ft_substr(param, *i, j - *i), data);
+			tmp = ft_substr(param, *i, j - *i);
+			add_garbage(tmp);
+			value = get_env_value(tmp, data);
 			*i = j;
 		}
 		else
@@ -167,6 +171,8 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		}
 	}
 	new_param = ft_strjoin(new_param, value, 1);
+	add_garbage(value);
+	add_garbage(new_param);
 	return (new_param);
 }
 
@@ -177,6 +183,7 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 
 	i = 0;
 	new_param = ft_strdup("");
+	add_garbage(new_param);
 	while (param[i])
 	{
 		if (param[i] == '$')
@@ -186,10 +193,12 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 		else
 		{
 			new_param = ft_strjoin_char(new_param, param[i]);
+			if (!new_param)
+				prompt_error("Error: malloc failed", NULL, data);
 		}
 		i++;
 	}
-	free(param);
+	// free(param);
 	return (new_param);
 }
 
@@ -202,6 +211,7 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 	char	*new_command_line;
 
 	new_command_line = ft_strdup("");
+	add_garbage(new_command_line);
 	in_quote = 0;
 	in_double_quotes = 0;
 	if (heredoc_input)
@@ -218,6 +228,7 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
 			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 1);
+			add_garbage(new_command_line);
 		}
 		else
 		{

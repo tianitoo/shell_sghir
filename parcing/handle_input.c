@@ -26,6 +26,7 @@ char	*get_commande_line(void)
 	char		*input;
 
 	input = readline("minishell$ ");
+	add_garbage(input);
 	if (input == NULL)
 	{
 		ft_printf("exit\n");
@@ -46,7 +47,9 @@ void	free_params(t_params *params)
 	{
 		next = tmp->next;
 		free(tmp->parameter);
-		// free(tmp);
+		tmp->parameter = NULL;
+		free(tmp);
+		tmp = NULL;
 		tmp = next;
 	}
 	*params = NULL;
@@ -71,6 +74,7 @@ void	free_cmd_list(t_cmd_list *cmd_list)
 		// 	free(tmp->output);
 		// free(tmp->args);
 		free(tmp);
+		tmp = NULL;
 		tmp = next;
 	}
 	*cmd_list = NULL;
@@ -78,7 +82,8 @@ void	free_cmd_list(t_cmd_list *cmd_list)
 
 void	get_input(t_data *data)
 {
-	data->commande_line = ft_strdup(get_commande_line());
+	data->commande_line = get_commande_line();
+	// add_garbag//e(data->commande_line);
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
 		add_history(data->commande_line);
 	treat_input(data);
@@ -93,9 +98,9 @@ void	get_input(t_data *data)
 		// ft_printf("parcing_error: %d\n", data->parsing_error);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
-	free_cmd_list(&data->cmd_list);
+	// free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
-	free(data->commande_line);
+	// free(data->commande_line);
 }
 
 void	show_command(t_cmd_list cmd_list)
