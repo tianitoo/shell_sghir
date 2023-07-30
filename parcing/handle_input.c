@@ -57,52 +57,19 @@ void	free_params(t_params *params)
 	*params = NULL;
 }
 
-void	free_cmd_list(t_cmd_list *cmd_list)
-{
-	t_cmd_list	tmp;
-	t_cmd_list	next;
-
-	if (*cmd_list == NULL)
-		return ;
-	tmp = *cmd_list;
-	while (tmp)
-	{
-		next = tmp->next;
-		// free(tmp->cmd);
-		// free_params(&tmp->args);
-		// if (tmp->input)
-		// 	free(tmp->input);
-		// if (tmp->output)
-		// 	free(tmp->output);
-		// free(tmp->args);
-		free(tmp);
-		tmp = NULL;
-		tmp = next;
-	}
-	*cmd_list = NULL;
-}
-
 void	get_input(t_data *data)
 {
 	data->commande_line = get_commande_line();
-	// add_garbag//e(data->commande_line);
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
 		add_history(data->commande_line);
 	treat_input(data);
 	if (data->params == NULL || data->parsing_error == 1)
 		return ;
+	
 	data->cmd_list = get_cmd_list(data);
-	// ft_printf("commande_line:\n");
-	// if (g_exit_status != 0)
-	// 	exit(g_exit_status);
-	// show_command(data->cmd_list);
-	// exec
-		// ft_printf("parcing_error: %d\n", data->parsing_error);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
-	// free_cmd_list(&data->cmd_list);
 	free_params(&data->params);
-	// free(data->commande_line);
 }
 
 void	show_command(t_cmd_list cmd_list)

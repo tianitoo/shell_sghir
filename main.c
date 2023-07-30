@@ -213,12 +213,12 @@ int	main(int argc, char **argv, char **envp)
 	else
 		env = envp;
 	data->linked_env = get_env(env);
+	g_exit->g_exit_status = 0;
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);No such file or directory
 		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
-		g_exit->g_exit_status = 0;
 		get_input(data);
 		free_garbage();
 	}

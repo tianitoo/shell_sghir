@@ -248,5 +248,4 @@ void	execute(t_data *data)
 	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
-	ft_printf("g_exit_status: %d\n", g_exit->g_exit_status);
 }
