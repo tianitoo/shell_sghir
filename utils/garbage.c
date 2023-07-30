@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 16:47:23 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/29 11:32:51 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/30 12:34:28 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	add_garbage(void *garbage)
 {
 	t_garbage	*new;
 
+	new = NULL;
 	new = g_exit->garbage;
 	if (new == NULL)
 	{

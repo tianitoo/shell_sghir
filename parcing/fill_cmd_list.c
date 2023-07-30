@@ -39,8 +39,7 @@ void	add_param(t_params *params, char *param)
 {
 	t_params	tmp;
 
-	// print env_params
-	
+	tmp = NULL;
 	if (*params == NULL)
 		*params = new_param(param);
 	else

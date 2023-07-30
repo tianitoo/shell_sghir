@@ -88,12 +88,12 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	if (paths == NULL)
 	{
 		ft_printf("Error: %s: no such file or directory\n", cmd);
-		exit(1);
+		return (NULL);
 	}
 	if (ft_strlen(cmd) == 0)
 	{
 		ft_putstr_fd("Error: command not found\n", 2);
-		exit(1);
+		return (NULL);
 	}
 	while (paths[i])
 	{
@@ -110,10 +110,10 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	{
 		ft_printf("Error: %s: is a directory\n", cmd);
 		(void)closedir(dir);
-		exit(1);
+		return (NULL);
 	}
 	ft_printf("Error: %s: command not found\n", cmd);
-	exit(1);
+	return (NULL);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -129,13 +129,15 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 		paths = ft_split(path, ':');
 	else
 		paths = NULL;
+	
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
+	free_ss(paths);
+	free(paths);
 	if (cmd == NULL)
 	{
 		ft_putstr_fd("Error: command not found\n", 2);
 		return (NULL);
 	}
-	free_ss(paths);
 	return (cmd);
 }
 
@@ -181,7 +183,6 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		cmd = get_cmd_path(data, cmd_list);
 	if (cmd == NULL)
 		return (-2);
-	ft_printf("cmd: %s\n", cmd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -208,8 +209,9 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 void	execute(t_data *data)
 {
 	t_cmd_list	cmd_list;
-	// pid_t		pid;
+	pid_t		pid;
 
+	pid = 0;
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
@@ -222,7 +224,7 @@ void	execute(t_data *data)
 			else
 			{
 				if (cmd_list->cmd)
-					execute_cmd(data, cmd_list);
+					pid = execute_cmd(data, cmd_list);
 			}
 
 		}
@@ -244,7 +246,8 @@ void	execute(t_data *data)
 		close(cmd_list->pip[1]);
 		cmd_list = cmd_list->next;
 	}
+	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
-
+	ft_printf("g_exit_status: %d\n", g_exit->g_exit_status);
 }
