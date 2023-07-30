@@ -50,12 +50,12 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	{
 		if (next->is_operator == 1)
 		{
-			prompt_error("minishell: syntax error", NULL, data);
+			prompt_error("minishell: syntax error", NULL, data, 258);
 			return ;
 		}
 		pip = (int *)malloc(sizeof(int) * 2);
 		if (!pip)
-			prompt_error("minishell: malloc error", NULL, data);
+			prompt_error("minishell: malloc error", NULL, data, 1);
 		add_garbage(pip);
 		pipe(pip);
 		line = readline("> ");
@@ -79,7 +79,7 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 			next->next->prev = prev;
 	}
 	else
-		prompt_error("minishell: syntax error", NULL, data);
+		prompt_error("minishell: syntax error", NULL, data, 258);
 }
 
 void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
@@ -95,7 +95,7 @@ void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 	{
 		if (next->is_operator == 1)
 		{
-			prompt_error("minishell: syntax", NULL, data);
+			prompt_error("minishell: syntax error", NULL, data, 258);
 			return ;
 		}
 		dir = opendir(next->parameter);
@@ -103,15 +103,12 @@ void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", next->parameter);
-			prompt_error(" ", cmd_list, NULL);
+			prompt_error(" ", cmd_list, NULL, 1);
 			return ;
 		}
 		fd = open(next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (fd == -1)
-		{
-			ft_printf("%s: no such file or directory", next->parameter);
-			prompt_error(" ", cmd_list, NULL);
-		}
+			prompt_error("syntax error: could not open file", NULL, data, 1);
 		cmd_list->output = fd;
 		if (prev)
 			params->prev->next = next->next;
@@ -121,7 +118,7 @@ void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 			next->next->prev = prev;
 	}
 	else
-		prompt_error("minishell: syntax error", NULL, data);
+		prompt_error("minishell: syntax error", NULL, data, 258);
 }
 
 void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
@@ -137,7 +134,7 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 	{
 		if (params->next->is_operator == 1)
 		{
-			prompt_error("minishell: syntax error", NULL, data);
+			prompt_error("minishell: syntax error", NULL, data, 258);
 			return ;
 		}
 		dir = opendir(params->next->parameter);
@@ -145,14 +142,14 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL);
+			prompt_error(" ", cmd_list, NULL, 1);
 			return ;
 		}
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
 		{
 			ft_printf("%s: no such file or directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL);
+			prompt_error(" ", cmd_list, NULL, 1);
 		}
 		cmd_list->input = fd;
 		if (prev)
@@ -163,7 +160,7 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 			next->next->prev = prev;
 	}
 	else
-		prompt_error("minishell: syntax error", NULL, data);
+		prompt_error("minishell: syntax error", NULL, data, 258);
 }
 
 void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
@@ -179,7 +176,7 @@ void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 	{
 		if (params->next->is_operator == 1)
 		{
-			prompt_error("minishell: syntax error", NULL, data);
+			prompt_error("minishell: syntax error", NULL, data, 258);
 			return ;
 		}
 		dir = opendir(params->next->parameter);
@@ -187,14 +184,14 @@ void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL);
+			prompt_error(" ", cmd_list, NULL, 1);
 			return ;
 		}
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
 		{
 			ft_printf("syntax error: could not open file\n");
-			prompt_error(" ", cmd_list, NULL);
+			prompt_error(" ", cmd_list, NULL, 1);
 		}
 		cmd_list->output = fd;
 		prev = params->prev;
@@ -206,5 +203,5 @@ void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 			next->next->prev = prev;
 	}
 	else
-		prompt_error("minishell: syntax error", NULL, data);
+		prompt_error("minishell: syntax error", NULL, data, 258);
 }

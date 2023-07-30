@@ -12,8 +12,9 @@
 
 #include "../minishell.h"
 
-void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data)
+void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_status)
 {
+	g_exit->g_exit_status = exit_status;
 	if (data)
 		data->parsing_error = 1;
 	if (cmd_list)

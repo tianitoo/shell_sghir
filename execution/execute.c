@@ -88,17 +88,13 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	if (paths == NULL)
 	{
 		ft_printf("Error: %s: no such file or directory\n", cmd);
-		exit(1);
+		g_exit->g_exit_status = 127;
 	}
 	if (ft_strlen(cmd) == 0)
-	{
-		ft_putstr_fd("Error: command not found\n", 2);
-		exit(1);
-	}
+		return (NULL);
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/", 0);
-		// add_garbagee(tmp);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
 		add_garbage(cmd_path);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
@@ -109,11 +105,10 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	if (dir != NULL)
 	{
 		ft_printf("Error: %s: is a directory\n", cmd);
+		g_exit->g_exit_status = 126;
 		(void)closedir(dir);
-		exit(1);
 	}
-	ft_printf("Error: %s: command not found\n", cmd);
-	exit(1);
+	return (NULL);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -132,7 +127,8 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
 	if (cmd == NULL)
 	{
-		ft_putstr_fd("Error: command not found\n", 2);
+		ft_printf("Error: %s: command not found\n", cmd_list->cmd);
+		g_exit->g_exit_status = 127;
 		return (NULL);
 	}
 	free_ss(paths);
@@ -201,14 +197,17 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		}
 	}
 	else if (pid < 0)
-		prompt_error("Error: forkgh failed", NULL, data);
+	{
+		prompt_error("Error: fork failed", NULL, data, 1);
+		g_exit->g_exit_status = 1;
+	}
 	return pid;
 }
 
 void	execute(t_data *data)
 {
 	t_cmd_list	cmd_list;
-	// pid_t		pid;
+	pid_t		pid;
 
 	cmd_list = data->cmd_list;
 	while (cmd_list)
@@ -222,7 +221,7 @@ void	execute(t_data *data)
 			else
 			{
 				if (cmd_list->cmd)
-					execute_cmd(data, cmd_list);
+					pid = execute_cmd(data, cmd_list);
 			}
 
 		}
@@ -244,7 +243,8 @@ void	execute(t_data *data)
 		close(cmd_list->pip[1]);
 		cmd_list = cmd_list->next;
 	}
+	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
-
+	ft_printf("g_exit_status: %d\n", g_exit->g_exit_status);
 }

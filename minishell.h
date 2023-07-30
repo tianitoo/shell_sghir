@@ -134,7 +134,7 @@ char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(t_env *env, char *var);
 char		*find_key(char *str, t_data *data);
-void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data);
+void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_status);
 t_params	delete_param(t_params *params);
 t_env		*new_env(char *key, char *value);
 char		*get_value(char *variable);

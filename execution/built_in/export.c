@@ -28,7 +28,7 @@ char	*find_key(char *str, t_data *data)
 		}
 		if (!ft_isalnum(str[i]) && str[i] != '_')
 		{
-			prompt_error("minishell: export: not a valid identifier", NULL, data);
+			prompt_error("minishell: export: not a valid identifier", NULL, data, 1);
 			return (NULL);
 		}
 		i++;

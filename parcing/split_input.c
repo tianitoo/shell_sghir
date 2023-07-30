@@ -124,7 +124,6 @@ char	*ft_strjoin_char(char *s1, char c)
 	new_str[i++] = c;
 	new_str[i] = '\0';
 	// free(s1);
-	add_garbage(new_str);
 	return (new_str);
 }
 
@@ -155,7 +154,12 @@ char	*expand_variable(char *param, int *i, t_data *data)
 	}
 	else
 	{
-		if (ft_isalnum(param[j]) || param[j] == '_')
+		if (param[j] == '?')
+		{
+			value = ft_itoa(g_exit->g_exit_status);
+			(*i)++;
+		}
+		else if (ft_isalnum(param[j]) || param[j] == '_')
 		{
 			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
 				j++;
@@ -171,8 +175,8 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		}
 	}
 	new_param = ft_strjoin(new_param, value, 1);
-	add_garbage(value);
-	add_garbage(new_param);
+	// add_garbage(value);
+	// add_garbage(new_param);
 	return (new_param);
 }
 
@@ -183,7 +187,7 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 
 	i = 0;
 	new_param = ft_strdup("");
-	add_garbage(new_param);
+	// add_garbage(new_param);
 	while (param[i])
 	{
 		if (param[i] == '$')
@@ -194,8 +198,9 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 		{
 			new_param = ft_strjoin_char(new_param, param[i]);
 			if (!new_param)
-				prompt_error("Error: malloc failed", NULL, data);
+				prompt_error("Error: malloc failed", NULL, data, 1);
 		}
+		add_garbage(new_param);
 		i++;
 	}
 	// free(param);
@@ -227,14 +232,14 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 			in_quote = !in_quote;
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
-			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 1);
-			add_garbage(new_command_line);
+			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 0);
 		}
 		else
 		{
 			new_command_line = ft_strjoin_char(new_command_line, command_line[i]);
 			i++;
 		}
+		add_garbage(new_command_line);
 	}
 	if (heredoc_input)
 		*heredoc_input = new_command_line;
@@ -261,7 +266,7 @@ void	handle_quotes(t_data *data, int *i)
 		lenght++;
 	}
 	if (!data->commande_line[j])
-		prompt_error("Error: quote not closed", NULL, data);
+		prompt_error("Error: quote not closed", NULL, data, 1);
 	else
 	{
 		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));

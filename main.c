@@ -218,6 +218,7 @@ int	main(int argc, char **argv, char **envp)
 		// signal(SIGQUIT, SIG_IGN);No such file or directory
 		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
+		g_exit->g_exit_status = 0;
 		get_input(data);
 		free_garbage();
 	}
