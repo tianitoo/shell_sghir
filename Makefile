@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-FLAGS = -Wall -Werror -Wextra -lreadline
+FLAGS = -Wall -Werror -Wextra -lreadline -g
 AR = ar -r
 RM = rm -f
 HEAD = minishell.h
@@ -89,7 +89,7 @@ $(PRINTF): $(PRINTFSRC)
 $(NAME): $(LIBFT) $(PRINTF) $(OBJ)
 		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS)
 %.o : %.c $(HEAD)
-	$(CC) -Wall -Wextra -Werror -c $< -o $@
+	$(CC) -Wall -Wextra -Werror -g -c $< -o $@
 clean:
 		$(RM) $(OBJ)
 		$(RM) main.o

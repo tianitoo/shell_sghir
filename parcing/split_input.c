@@ -56,6 +56,7 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 
 	j = *i;
 	k = -1;
+	param = NULL;
 	while (data->commande_line[j] && (!is_operator(data->commande_line[j]) || data->commande_line[j] == '\"' || data->commande_line[j] == '\''))
 	{
 		if (data->commande_line[j] == '\"' || data->commande_line[j] == '\'')
@@ -123,7 +124,13 @@ char	*ft_strjoin_char(char *s1, char c)
 	}
 	new_str[i++] = c;
 	new_str[i] = '\0';
+// <<<<<<< HEAD
 	// free(s1);
+// =======
+// 	free(s1);
+// 	s1 = NULL;
+// 	// add_garbagee(new_str);
+// >>>>>>> 6f4144a720e2f8b4fb50808c2f83130cad2c858b
 	return (new_str);
 }
 
@@ -136,7 +143,6 @@ char	*expand_variable(char *param, int *i, t_data *data)
 
 	j = ++*i;
 	new_param = ft_strdup("");
-	add_garbage(new_param);
 	if (param[j] == '{')
 	{
 		while (param[j] && param[j] != '}')
@@ -216,7 +222,6 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 	char	*new_command_line;
 
 	new_command_line = ft_strdup("");
-	add_garbage(new_command_line);
 	in_quote = 0;
 	in_double_quotes = 0;
 	if (heredoc_input)
@@ -232,7 +237,11 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 			in_quote = !in_quote;
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
+// <<<<<<< HEAD
 			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 0);
+// =======
+// 			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 1);
+// >>>>>>> 6f4144a720e2f8b4fb50808c2f83130cad2c858b
 		}
 		else
 		{
@@ -245,6 +254,7 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 		*heredoc_input = new_command_line;
 	else
 		data->commande_line = new_command_line;
+	add_garbage(new_command_line);
 }
 
 void	handle_quotes(t_data *data, int *i)

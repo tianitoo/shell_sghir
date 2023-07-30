@@ -124,14 +124,16 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 		paths = ft_split(path, ':');
 	else
 		paths = NULL;
+	
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
+	free_ss(paths);
+	free(paths);
 	if (cmd == NULL)
 	{
 		ft_printf("Error: %s: command not found\n", cmd_list->cmd);
 		g_exit->g_exit_status = 127;
 		return (NULL);
 	}
-	free_ss(paths);
 	return (cmd);
 }
 
@@ -177,7 +179,6 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		cmd = get_cmd_path(data, cmd_list);
 	if (cmd == NULL)
 		return (-2);
-	ft_printf("cmd: %s\n", cmd);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -209,6 +210,7 @@ void	execute(t_data *data)
 	t_cmd_list	cmd_list;
 	pid_t		pid;
 
+	pid = 0;
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{

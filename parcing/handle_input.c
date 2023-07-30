@@ -26,6 +26,7 @@ char	*get_commande_line(void)
 {
 	char		*input;
 
+	input = NULL;
 	input = readline("minishell$ ");
 	add_garbage(input);
 	if (input == NULL)
