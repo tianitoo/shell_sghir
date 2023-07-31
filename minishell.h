@@ -48,6 +48,7 @@ typedef struct s_env{
 	char	*key;
 	char	*value;
 	int		exported;
+	int		hidden;
 	struct s_env	*next;
 }t_env;
 
@@ -116,7 +117,7 @@ void		handle_params(t_cmd_list *cmd_list, t_data *data);
 void		ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
 void		ft_echo(t_params params);
-void		ft_pwd(void);
+void		ft_pwd(t_data *data);
 void		ft_export(t_cmd_list cmd_list, t_data *data);
 void		ft_exit(t_data *data);
 void		ft_unset(t_data *data, t_cmd *cmd_list);

@@ -42,14 +42,17 @@ void	update_param(t_data *data, char *key, char *new_param)
 {
 	t_env	*tmp;
 	char	*value;
+	char	*key_to_find;
 
 	value = get_value(new_param);
+	add_garbage(value);
 	if (!value)
 		return ;
 	tmp = data->linked_env;
+	key_to_find = find_key(new_param, data);
 	while (tmp)
 	{
-		if (ft_strcmp(find_key(key, data), tmp->key) == 0)
+		if (ft_strcmp(key_to_find, tmp->key) == 0)
 		{
 			if (new_param[ft_strlen(key)] == '+')
 			{
@@ -60,22 +63,25 @@ void	update_param(t_data *data, char *key, char *new_param)
 			}
 			else
 			{
-				tmp->value = ft_strdup(value);
+				free(tmp->value);
+				tmp->value = value;
 			}
-			add_garbage(tmp->value);
 		}
 		tmp = tmp->next;
 	}
 }
 
-int	key_exists(t_env *env_params, char *key, t_data *data)
+int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
 {
 	t_env	*tmp;
+	char	*key;
 
 	tmp = env_params;
 	while (tmp)
 	{
-		if (ft_strcmp(find_key(key, data), tmp->key) == 0)
+		key = find_key(tmp->key, data);
+		add_garbage(key);
+		if (ft_strcmp(key, key_to_find) == 0)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -107,19 +113,30 @@ void	 add_to_env(t_cmd_list cmd_list, t_data *data)
 	t_params	tmp;
 
 	linked_env = data->linked_env;
-	tmp = cmd_list->args;
+	tmp = cmd_list->args->next;
 	while (tmp)
 	{
-		key = find_key(tmp->parameter, data);
-		if (key_exists(data->linked_env, key, data))
-			update_param(data, key, tmp->parameter);
+		if (tmp->parameter[0] == '=' || ft_isdigit(tmp->parameter[0]) || !(ft_isalpha(tmp->parameter[0]) || tmp->parameter[0] == '_'))
+		{
+			ft_printf("minishell: export: `%s': not a valid identifier\n", tmp->parameter);
+		}
 		else
 		{
-			value = get_value(tmp->parameter);
-			while (linked_env->next)
-				linked_env = linked_env->next;
-			linked_env->next = new_env(key, value);
-			linked_env->next->exported = 1;
+			key = find_key(tmp->parameter, data);
+			// add_garbage(key);
+			if (key)
+			{
+				if (key_exists(data->linked_env, key, data))
+					update_param(data, key, tmp->parameter);
+				else
+				{
+					value = get_value(tmp->parameter);
+					while (linked_env->next)
+						linked_env = linked_env->next;
+					linked_env->next = new_env(key, value);
+					linked_env->next->exported = 1;
+				}
+			}
 		}
 		tmp = tmp->next;
 	}
@@ -134,11 +151,14 @@ void	ft_export(t_cmd_list cmd_list, t_data *data)
 	{
 		while (env)
 		{
-			ft_printf("declare -x %s", env->key);
-			if (env->value)
-				ft_printf("=\"%s\"\n", env->value);
-			else
-				ft_printf("\n");
+			if (env->hidden == 0)
+			{
+				ft_printf("declare -x %s", env->key);
+				if (env->value)
+					ft_printf("=\"%s\"\n", env->value);
+				else
+					ft_printf("\n");
+			}
 			env = env->next;
 		}
 	}

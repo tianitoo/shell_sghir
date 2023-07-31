@@ -65,7 +65,6 @@ void	get_input(t_data *data)
 	treat_input(data);
 	if (data->params == NULL || data->parsing_error == 1)
 		return ;
-	
 	data->cmd_list = get_cmd_list(data);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);

@@ -54,7 +54,7 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
 		ft_cd(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "pwd") == 0)
-		ft_pwd();
+		ft_pwd(data);
 	else if (ft_strcmp(cmd_list->cmd, "export") == 0)
 		ft_export(cmd_list, data);
 	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
@@ -123,15 +123,18 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	if (path != NULL)
 		paths = ft_split(path, ':');
 	else
-		paths = NULL;
-	
+	{
+		ft_printf("Error: %s: command not found", cmd_list->cmd);
+		prompt_error("", cmd_list, NULL, 127);
+		return (NULL);
+	}
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
 	free_ss(paths);
 	free(paths);
 	if (cmd == NULL)
 	{
-		ft_printf("Error: %s: command not found\n", cmd_list->cmd);
-		g_exit->g_exit_status = 127;
+		ft_printf("Error: %s: command not found", cmd_list->cmd);
+		prompt_error("", cmd_list, NULL, 127);
 		return (NULL);
 	}
 	return (cmd);

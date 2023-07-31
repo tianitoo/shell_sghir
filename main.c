@@ -76,6 +76,7 @@ t_env	*new_env(char *key, char *value)
 	env = malloc(sizeof(t_env));
 	env->key = key;
 	env->value = value;
+	env->hidden = 0;
 	env->next = NULL;
 	return (env);
 }
@@ -198,6 +199,23 @@ char	**get_unset_env(void)
 	return (env);
 }
 
+void	add_hidden_path(t_env *env)
+{
+	char	*path;
+	t_env	*tmp;
+	t_env	*hidden_path;
+
+	if (get_env_by_key(env, "PATH") != NULL)
+		return ;
+	tmp = env;
+	path = strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
+	while (tmp->next)
+		tmp = tmp->next;
+	hidden_path = new_env("PATH", path);
+	hidden_path->hidden = 1;
+	tmp->next = hidden_path;
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_data		*data;
@@ -206,14 +224,16 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	g_exit = malloc(sizeof(t_exit));
+	g_exit->garbage = NULL;
 	g_exit->g_exit_status = 0;
 	data = malloc(sizeof(t_data));
 	if (envp[0] == NULL)
 		env = get_unset_env();
 	else
 		env = envp;
+	data->params = NULL;
 	data->linked_env = get_env(env);
-	g_exit->g_exit_status = 0;
+	add_hidden_path(data->linked_env);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);No such file or directory

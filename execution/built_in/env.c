@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 09:55:45 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/28 14:46:57 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/31 09:04:00 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	write_env(t_data *data)
 	{
 		if (env->value != NULL && ft_strlen(env->value) != 0)
 		{
-			ft_printf("%s=%s\n", env->key, env->value);
+			if (env->hidden == 0)
+				ft_printf("%s=%s\n", env->key, env->value);
 		}
 		env = env->next;
 	}

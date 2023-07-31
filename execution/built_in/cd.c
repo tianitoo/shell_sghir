@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/29 11:33:45 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/31 22:37:06 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,36 @@ void	update_env(char *var_name, char *var_value, t_env *env)
 	}
 }
 
-void	ft_cd(t_params params, t_data *data)
+void	update_env_var(char *var_key, char *value, t_data *data)
 {
-	char	**args;
-	char	*path;
-	char	*oldpwd;
-	char	*pwd;
 	t_env	*env;
 
 	env = data->linked_env;
+	while (env)
+	{
+		if (ft_strcmp(env->key, var_key) == 0)
+		{
+			free(env->value);
+			env->value = ft_strdup(value);
+			break ;
+		}
+		env = env->next;
+	}
+}
+
+void	ft_cd(t_params params, t_data *data)
+{
+	char	**args;
+	// char	*path;
+	// char	*oldpwd;
+	char	*pwd;
+	t_env	*env;
+	char	*next_pwd;
+	// DIR		*dir;
+
+	env = data->linked_env;
 	args = args_to_double_pointer(params);
-	oldpwd = getcwd(NULL, 0);
-	add_garbage(oldpwd);
+	// add_garbage(oldpwd);
 	if (args[1] == NULL)
 	{
 		if (chdir(get_variable(env, "HOME")) == -1)
@@ -60,23 +78,18 @@ void	ft_cd(t_params params, t_data *data)
 	}
 	else
 	{
-		char *ran = malloc(sizeof(char *) *1024);
-		int a = chdir(getcwd(ran, 1024));
-		path = ft_strdup(args[1]);
-		if(strcmp(path, "..") == 0 && a == -1)
+		if (chdir(args[1]) == -1)
 		{
-			printf("hna khas nprinti getcwd error\n");
+			ft_printf("cd: %s: No such file or directory\n", args[1]);
+			return ;
 		}
-		if (chdir(path) == -1)
-			ft_printf("cd: %s: No such file or directory\n", path);
-		free(path);
-		path = NULL;
+		else
+		{
+			next_pwd = getcwd(NULL, 0);
+			update_env_var("OLDPWD", get_variable(env, "PWD"), data);
+			update_env_var("PWD", next_pwd, data);
+			free(next_pwd);
+			next_pwd = NULL;
+		}
 	}
-	pwd = getcwd(NULL, 0);
-	update_env("OLDPWD", oldpwd, env);
-	update_env("PWD", pwd, env);
-	free(oldpwd);
-	oldpwd = NULL;
-	free(pwd);
-	pwd = NULL;
 }

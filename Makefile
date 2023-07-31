@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-FLAGS = -Wall -Werror -Wextra -lreadline -g
+FLAGS = -Wall -Werror -Wextra -lreadline 
 AR = ar -r
 RM = rm -f
 HEAD = minishell.h

@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 17:09:30 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/28 18:43:09 by hnait            ###   ########.fr       */
+/*   Updated: 2023/07/31 20:47:55 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,17 @@
 
 // int	g_exit_status;
 
-void	ft_pwd(void)
+void	ft_pwd(t_data *data)
 {
 	char *cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		cwd = getenv("PWD");
+		cwd = get_env_value("PWD", data);
 	}
 	ft_putstr_fd(cwd, 1);
 	ft_printf("\n");
-	free(cwd);
+	// free(cwd);
 	cwd = NULL;
 }
