@@ -53,7 +53,7 @@ void	ft_cd(t_params params, t_data *data)
 	char	**args;
 	// char	*path;
 	// char	*oldpwd;
-	char	*pwd;
+	//char	*pwd;
 	t_env	*env;
 	char	*next_pwd;
 	// DIR		*dir;
@@ -67,6 +67,14 @@ void	ft_cd(t_params params, t_data *data)
 		{
 			ft_printf("cd: HOME not set\n");
 			return ;
+		}
+	}
+	else if (ft_strncmp(args[1], "$HOME", 5) == 0)
+	{
+		if (chdir(args[1]) == -1)
+		{
+			ft_printf("cd: HOME not set\n");
+			return ;	
 		}
 	}
 	else if (args[1][0] == '-' && args[1][1] == '\0')
