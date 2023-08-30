@@ -35,6 +35,8 @@ void	update_env_var(char *var_key, char *value, t_data *data)
 {
 	t_env	*env;
 
+	if (value == NULL)
+		return ;
 	env = data->linked_env;
 	while (env)
 	{
@@ -78,15 +80,41 @@ void	ft_cd(t_params params, t_data *data)
 	}
 	else
 	{
-		if (chdir(args[1]) == -1)
+		if (strcmp(args[1], ".") == 0 || strcmp(args[1], "..") == 0 || strcmp(args[1], "./") == 0 || strcmp(args[1], "../") == 0)
+		{
+			if (chdir(args[1]) == -1)
+			{
+				ft_printf("cd: %s: No such file or directory\n", args[1]);
+				return ;
+			}
+			else
+			{
+				if (getcwd(NULL, 0) == NULL)
+				{
+					pwd = get_env_value("PWD", data);
+					if (pwd)
+					{
+						pwd = ft_strjoin(pwd, "/", 0);
+						pwd = ft_strjoin(pwd, args[1], 0);
+						update_env_var("PWD", pwd, data);
+					}
+					else
+					{
+						ft_printf("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory");
+					}
+				}
+			}
+		}
+		else if (chdir(args[1]) == -1)
 		{
 			ft_printf("cd: %s: No such file or directory\n", args[1]);
 			return ;
 		}
 		else
 		{
+
 			next_pwd = getcwd(NULL, 0);
-			update_env_var("OLDPWD", get_variable(env, "PWD"), data);
+			update_env_var("OLDPWD", find_pwd(data), data);
 			update_env_var("PWD", next_pwd, data);
 			free(next_pwd);
 			next_pwd = NULL;

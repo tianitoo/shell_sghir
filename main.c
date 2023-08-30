@@ -199,19 +199,17 @@ char	**get_unset_env(void)
 	return (env);
 }
 
-void	add_hidden_path(t_env *env)
+void	add_hidden_env(t_env *env, char *key, char *value)
 {
-	char	*path;
 	t_env	*tmp;
 	t_env	*hidden_path;
 
-	if (get_env_by_key(env, "PATH") != NULL)
+	if (get_env_by_key(env, key) != NULL)
 		return ;
 	tmp = env;
-	path = strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
 	while (tmp->next)
 		tmp = tmp->next;
-	hidden_path = new_env("PATH", path);
+	hidden_path = new_env(key, value);
 	hidden_path->hidden = 1;
 	tmp->next = hidden_path;
 }
@@ -233,7 +231,7 @@ int	main(int argc, char **argv, char **envp)
 		env = envp;
 	data->params = NULL;
 	data->linked_env = get_env(env);
-	add_hidden_path(data->linked_env);
+	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);No such file or directory

@@ -24,7 +24,7 @@ void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_statu
 
 char	*get_commande_line(void)
 {
-	char		*input;
+	char	*input;
 
 	input = NULL;
 	input = readline("minishell$ ");
@@ -64,7 +64,10 @@ void	get_input(t_data *data)
 		add_history(data->commande_line);
 	treat_input(data);
 	if (data->params == NULL || data->parsing_error == 1)
+	{
+		free_params(&data->params);
 		return ;
+	}
 	data->cmd_list = get_cmd_list(data);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);

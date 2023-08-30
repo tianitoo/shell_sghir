@@ -117,7 +117,9 @@ void		handle_params(t_cmd_list *cmd_list, t_data *data);
 void		ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
 void		ft_echo(t_params params);
+char		*find_pwd(t_data *data);
 void		ft_pwd(t_data *data);
+int			key_exists(t_env *env_params, char *key_to_find, t_data *data);
 void		ft_export(t_cmd_list cmd_list, t_data *data);
 void		ft_exit(t_data *data);
 void		ft_unset(t_data *data, t_cmd *cmd_list);
@@ -129,8 +131,10 @@ void		pipes_work(t_cmd_list cmd_list);
 void		add_env(t_env *env, char *key, char *value);
 
 //utils
+void		update_env_var(char *var_key, char *value, t_data *data);
 t_params	double_pointer_to_args(char **double_pointer);
 char		**env_to_double_pointer(t_env *env);
+void		add_hidden_env(t_env *env, char *key, char *value);
 char		**args_to_double_pointer(t_params params);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(t_env *env, char *var);
