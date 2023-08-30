@@ -55,7 +55,7 @@ void	ft_cd(t_params params, t_data *data)
 	char	**args;
 	// char	*path;
 	// char	*oldpwd;
-	//char	*pwd;
+	char	*pwd;
 	t_env	*env;
 	char	*next_pwd;
 	// DIR		*dir;

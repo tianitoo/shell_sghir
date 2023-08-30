@@ -152,7 +152,7 @@ t_env	*get_env_by_key(t_env *env, char *key)
 	return (NULL);
 }
 
-t_env	*get_env(char **envp)
+t_env	*get_env(char **envp, t_data *data)
 {
 	t_env	*env;
 	t_env	*tmp;
@@ -163,9 +163,8 @@ t_env	*get_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		key = ft_substr(envp[i], 0, ft_strchr(envp[i], '=') - envp[i]);
-		value = ft_substr(envp[i], ft_strchr(envp[i], '=') - envp[i] + 1,
-				ft_strlen(envp[i]) - ft_strlen(key));
+		key = find_key(envp[i], data);
+		value = get_value(envp[i]);
 		if (i == 0)
 		{
 			env = new_env(key, value);
@@ -230,7 +229,7 @@ int	main(int argc, char **argv, char **envp)
 	else
 		env = envp;
 	data->params = NULL;
-	data->linked_env = get_env(env);
+	data->linked_env = get_env(env, data);
 	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
 	while (1)
 	{

@@ -143,7 +143,7 @@ void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_stat
 t_params	delete_param(t_params *params);
 t_env		*new_env(char *key, char *value);
 char		*get_value(char *variable);
-t_env		*get_env(char **envp);
+t_env		*get_env(char **envp, t_data *data);
 void		add_garbage(void *ptr);
 void		free_garbage(void);
 

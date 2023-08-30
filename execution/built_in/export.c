@@ -45,9 +45,10 @@ void	update_param(t_data *data, char *key, char *new_param)
 	char	*key_to_find;
 
 	value = get_value(new_param);
-	add_garbage(value);
+	ft_printf("value = %s\n", value);
 	if (!value)
 		return ;
+	// add_garbage(value);
 	tmp = data->linked_env;
 	key_to_find = find_key(new_param, data);
 	while (tmp)
