@@ -20,6 +20,11 @@ char	*find_key(char *str)
 	while (str[i] != '=' && str[i])
 		i++;
 	key = ft_substr(str, 0, i);
+	if (key == NULL)
+	{
+		prompt_error("malloc error", NULL, data, 1);
+		return (NULL);
+	}
 	return (key);
 }
 

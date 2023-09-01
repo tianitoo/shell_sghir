@@ -12,27 +12,37 @@
 
 #include "../minishell.h"
 
-void	treat_input(t_data *data)
+int	treat_input(t_data *data)
 {
 	int			i;
 	int			param_len;
 
 	param_len = 0;
 	i = 0;
-	handle_dollar(NULL, data);
-
+	if (handle_dollar(NULL, data) == NULL)
+		return (0);
 	while (data->commande_line[i])
 	{
 		if (data->commande_line[i] && !is_operator(data->commande_line[i]))
-			handle_normal_char(data, &i, &param_len);
+		{	
+			if (handle_normal_char(data, &i, &param_len) == NULL)
+				return (0);
+		}
 		else if (data->commande_line[i] == '<' || data->commande_line[i] == '>')
-			add_operator(data, data->commande_line[i], &i);
+		{
+			if (add_operator(data, data->commande_line[i], &i) == NULL)
+				return (0);
+		}
 		else if (data->commande_line[i] == '|')
-			add_operator(data, '|', &i);
+		{
+			if (add_operator(data, '|', &i) == NULL)
+				return (0);
+		}
 		if (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
 			while (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
 				i++;
 	}
+	return (1);
 }
 
 t_params	get_last_param(t_params params)
@@ -47,7 +57,7 @@ t_params	get_last_param(t_params params)
 	return (tmp);
 }
 
-void	handle_normal_char(t_data *data, int *i, int *p_len)
+char	*handle_normal_char(t_data *data, int *i, int *p_len)
 {
 	int		j;
 	int		k;
@@ -74,9 +84,14 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 		}
 	}
 	param = ft_substr(data->commande_line, *i, *p_len);
+	if (param == NULL)
+		return (NULL);
 	*i = j;
 	*p_len = 0;
-	add_param(&data->params, param);
+	if (add_param(&data->params, param, data) == NULL)
+	{
+		return (NULL);
+	}
 	last_param = get_last_param(data->params);
 	last_param->is_operator = 0;
 	if (k != -1)
@@ -84,6 +99,7 @@ void	handle_normal_char(t_data *data, int *i, int *p_len)
 		last_param->in_quote = 1;
 		last_param->in_double_quote = 1;
 	}
+	return (param);
 }
 
 char	*get_env_value(char *param, t_data *data)
@@ -104,19 +120,25 @@ char	*get_env_value(char *param, t_data *data)
 		env = env->next;
 	}
 	value = ft_strdup("");
-	add_garbage(value);
+	if (value == NULL)
+		return (NULL);
+	if (add_garbage(data, value) == NULL)
+		return (NULL);
 	return (value);
 }
 
-char	*ft_strjoin_char(char *s1, char c)
+char	*ft_strjoin_char(char *s1, char c, t_data *data)
 {
 	char	*new_str;
 	int		i;
 
 	i = 0;
-	new_str = malloc(ft_strlen(s1) + 2);
+	new_str = malloc(ft_strlen(s1) + 2); // tested
 	if (!new_str)
+	{
+		prompt_error("malloc error", NULL, data, 1);
 		return (NULL);
+	}
 	while (s1[i])
 	{
 		new_str[i] = s1[i];
@@ -135,7 +157,12 @@ char	*expand_variable(char *param, int *i, t_data *data)
 	char	*new_param;
 
 	j = ++*i;
+	// ft_printf("param = %s\n", param[j]);
 	new_param = ft_strdup("");
+	if (new_param == NULL)
+		return (NULL);
+	// if (!ft_isalnum(data->commande_line[j]))
+	// 	return (new_param)
 	if (param[j] == '{')
 	{
 		while (param[j] && param[j] != '}')
@@ -143,12 +170,21 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		if (param[j] == '}')
 		{
 			tmp = ft_substr(param, *i + 1, j - *i - 1);
-			add_garbage(tmp);
+			if (tmp == NULL)
+				return (NULL);
+			if (add_garbage(data, tmp) == NULL)
+				return (NULL);
 			value = get_env_value(tmp, data);
+			if (value == NULL)
+				return (NULL);
 			j++;
 		}
 		else
+		{
 			value = ft_strdup("");
+			if (value == NULL)
+				return (NULL);
+		}
 		*i = j;
 	}
 	else
@@ -156,25 +192,41 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		if (param[j] == '?')
 		{
 			value = ft_itoa(g_exit->g_exit_status);
+			if (value == NULL)
+				return (NULL);
 			(*i)++;
 		}
-		else if (ft_isalnum(param[j]) || param[j] == '_')
+		else if (ft_isalpha(param[j]) || param[j] == '_')
 		{
-			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalnum(param[j]) || param[j] == '_'))
+			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalpha(param[j]) || param[j] == '_'))
 				j++;
 			tmp = ft_substr(param, *i, j - *i);
-			add_garbage(tmp);
+			if (tmp == NULL)
+				return (NULL);
+			if (add_garbage(data, tmp) == NULL)
+				return (NULL);
 			value = get_env_value(tmp, data);
+			if (value == NULL)
+				return (NULL);
 			*i = j;
+		}
+		else if (param[j] == '\"' || param[j] == '\'')
+		{
+			value = ft_strdup("");
+			if (value == NULL)
+				return (NULL);
 		}
 		else
 		{
 			(*i)++;
-			value = ft_strdup("$");
+			value = ft_strdup("");
+			if (value == NULL)
+				return (NULL);
 		}
 	}
 	new_param = ft_strjoin(new_param, value, 1);
-	add_garbage(new_param);
+	if (add_garbage(data, new_param) == NULL)
+		return (NULL);
 	return (new_param);
 }
 
@@ -185,26 +237,32 @@ char	*handle_dollar_in_quotes(char *param, t_data *data)
 
 	i = 0;
 	new_param = ft_strdup("");
-	add_garbage(new_param);
+	if (new_param == NULL)
+		return (NULL);
+	if (add_garbage(data, new_param) == NULL)
+		return (NULL);
 	while (param[i])
 	{
 		if (param[i] == '$')
 		{
 			new_param = expand_variable(param, &i, data);
+			if (!new_param)
+				return (NULL);
 		}
 		else
 		{
-			new_param = ft_strjoin_char(new_param, param[i]);
+			new_param = ft_strjoin_char(new_param, param[i], data);
 			if (!new_param)
-				prompt_error("Error: malloc failed", NULL, data, 1);
+				return (NULL);
 		}
-		add_garbage(new_param);
+		if (add_garbage(data, new_param) == NULL)
+			return (NULL);
 		i++;
 	}
 	return (new_param);
 }
 
-void	handle_dollar(char **heredoc_input, t_data *data)
+char	*handle_dollar(char **heredoc_input, t_data *data)
 {
 	int		i;
 	int		in_quote;
@@ -213,7 +271,10 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 	char	*new_command_line;
 
 	new_command_line = ft_strdup("");
-	add_garbage(new_command_line);
+	if (new_command_line == NULL)
+		return (NULL);
+	if (add_garbage(data, new_command_line) == NULL)
+		return (NULL);
 	in_quote = 0;
 	in_double_quotes = 0;
 	if (heredoc_input)
@@ -230,19 +291,30 @@ void	handle_dollar(char **heredoc_input, t_data *data)
 			in_quote = !in_quote;
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
-			new_command_line = ft_strjoin(new_command_line, expand_variable(command_line, &i, data), 0);
+			char	*expanded_variable;
+
+			expanded_variable = expand_variable(command_line, &i, data);
+			if (!expanded_variable)
+				return (NULL);
+			new_command_line = ft_strjoin(new_command_line, expanded_variable, 0);
+			if (!new_command_line)
+				return (NULL);
 		}
 		else
 		{
-			new_command_line = ft_strjoin_char(new_command_line, command_line[i]);
+			new_command_line = ft_strjoin_char(new_command_line, command_line[i], data);
+			if (!new_command_line)
+				return (NULL);
 			i++;
 		}
-		add_garbage(new_command_line);
+		if (add_garbage(data, new_command_line) == NULL)
+			return (NULL);
 	}
 	if (heredoc_input)
 		*heredoc_input = new_command_line;
 	else
 		data->commande_line = new_command_line;
+	return (new_command_line);
 }
 
 void	handle_quotes(t_data *data, int *i)

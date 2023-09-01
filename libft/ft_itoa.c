@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "../minishell.h"
 
 int	nlen(int n)
 {
@@ -40,9 +41,11 @@ char	*ft_itoa(int n)
 	if (n == 0)
 		return (ft_strdup("0"));
 	len = nlen(n);
-	s = (char *) malloc (sizeof(char) * (len + 1));
+	s = (char *) malloc (sizeof(char) * (len + 1));// tested
 	if (!s)
-		return (0);
+		{
+			ft_printf("malloc error\n");
+			return (0);}
 	if (n < 0)
 	{
 		s[0] = '-';

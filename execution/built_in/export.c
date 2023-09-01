@@ -24,6 +24,11 @@ char	*find_key(char *str, t_data *data)
 		if (str[i] == '+' && str[i + 1] == '=')
 		{
 			key = ft_substr(str, 0, i);
+			if (key == NULL)
+			{
+				prompt_error("malloc error", NULL, data, 1);
+				return (NULL);
+			}
 			return (key);
 		}
 		if (!ft_isalnum(str[i]) && str[i] != '_')
@@ -34,21 +39,24 @@ char	*find_key(char *str, t_data *data)
 		i++;
 	}
 	key = ft_substr(str, 0, i);
+	if (key == NULL)
+	{
+		prompt_error("malloc error", NULL, data, 1);
+		return (NULL);}
 	// ft_printf("key = %s\n", key);
 	return (key);
 }
 
-void	update_param(t_data *data, char *key, char *new_param)
+char	*update_param(t_data *data, char *key, char *new_param)
 {
 	t_env	*tmp;
 	char	*value;
 	char	*key_to_find;
 
-	value = get_value(new_param);
-	ft_printf("value = %s\n", value);
+	value = get_value(new_param, data);
 	if (!value)
-		return ;
-	// add_garbage(value);
+		return (NULL);
+	// add_garbage(data, value);
 	tmp = data->linked_env;
 	key_to_find = find_key(new_param, data);
 	while (tmp)
@@ -60,7 +68,11 @@ void	update_param(t_data *data, char *key, char *new_param)
 				if (tmp->value)
 					tmp->value = ft_strjoin(tmp->value, value, 1);
 				else
+				{
 					tmp->value = ft_strdup(value);
+					if (tmp->value == NULL)
+						return (NULL);
+				}
 			}
 			else
 			{
@@ -70,6 +82,7 @@ void	update_param(t_data *data, char *key, char *new_param)
 		}
 		tmp = tmp->next;
 	}
+	return (value);
 }
 
 int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
@@ -81,7 +94,8 @@ int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
 	while (tmp)
 	{
 		key = find_key(tmp->key, data);
-		add_garbage(key);
+		if (add_garbage(data, key) == NULL)
+			return (-1);
 		if (ft_strcmp(key, key_to_find) == 0)
 			return (1);
 		tmp = tmp->next;
@@ -89,7 +103,7 @@ int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
 	return (0);
 }
 
-char	*get_value(char *variable)
+char	*get_value(char *variable, t_data *data)
 {
 	int		i;
 	char	*value;
@@ -101,11 +115,13 @@ char	*get_value(char *variable)
 		return (NULL);
 	value = ft_substr(variable, i + 1, ft_strlen(variable));
 	if (!value)
-		return (NULL);
+	{
+		prompt_error("malloc error", NULL, data, 1);
+		return (NULL);}
 	return (value);
 }
 
-void	 add_to_env(t_cmd_list cmd_list, t_data *data)
+t_env	 *add_to_env(t_cmd_list cmd_list, t_data *data)
 {
 	// t_env	*linked_env;
 	char	*key;
@@ -124,26 +140,32 @@ void	 add_to_env(t_cmd_list cmd_list, t_data *data)
 		else
 		{
 			key = find_key(tmp->parameter, data);
-			// add_garbage(key);
+			// add_garbage(data, key);
 			if (key)
 			{
-				if (key_exists(data->linked_env, key, data))
-					update_param(data, key, tmp->parameter);
+				if (key_exists(data->linked_env, key, data) == -1)
+					return NULL;
+				else if (key_exists(data->linked_env, key, data) == 1)
+				{
+					if (update_param(data, key, tmp->parameter) == NULL)
+					return (NULL);
+				}
 				else
 				{
-					value = get_value(tmp->parameter);
+					value = get_value(tmp->parameter, data);
 					while (linked_env->next)
 						linked_env = linked_env->next;
-					linked_env->next = new_env(key, value);
+					linked_env->next = new_env(key, value, data);
 					linked_env->next->exported = 1;
 				}
 			}
 		}
 		tmp = tmp->next;
 	}
+	return (data->linked_env);
 }
 
-void	ft_export(t_cmd_list cmd_list, t_data *data)
+t_env	*ft_export(t_cmd_list cmd_list, t_data *data)
 {
 	t_env	*env;
 
@@ -164,5 +186,7 @@ void	ft_export(t_cmd_list cmd_list, t_data *data)
 		}
 	}
 	else
-		add_to_env(cmd_list, data);
+		if (add_to_env(cmd_list, data) == NULL)
+			return (NULL);
+	return (data->linked_env);
 }

@@ -14,7 +14,8 @@
 
 void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_status)
 {
-	g_exit->g_exit_status = exit_status;
+	if (g_exit)
+		g_exit->g_exit_status = exit_status;
 	if (data)
 		data->parsing_error = 1;
 	if (cmd_list)
@@ -22,13 +23,15 @@ void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_statu
 	ft_printf("%s\n", error);
 }
 
-char	*get_commande_line(void)
+char	*get_commande_line(t_data *data)
 {
 	char	*input;
 
+	(void)data;
 	input = NULL;
 	input = readline("minishell$ ");
-	add_garbage(input);
+	if (add_garbage(data, input) == NULL)
+		return (NULL);
 	if (input == NULL)
 	{
 		ft_printf("exit\n");
@@ -59,16 +62,27 @@ void	free_params(t_params *params)
 
 void	get_input(t_data *data)
 {
-	data->commande_line = get_commande_line();
+	data->commande_line = get_commande_line(data);
+	if (data->commande_line == NULL)
+		return ;
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
 		add_history(data->commande_line);
-	treat_input(data);
+	if (!treat_input(data))
+	{
+		// free_params(&data->params);
+		return ;
+	}
 	if (data->params == NULL || data->parsing_error == 1)
 	{
-		free_params(&data->params);
+		// free_params(&data->params);
 		return ;
 	}
 	data->cmd_list = get_cmd_list(data);
+	if (data->cmd_list == NULL || data->parsing_error == 1)
+	{
+		// free_params(&data->params);
+		return ;
+	}
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
 	free_params(&data->params);

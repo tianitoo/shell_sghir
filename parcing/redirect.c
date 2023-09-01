@@ -22,22 +22,26 @@ int is_redirect_operator(t_params param)
 	return (0);
 }
 
-void handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
+int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	if (params->parameter[0] == '<' && ft_strlen(params->parameter) == 1)
 		add_input(params, cmd_list, data);
 	else if (params->parameter[0] == '>' && ft_strlen(params->parameter) == 1)
 		add_output(params, cmd_list, data);
 	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
-		handle_heredoc(params, cmd_list, data);
-		else if (params->parameter[0] == '>' && params->parameter[1] == '>')
+	{
+		if (handle_heredoc(params, cmd_list, data))
+			return (0);
+	}
+	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
 		handle_append(params, cmd_list, data);
 	// // else if (params->parameter[0] == '<' && params->parameter[1] == '>'
 	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
 	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
+	return (1);
 }
 
-void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
+int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	next;
 	t_params	prev;
@@ -47,27 +51,36 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	next = params->next;
 	prev = params->prev;
 	if (next != NULL)
-	{
+	{  
 		if (next->is_operator == 1)
 		{
 			prompt_error("minishell: syntax error", NULL, data, 258);
-			return ;
+			return (0);
 		}
-		pip = (int *)malloc(sizeof(int) * 2);
+		pip = (int *)malloc(sizeof(int) * 2); // tested
 		if (!pip)
+		{
 			prompt_error("minishell: malloc error", NULL, data, 1);
-		add_garbage(pip);
+			return (0);
+		}
+		if (add_garbage(data, pip) == NULL)
+			return (0);
 		pipe(pip);
 		line = readline("> ");
-		add_garbage(line);
-		if (next->in_double_quote == -1 && next->in_quote == -1)
+		if (add_garbage(data, line) == NULL)
+			return (0);
 		while (strcmp(line, next->parameter) != 0)
 		{
-			handle_dollar(&line, data);
+			if (next->in_double_quote == -1 && next->in_quote == -1)
+			{
+				if (handle_dollar(&line, data) == NULL)
+					return (0);
+			}
 			write(pip[1], line, ft_strlen(line));
 			write(pip[1], "\n", 1);
 			line = readline("> ");
-			add_garbage(line);
+			if (add_garbage(data, line) == NULL)
+				return (0);
 		}
 		close(pip[1]);
 		cmd_list->input = pip[0];
@@ -80,6 +93,7 @@ void	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	}
 	else
 		prompt_error("minishell: syntax error", NULL, data, 258);
+	return (1);
 }
 
 void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)

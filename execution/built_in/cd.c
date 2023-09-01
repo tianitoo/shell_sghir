@@ -13,30 +13,10 @@
 
 #include "../../minishell.h"
 
-void	update_env(char *var_name, char *var_value, t_env *env)
-{
-	char	*tmp;
-
-	while (env)
-	{
-		if (ft_strcmp(env->key, var_name) == 0)
-		{
-			tmp = env->value;
-			env->value = ft_strdup(var_value);
-			free(tmp);
-			tmp = NULL;
-			break ;
-		}
-		env = env->next;
-	}
-}
-
-void	update_env_var(char *var_key, char *value, t_data *data)
+t_env	*update_env_var(char *var_key, char *value, t_data *data)
 {
 	t_env	*env;
 
-	if (value == NULL)
-		return ;
 	env = data->linked_env;
 	while (env)
 	{
@@ -44,13 +24,16 @@ void	update_env_var(char *var_key, char *value, t_data *data)
 		{
 			free(env->value);
 			env->value = ft_strdup(value);
+			if (env->value == NULL)
+				return (NULL);
 			break ;
 		}
 		env = env->next;
 	}
+	return (env);
 }
 
-void	ft_cd(t_params params, t_data *data)
+t_data	*ft_cd(t_params params, t_data *data)
 {
 	char	**args;
 	// char	*path;
@@ -61,14 +44,16 @@ void	ft_cd(t_params params, t_data *data)
 	// DIR		*dir;
 
 	env = data->linked_env;
-	args = args_to_double_pointer(params);
-	// add_garbage(oldpwd);
+	args = args_to_double_pointer(params, data);
+	if (args == NULL)
+		return (NULL);
+	// add_garbage(data, oldpwd);
 	if (args[1] == NULL)
 	{
 		if (chdir(get_variable(env, "HOME")) == -1)
 		{
 			ft_printf("cd: HOME not set\n");
-			return ;
+			return (NULL);
 		}
 	}
 	else if (ft_strncmp(args[1], "$HOME", 5) == 0)
@@ -76,7 +61,7 @@ void	ft_cd(t_params params, t_data *data)
 		if (chdir(args[1]) == -1)
 		{
 			ft_printf("cd: HOME not set\n");
-			return ;	
+			return (NULL);
 		}
 	}
 	else if (args[1][0] == '-' && args[1][1] == '\0')
@@ -93,18 +78,25 @@ void	ft_cd(t_params params, t_data *data)
 			if (chdir(args[1]) == -1)
 			{
 				ft_printf("cd: %s: No such file or directory\n", args[1]);
-				return ;
+				return (NULL);
 			}
 			else
 			{
 				if (getcwd(NULL, 0) == NULL)
 				{
 					pwd = get_env_value("PWD", data);
+					if (pwd == NULL)
+						return (NULL);
 					if (pwd)
 					{
 						pwd = ft_strjoin(pwd, "/", 0);
+						if (pwd == NULL)
+							return (NULL);
 						pwd = ft_strjoin(pwd, args[1], 0);
-						update_env_var("PWD", pwd, data);
+						if (pwd == NULL)
+							return (NULL);
+						if (update_env_var("PWD", pwd, data) == NULL)
+							return (NULL);
 					}
 					else
 					{
@@ -116,16 +108,23 @@ void	ft_cd(t_params params, t_data *data)
 		else if (chdir(args[1]) == -1)
 		{
 			ft_printf("cd: %s: No such file or directory\n", args[1]);
-			return ;
+			return (NULL);
 		}
 		else
 		{
+			char *pwd;
 
+			pwd = find_pwd(data);
+			if (pwd == NULL)
+				return (NULL);
 			next_pwd = getcwd(NULL, 0);
-			update_env_var("OLDPWD", find_pwd(data), data);
-			update_env_var("PWD", next_pwd, data);
+			if (update_env_var("OLDPWD", pwd, data) == NULL)
+				return (NULL);
+			if (update_env_var("PWD", next_pwd, data) == NULL)
+				return (NULL);
 			free(next_pwd);
 			next_pwd = NULL;
 		}
 	}
+	return (data);
 }

@@ -31,10 +31,11 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-void	execute_builtin(t_data *data, t_cmd_list cmd_list)
+t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 {
 	int	input;
 	int	output;
+	void	*ret;
 
 	if (cmd_list->input != -1)
 	{
@@ -50,19 +51,19 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	}
 	pipes_work(cmd_list);
 	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
-		ft_echo(cmd_list->args);
+		ret = ft_echo(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
-		ft_cd(cmd_list->args, data);
+		ret = ft_cd(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "pwd") == 0)
-		ft_pwd(data);
+		ret = ft_pwd(data);
 	else if (ft_strcmp(cmd_list->cmd, "export") == 0)
-		ft_export(cmd_list, data);
+		ret = ft_export(cmd_list, data);
 	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
-		ft_unset(data, cmd_list);
+		ret = ft_unset(data, cmd_list);
 	else if (ft_strcmp(cmd_list->cmd, "env") == 0)
 		write_env(data);
 	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
-		ft_exit(data);
+		ret = ft_exit(data);
 	if (cmd_list->input != -1)
 	{
 		dup2(input, 0);
@@ -73,15 +74,28 @@ void	execute_builtin(t_data *data, t_cmd_list cmd_list)
 		dup2(output, 1);
 		close(output);
 	}
+	if (ret == NULL)
+		return (NULL);
+	return (cmd_list);
 }
 
-char *get_cmd_path_from_paths(char **paths, char *cmd)
+char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_data *data)
 {
 	int		i;
 	char	*cmd_path;
 	char	*tmp;
 	DIR		*dir;
 
+	(void)data;
+
+	dir = opendir(cmd);
+	if (dir != NULL)
+	{
+		ft_printf("Error: %s: is a directory\n", cmd);
+		g_exit->g_exit_status = 126;
+		(void)closedir(dir);
+		return (NULL);
+	}
 	i = 0;
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
@@ -95,19 +109,19 @@ char *get_cmd_path_from_paths(char **paths, char *cmd)
 	while (paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/", 0);
+		if (!tmp)
+			return (NULL);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
-		add_garbage(cmd_path);
+		if (!cmd_path)
+			return (NULL);
+		if (add_garbage(data, cmd_path) == NULL)
+			return (NULL);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
 	}
-	dir = opendir(cmd);
-	if (dir != NULL)
-	{
-		ft_printf("Error: %s: is a directory\n", cmd);
-		g_exit->g_exit_status = 126;
-		(void)closedir(dir);
-	}
+	ft_printf("Error: %s: command not found1", cmd);
+	prompt_error("", cmd_list, NULL, 127);
 	return (NULL);
 }
 
@@ -121,22 +135,22 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	env = data->linked_env;
 	path = get_variable(env, "PATH");
 	if (path != NULL)
+	{	
 		paths = ft_split(path, ':');
+		if (paths == NULL)
+			return (NULL);
+	}
 	else
 	{
-		ft_printf("Error: %s: command not found", cmd_list->cmd);
+		ft_printf("Error: %s: command not found2", cmd_list->cmd);
 		prompt_error("", cmd_list, NULL, 127);
 		return (NULL);
 	}
-	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd);
+	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd, cmd_list, data);
 	free_ss(paths);
 	free(paths);
 	if (cmd == NULL)
-	{
-		ft_printf("Error: %s: command not found", cmd_list->cmd);
-		prompt_error("", cmd_list, NULL, 127);
 		return (NULL);
-	}
 	return (cmd);
 }
 
@@ -176,10 +190,7 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	char		**env;
 	char		*cmd;
 
-	if (cmd_list->cmd[0] == '/' || cmd_list->cmd[0] == '.')
-		cmd = ft_strdup(cmd_list->cmd);
-	else
-		cmd = get_cmd_path(data, cmd_list);
+	cmd = get_cmd_path(data, cmd_list);
 	if (cmd == NULL)
 		return (-2);
 	pid = fork();
@@ -191,8 +202,12 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			execute_builtin(data, cmd_list);
 			exit(0);
 		}
-		args = args_to_double_pointer(cmd_list->args);
-		env = env_to_double_pointer(data->linked_env);
+		args = args_to_double_pointer(cmd_list->args, data);
+		if (args == NULL)
+			exit(1);
+		env = env_to_double_pointer(data->linked_env, data);
+		if (env == NULL)
+			exit(1);
 		pipes_work(cmd_list);
 		if (execve(cmd, args, env) == -1)
 		{
@@ -222,11 +237,18 @@ void	execute(t_data *data)
 			if (cmd_list->next != NULL)
 				pipe(cmd_list->next->pip);
 			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
-				execute_builtin(data, cmd_list);
+			{
+				if (execute_builtin(data, cmd_list) == NULL)
+					break ; // same check
+			}
 			else
 			{
 				if (cmd_list->cmd)
+				{
 					pid = execute_cmd(data, cmd_list);
+					if (pid == -2)
+						break ;// check when pid == -2
+				}
 			}
 
 		}

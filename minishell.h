@@ -87,65 +87,67 @@ typedef struct s_data{
 // parcing
 void		get_input(t_data *data);
 char		**pipe_split(char *input);
-void		handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
+int			handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
 t_cmd_list	get_cmd_list(t_data *data);
-void		handle_dollar(char **heredoc_input, t_data *data);
-void		add_cmd(t_cmd_list cmd_list, t_params param);
-char		*get_commande_line(void);
+char		*handle_dollar(char **heredoc_input, t_data *data);
+void		add_cmd(t_cmd_list cmd_list, t_params param, t_data *data);
+char		*get_commande_line(t_data *data);
 char		*handle_dollar_in_quotes(char *param, t_data *data);
 int			is_redirect_operator(t_params param);
 void		add_output(t_params params, t_cmd_list cmd_list, t_data *data);
 void		add_input(t_params params, t_cmd_list cmd_list, t_data *data);
-void		add_param(t_params *params, char *param);
-void		add_operator(t_data *data, char operatorm, int *i);
+t_params	add_param(t_params *params, char *param, t_data *data);
+t_params	add_operator(t_data *data, char operatorm, int *i);
 t_cmd		*new_cmd(t_data *data);
-void		handle_normal_char(t_data *data, int *i, int *param_len);
+char		*handle_normal_char(t_data *data, int *i, int *param_len);
 void		handle_append(t_params params, t_cmd_list cmd_list, t_data *data);
-t_params	new_param(char *param);
-void		treat_input(t_data *data);
+t_params	new_param(char *param, t_data *data);
+int			treat_input(t_data *data);
 char		*get_operator(char *input, int *i, char operator);
 int			is_operator(char c);
 char		*get_param(char *input, int *i, char operator);
 t_params	get_last_param(t_params params);
 void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
-void		handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
-void		handle_params(t_cmd_list *cmd_list, t_data *data);
+int			handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
+int			handle_params(t_cmd_list *cmd_list, t_data *data);
 
 
 //builtins
-void		ft_cd(t_params params, t_data *data);
+t_data		*ft_cd(t_params params, t_data *data);
 void		write_env(t_data *data);
-void		ft_echo(t_params params);
+t_params	ft_echo(t_params params, t_data *data);
 char		*find_pwd(t_data *data);
-void		ft_pwd(t_data *data);
+char		*ft_pwd(t_data *data);
 int			key_exists(t_env *env_params, char *key_to_find, t_data *data);
-void		ft_export(t_cmd_list cmd_list, t_data *data);
-void		ft_exit(t_data *data);
-void		ft_unset(t_data *data, t_cmd *cmd_list);
+t_env		*ft_export(t_cmd_list cmd_list, t_data *data);
+t_data		*ft_exit(t_data *data);
+t_env		*ft_unset(t_data *data, t_cmd *cmd_list);
 
 
 //execution
 void		execute(t_data *data);
 void		pipes_work(t_cmd_list cmd_list);
-void		add_env(t_env *env, char *key, char *value);
+void		add_env(t_env *env, char *key, char *value, t_data *data);
 
 //utils
-void		update_env_var(char *var_key, char *value, t_data *data);
-t_params	double_pointer_to_args(char **double_pointer);
-char		**env_to_double_pointer(t_env *env);
-void		add_hidden_env(t_env *env, char *key, char *value);
-char		**args_to_double_pointer(t_params params);
+t_env		*update_env_var(char *var_key, char *value, t_data *data);
+t_params	double_pointer_to_args(char **double_pointer, t_data *data);
+char		**env_to_double_pointer(t_env *env, t_data *data);
+void		add_hidden_env(t_env *env, char *key, char *value, t_data *data);
+char		**args_to_double_pointer(t_params params, t_data *data);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(t_env *env, char *var);
 char		*find_key(char *str, t_data *data);
 void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_status);
 t_params	delete_param(t_params *params);
-t_env		*new_env(char *key, char *value);
-char		*get_value(char *variable);
+t_env		*new_env(char *key, char *value, t_data *data);
+char		*get_value(char *variable, t_data *data);
 t_env		*get_env(char **envp, t_data *data);
-void		add_garbage(void *ptr);
+t_garbage	*add_garbage(t_data *data, void *ptr);
 void		free_garbage(void);
+
+void		*ft_malloc(size_t size);
 
 
 

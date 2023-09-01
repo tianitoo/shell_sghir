@@ -54,9 +54,9 @@ char	*cut_word(const char *s, int *j, char c)
 
 	next = next_sep(s, *j, c);
 	word = ft_substr(s, *j, next - *j);
+	if (word == NULL)
+		return (NULL);
 	*j = next;
-	if (!(word))
-		return (0);
 	return (word);
 }
 
@@ -70,7 +70,7 @@ char	**ft_split(char const *s, char c)
 	j = 0;
 	if (!s)
 		return (0);
-	ss = (char **) malloc (sizeof(char *) * sslen(s, c) + 1);
+	ss = (char **) malloc (sizeof(char *) * sslen(s, c) + 1); // tested
 	if (!ss)
 		return (0);
 	while (s[j] != 0)

@@ -12,8 +12,9 @@
 
 #include "../../minishell.h"
 
-void	ft_exit(t_data *data)
+t_data	*ft_exit(t_data *data)
 {
 	(void)data;
 	exit(0);
+	return (NULL);
 }

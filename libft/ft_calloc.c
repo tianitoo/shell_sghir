@@ -11,14 +11,18 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "../minishell.h"
 
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*tab;
 
-	tab = malloc(count * size);
+	tab = malloc(count * size); // tested
 	if (!tab)
+	{
+		ft_printf("malloc error\n");
 		return (0);
+	}
 	ft_bzero(tab, count * size);
 	return (tab);
 }

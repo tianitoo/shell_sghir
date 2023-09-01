@@ -69,11 +69,16 @@ char	*get_variable(t_env *env, char *var)
 // 	}
 // }
 
-t_env	*new_env(char *key, char *value)
+t_env	*new_env(char *key, char *value, t_data *data)
 {
 	t_env	*env;
 
-	env = malloc(sizeof(t_env));
+	env = malloc(sizeof(t_env)); // tested
+	if (!env)
+	{
+		prompt_error("malloc error 7", NULL, data, 1);
+		return (NULL);
+	}
 	env->key = key;
 	env->value = value;
 	env->hidden = 0;
@@ -81,19 +86,19 @@ t_env	*new_env(char *key, char *value)
 	return (env);
 }
 
-void	add_env(t_env *env, char *key, char *value)
+void	add_env(t_env *env, char *key, char *value, t_data *data)
 {
 	t_env	*tmp;
 
 	tmp = env;
 	if (tmp == NULL)
 	{
-		env = new_env(key, value);
+		env = new_env(key, value, data);
 		return ;
 	}
 	while (tmp->next)
 		tmp = tmp->next;
-	tmp->next = new_env(key, value);
+	tmp->next = new_env(key, value, data);
 }
 
 // sort env alphabetically by key
@@ -164,22 +169,34 @@ t_env	*get_env(char **envp, t_data *data)
 	while (envp[i])
 	{
 		key = find_key(envp[i], data);
-		value = get_value(envp[i]);
+		value = get_value(envp[i], data);
 		if (i == 0)
 		{
-			env = new_env(key, value);
+
+			env = new_env(key, value, data);
+			if (!env)
+				return (NULL);
 			env->exported = 0;
 			tmp = env;
 		}
 		else
-			add_env(tmp, key, value);
+			add_env(tmp, key, value, data);
 		i++;
 	}
 	tmp = get_env_by_key(env, "SHLVL");
-	i = ft_atoi(tmp->value);
-	i++;
-	free(tmp->value);
-	tmp->value = ft_itoa(i);
+	if (tmp == NULL)
+	{
+		add_env(env, "SHLVL", "1", data);
+	}
+	else
+	{
+		i = ft_atoi(tmp->value);
+		i++;
+		free(tmp->value);
+		tmp->value = ft_itoa(i);
+		if (!tmp->value)
+			return (NULL);
+	}
 	// sort_env(env);
 	return (env);
 }
@@ -189,16 +206,26 @@ char	**get_unset_env(void)
 	char	**env;
 	char	*pwd;
 
-	env = (char **) malloc(sizeof(char *) * 4);
+	env = (char **) malloc(sizeof(char *) * 4); // tested
+	if (!env)
+	{
+		prompt_error("malloc error 6", NULL, NULL, 1);
+		return (NULL);
+	}
 	pwd = getcwd(NULL, 0);
 	env[0] = ft_strjoin("PWD=", pwd, 0);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;
+	if (!env[0] || !env[1] || !env[2])
+	{
+		prompt_error("malloc error 7", NULL, NULL, 1);
+		return (NULL);
+	}
 	return (env);
 }
 
-void	add_hidden_env(t_env *env, char *key, char *value)
+void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 {
 	t_env	*tmp;
 	t_env	*hidden_path;
@@ -208,7 +235,7 @@ void	add_hidden_env(t_env *env, char *key, char *value)
 	tmp = env;
 	while (tmp->next)
 		tmp = tmp->next;
-	hidden_path = new_env(key, value);
+	hidden_path = new_env(key, value, data);
 	hidden_path->hidden = 1;
 	tmp->next = hidden_path;
 }
@@ -220,17 +247,33 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	g_exit = malloc(sizeof(t_exit));
+	g_exit = malloc(sizeof(t_exit)); // tested
+	if (!g_exit)
+	{
+		prompt_error("malloc error 5", NULL, NULL, 1);
+		return (1);
+	}
 	g_exit->garbage = NULL;
 	g_exit->g_exit_status = 0;
-	data = malloc(sizeof(t_data));
+	data = malloc(sizeof(t_data)); // tested
+	if (!data)
+	{
+		prompt_error("malloc error 4", NULL, data, 1);
+		return (1);
+	}
 	if (envp[0] == NULL)
+	{
 		env = get_unset_env();
+		if (!env)
+			return (1);
+	}
 	else
 		env = envp;
 	data->params = NULL;
 	data->linked_env = get_env(env, data);
-	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.");
+	if (!data->linked_env)
+		return (1);
+	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
 	while (1)
 	{
 		// signal(SIGQUIT, SIG_IGN);No such file or directory

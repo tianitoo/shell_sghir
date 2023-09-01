@@ -13,15 +13,17 @@
 
 #include "../../minishell.h"
 
-void	ft_echo(t_params params)
+t_params	ft_echo(t_params params, t_data *data)
 {
 	char	**args;
 	int		i;
+	int		j;
 	int		newline;
 	int		is_notn;
-	int		j;
 
-	args = args_to_double_pointer(params);
+	args = args_to_double_pointer(params, data);
+	if (args == NULL)
+		return (NULL);
 	is_notn = 0;
 	newline = 0;
 	i = 1;
@@ -47,6 +49,7 @@ void	ft_echo(t_params params)
 	}
 	if (newline == 0 || is_notn == 1)
 		ft_printf("\n");
+	return (params);
 }
 
 // int main(int ac, char **av)

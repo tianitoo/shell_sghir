@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	**args_to_double_pointer(t_params params)
+char	**args_to_double_pointer(t_params params, t_data *data)
 {
 	int	 i;
 	int		args_count;
@@ -28,11 +28,17 @@ char	**args_to_double_pointer(t_params params)
 		tmp = tmp->next;
 	}
 	args = (char **)ft_calloc(sizeof(char *), (args_count + 1));
-	add_garbage(args);
+	if (args == NULL)
+		return (NULL);
+	if (add_garbage(data, args) == NULL)
+		return (NULL);
 	while (params)
 	{
 		args[i] = ft_strdup(params->parameter);
-		add_garbage(args[i]);
+		if (args[i] == NULL)
+			return (NULL);
+		if (add_garbage(data, args[i]) == NULL)
+			return (NULL);
 		params = params->next;
 		i++;
 	}
@@ -40,7 +46,7 @@ char	**args_to_double_pointer(t_params params)
 	return (args);
 }
 
-char	**env_to_double_pointer(t_env *env)
+char	**env_to_double_pointer(t_env *env, t_data *data)
 {
 	int	 i;
 	int		env_count;
@@ -56,12 +62,20 @@ char	**env_to_double_pointer(t_env *env)
 		tmp = tmp->next;
 	}
 	envp = (char **)ft_calloc(sizeof(char *), (env_count + 1));
+	if (envp == NULL)
+		return (NULL);
 	while (env)
 	{
 		envp[i] = ft_strjoin(env->key, "=", 0);
-		add_garbage(envp[i]);
+		if (envp[i] == NULL)
+			return (NULL);
+		if (add_garbage(data, envp[i]) == NULL)
+			return (NULL);
 		envp[i] = ft_strjoin(envp[i], env->value, 0);
-		add_garbage(envp[i]);
+		if (envp[i] == NULL)
+			return (NULL);
+		if (add_garbage(data, envp[i]) == NULL)
+			return (NULL);
 		env = env->next;
 		i++;
 	}

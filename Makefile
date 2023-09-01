@@ -74,6 +74,7 @@ SRC = parcing/handle_input.c\
 		utils/double_pointer_args.c\
 		utils/params_utils.c\
 		utils/garbage.c\
+		f.c\
 		main.c
 
 OBJ = $(SRC:.c=.o)
