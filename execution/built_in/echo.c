@@ -12,42 +12,60 @@
 
 
 #include "../../minishell.h"
+int check_n(char *str)
+{
+	int i = 1;
+//kanmchiw nchofo awel 2 caracters
+	if (ft_strncmp(str,"-n",2) != 0)
+		return(0);
+//hna kanchofo wach hadak ila mora awel n wash n ola la 
+//ila makanch n kanperintiw
+	while(str[i])
+	{
+		if (str[i] != 'n')
+			return(0);
+		i++;
+	}
+	return(1);
+}
+
+int ft_arrlen(char **args)
+{
+	int i = 0;
+	while(args[i])
+		i++;
+	return(i);
+}
 
 t_params	ft_echo(t_params params, t_data *data)
 {
 	char	**args;
-	int		i;
-	int		j;
-	int		newline;
-	int		is_notn;
+	int		i = 1;
+	int		flag = 0;
+	// int		j;
+	// int		newline;
+	// int		is_notn;
 
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	is_notn = 0;
-	newline = 0;
-	i = 1;
-	j = 1;
-	if (args[i] != NULL && ft_strncmp(args[i], "-n", 2) == 0)
+	int len = ft_arrlen(args) - 1;
+	while(args[i])
 	{
-		while (args[i][j] == 'n')
-		{
-			newline++;
-			j++;
-		}
-		if (args[i][j] != '\0')
-			is_notn = 1;
-	}
-	if (args[i] != NULL && newline > 0 && is_notn == 0)
+		if (check_n(args[i]) == 1)
+			flag = 1;
+		else
+			break;
 		i++;
-	while (args[i])
+	}
+	while(args[i])
 	{
-		ft_printf("%s", args[i]);
-		if (args[i + 1])
+		ft_printf("%s",args[i]);
+		if (i != len)
 			ft_printf(" ");
 		i++;
 	}
-	if (newline == 0 || is_notn == 1)
+	if (flag == 0)
 		ft_printf("\n");
 	return (params);
 }

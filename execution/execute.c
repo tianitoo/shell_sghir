@@ -35,7 +35,7 @@ t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 {
 	int	input;
 	int	output;
-	void	*ret;
+	void	*ret = 0;
 
 	if (cmd_list->input != -1)
 	{
