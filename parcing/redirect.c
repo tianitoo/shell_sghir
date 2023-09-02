@@ -30,7 +30,7 @@ int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 		add_output(params, cmd_list, data);
 	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
 	{
-		if (handle_heredoc(params, cmd_list, data))
+		if (handle_heredoc(params, cmd_list, data) == 0)
 			return (0);
 	}
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')

@@ -121,7 +121,7 @@ char		*find_pwd(t_data *data);
 char		*ft_pwd(t_data *data);
 int			key_exists(t_env *env_params, char *key_to_find, t_data *data);
 t_env		*ft_export(t_cmd_list cmd_list, t_data *data);
-t_data		*ft_exit(t_data *data);
+void		*ft_exit(t_params params, t_data *data);
 t_env		*ft_unset(t_data *data, t_cmd *cmd_list);
 
 

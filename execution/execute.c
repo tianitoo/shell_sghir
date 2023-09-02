@@ -63,7 +63,7 @@ t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	else if (ft_strcmp(cmd_list->cmd, "env") == 0)
 		write_env(data);
 	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
-		ret = ft_exit(data);
+		ret = ft_exit(cmd_list->args, data);
 	if (cmd_list->input != -1)
 	{
 		dup2(input, 0);

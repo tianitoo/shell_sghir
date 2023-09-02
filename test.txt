@@ -7,3 +7,4 @@ exit status redo
 << " " exit in anything
 echo $123 
 $PWD in line should print content 
+unset should print error in case of giving it something thats not alphanum

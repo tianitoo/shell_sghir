@@ -42,9 +42,6 @@ t_params	ft_echo(t_params params, t_data *data)
 	char	**args;
 	int		i = 1;
 	int		flag = 0;
-	// int		j;
-	// int		newline;
-	// int		is_notn;
 
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
@@ -69,9 +66,3 @@ t_params	ft_echo(t_params params, t_data *data)
 		ft_printf("\n");
 	return (params);
 }
-
-// int main(int ac, char **av)
-// {
-//	 // printf("%s\n",av[1]);
-//	 ft_echo(av);
-// }
