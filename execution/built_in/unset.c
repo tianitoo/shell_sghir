@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/28 16:32:59 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/03 18:02:43 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,24 @@ char	move_pointers_back(char **double_pointer_env, int i)
 t_env	*ft_unset(t_data *data, t_cmd *cmd_list)
 {
 	t_env		*env;
-	t_env		*prev;
+	t_env 		*prev;
 	t_params	params;
 	char		*var_name;
 
-	prev = NULL;
 	params = cmd_list->args->next;
 	while (params)
 	{
+		prev = NULL;
 		env = data->linked_env;
 		var_name = params->parameter;
-		if (ft_strcmp(var_name, "SHLVL") == 0)
-		{
-			if (update_env_var("SHLVL", "0", data) == NULL)
-				return (NULL);
-			return (env);
-		}
+		// if (ft_strcmp(var_name, "SHLVL") == 0)
+		// {
+			// if (update_env_var("SHLVL", "0", data) == NULL)
+				// return (NULL);
+			// return (env);
+			// if (env->next != NULL)
+				// env = env->next;
+		// }
 		while (env)
 		{
 			if (ft_strcmp(env->key, var_name) == 0)
@@ -54,6 +56,7 @@ t_env	*ft_unset(t_data *data, t_cmd *cmd_list)
 			prev = env;
 			env = env->next;
 		}
+		// free(tmp); 
 		params = params->next;
 	}
 	return (env);
