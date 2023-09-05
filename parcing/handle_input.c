@@ -63,6 +63,7 @@ void	free_params(t_params *params)
 void	get_input(t_data *data)
 {
 	data->commande_line = get_commande_line(data);
+	g_exit->in_execMode = 1;
 	if (data->commande_line == NULL)
 		return ;
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)

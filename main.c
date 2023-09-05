@@ -242,18 +242,32 @@ void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 // for sigquit
 void	handler2(int arg)
 {
+	if(g_exit->in_execMode != 0)
+		return;
 	(void)arg;
+		// g_exit->cc = 1;
+	ft_putstr_fd("Quit: 3\n", 1);
 	rl_redisplay();
 }
 // for sigint
 void	handler(int arg)
 {
-	(void)arg;
-	ft_putstr_fd("\n", 1);
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	rl_redisplay();
-	g_exit->g_exit_status = 1;
+	// if(g_exit->cc == 0)
+	// {
+	// 	g_exit->cc = 1;
+	// 	ft_putstr_fd("\n", 1);
+	// 	return;
+	// }
+	if(g_exit->in_execMode != 1)
+	{
+		(void)arg;
+		ft_putstr_fd("\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		g_exit->g_exit_status = 1;
+
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -272,6 +286,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	g_exit->garbage = NULL;
 	g_exit->g_exit_status = 0;
+	// g_exit->cc = 1;
 	data = malloc(sizeof(t_data)); // tested
 	if (!data)
 	{
@@ -291,10 +306,12 @@ int	main(int argc, char **argv, char **envp)
 	if (!data->linked_env)
 		return (1);
 	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
+	signal(SIGINT, handler);
+	signal(SIGQUIT, SIG_IGN);
+	g_exit->in_execMode = 0;
 	while (1)
 	{
-		signal(SIGINT, handler);
-		signal(SIGQUIT, handler2);
+		g_exit->in_execMode = 0;
 		// signal(SIGQUIT, SIG_IGN);No such file or directory
 		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;

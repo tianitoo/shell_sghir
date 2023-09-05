@@ -38,6 +38,7 @@ typedef struct s_garbage{
 
 typedef struct s_exit{
 	int				g_exit_status;
+	int				in_execMode;
 	t_garbage		*garbage;
 	t_file_descriptors	*file_descriptors;
 }t_exit;

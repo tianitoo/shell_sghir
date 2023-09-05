@@ -196,6 +196,8 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (is_builtin(cmd_list->cmd))
 		{
 			pipes_work(cmd_list);
@@ -209,6 +211,8 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		if (env == NULL)
 			exit(1);
 		pipes_work(cmd_list);
+		
+		
 		if (execve(cmd, args, env) == -1)
 		{
 			perror("Error");
@@ -220,7 +224,23 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		prompt_error("Error: fork failed", NULL, data, 1);
 		g_exit->g_exit_status = 1;
 	}
+	// g_exit->cc = 1;
 	return pid;
+}
+
+int	get_exitstate(int wait_status)
+{
+	if (WIFSIGNALED(wait_status))
+	{
+		if (WTERMSIG(wait_status) == 3)
+			write(2, "Quit: 3\n", 8);
+		if (WTERMSIG(wait_status) == 2)
+			write(2, "\n", 1);
+		return (128 + WTERMSIG(wait_status));
+	}
+	else if (WIFEXITED(wait_status))
+		return (WEXITSTATUS(wait_status));
+	return (1);
 }
 
 void	execute(t_data *data)
@@ -245,6 +265,7 @@ void	execute(t_data *data)
 			{
 				if (cmd_list->cmd)
 				{
+					// g_exit->cc = 0;
 					pid = execute_cmd(data, cmd_list);
 					if (pid == -2)
 						break ;// check when pid == -2
@@ -273,4 +294,5 @@ void	execute(t_data *data)
 	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
+	g_exit->g_exit_status = get_exitstate(g_exit->g_exit_status);
 }
