@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-FLAGS = -Wall -Werror -Wextra -lreadline 
+FLAGS = -Wall -Werror -Wextra 
 AR = ar -r
 RM = rm -f
 HEAD = minishell.h
@@ -9,6 +9,9 @@ LIBFT = ./libft/libft.a
 HEADLIBFT = ./libft/libft.h
 PRINTF = ./ft_printf/ft_printf.a
 HEADPRINTF = ./ft_printf/ft_printf.h
+INC = -I/goinfre/$(USER)/.brew/opt/readline/include
+
+RFLAGS = -lreadline -L/goinfre/$(USER)/.brew/opt/readline/lib
 
 LIBFTSRC = ./libft/ft_atoi.c\
 		./libft/ft_bzero.c\
@@ -88,9 +91,9 @@ $(PRINTF): $(PRINTFSRC)
 	$(MK) -C ./ft_printf
 
 $(NAME): $(LIBFT) $(PRINTF) $(OBJ)
-		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) -fsanitize=address 
+		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) $(RFLAGS) -fsanitize=address 
 %.o : %.c $(HEAD)
-	$(CC) -Wall -Wextra -Werror -g -c $< -o $@
+	$(CC) -Wall -Wextra -Werror $(INC) -g -c $< -o $@
 clean:
 		$(RM) $(OBJ)
 		$(RM) main.o

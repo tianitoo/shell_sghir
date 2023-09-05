@@ -64,5 +64,6 @@ t_params	ft_echo(t_params params, t_data *data)
 	}
 	if (flag == 0)
 		ft_printf("\n");
+	g_exit->g_exit_status = 0;
 	return (params);
 }
