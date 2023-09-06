@@ -282,7 +282,8 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 	else
 		command_line = data->commande_line;
 	i = 0;
-
+	if (!command_line)
+		return (NULL);
 	while (command_line[i])
 	{
 		if (!in_quote && command_line[i] == '"')

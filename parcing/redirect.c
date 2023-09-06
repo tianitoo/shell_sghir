@@ -69,7 +69,7 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		line = readline("> ");
 		if (add_garbage(data, line) == NULL)
 			return (0);
-		while (strcmp(line, next->parameter) != 0)
+		while (ft_strcmp(line, next->parameter) != 0)
 		{
 			if (next->in_double_quote == -1 && next->in_quote == -1)
 			{
