@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+
 t_exit	*g_exit = NULL;
 
 char	*get_variable(t_env *env, char *var)
@@ -268,7 +269,19 @@ void	handler(int arg)
 		g_exit->g_exit_status = 1;
 
 	}
+	else{
+		// close(g_exit->heredoc_fd);
+		puts("ctl c");
+	}
 }
+
+// void handler_2(int sig)
+// {
+// 	(void)sig;
+// 	puts("sdsdsd");
+// 	g_exit->heredoc_statu = 1;
+// 	close(g_exit->heredoc_fd);
+// }
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -317,6 +330,7 @@ int	main(int argc, char **argv, char **envp)
 		data->parsing_error = 0;
 		get_input(data);
 		free_garbage();
+
 	}
 	return (0);
 }

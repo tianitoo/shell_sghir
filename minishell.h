@@ -41,6 +41,9 @@ typedef struct s_exit{
 	int				in_execMode;
 	t_garbage		*garbage;
 	t_file_descriptors	*file_descriptors;
+	int heredoc_statu;
+	int heredoc_fd;
+	int				closeed;
 }t_exit;
 
 extern t_exit	*g_exit;
@@ -85,7 +88,8 @@ typedef struct s_data{
 
 //void rl_replace_line (const char *, int);
 
-// parcing
+// parsing
+void		handler(int arg);
 void		get_input(t_data *data);
 char		**pipe_split(char *input);
 int			handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
@@ -112,7 +116,6 @@ void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
 int			handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
 int			handle_params(t_cmd_list *cmd_list, t_data *data);
-
 
 //builtins
 t_data		*ft_cd(t_params params, t_data *data);
