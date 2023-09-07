@@ -290,6 +290,28 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 			in_double_quotes = !in_double_quotes;
 		if (!in_double_quotes && command_line[i] == '\'')
 			in_quote = !in_quote;
+		if (command_line[i] == '<' && command_line[i + 1] == '<' && !(in_double_quotes || in_quote))
+		{
+			i += 2;
+			new_command_line = ft_strjoin_char(new_command_line, '<', data);
+			if (!new_command_line)
+				return (NULL);
+			new_command_line = ft_strjoin_char(new_command_line, '<', data);
+			if (!new_command_line)
+				return (NULL);
+			while (command_line[i] && command_line[i] == ' ')
+			{
+				new_command_line = ft_strjoin_char(new_command_line, ' ', data);
+				i++;
+			}
+			if (command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
+			{
+				new_command_line = ft_strjoin_char(new_command_line, '$', data);
+				if (!new_command_line)
+					return (NULL);
+				i++;
+			}
+		}
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
 			char	*expanded_variable;
