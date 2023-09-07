@@ -30,8 +30,25 @@ int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 		add_output(params, cmd_list, data);
 	else if (params->parameter[0] == '<' && params->parameter[1] == '<')
 	{
+			int fd[2];
+
+	fd[0] = dup(0);
+	fd[1] = dup(1);
 		if (handle_heredoc(params, cmd_list, data) == 0)
+		{
+			dup2(fd[0], 0);
+			dup2(fd[1], 1);
+			g_exit->closeed = 1;
+			signal(SIGINT, handler);
 			return (0);
+		}
+		else
+		{
+			g_exit->closeed = 1;
+			signal(SIGINT, handler);
+		}
+		dup2(fd[0], 0);
+		dup2(fd[1], 1);
 	}
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
 		handle_append(params, cmd_list, data);
@@ -39,6 +56,13 @@ int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
 	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
 	return (1);
+}
+
+void	handler_X(int sg)
+{
+	g_exit->closeed = 0;
+	close(0);
+	(void) sg;
 }
 
 int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
@@ -50,8 +74,11 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 
 	next = params->next;
 	prev = params->prev;
+	g_exit->closeed = 1;
+	signal(SIGINT, handler_X);
 	if (next != NULL)
 	{  
+		write(2, "lining!\n", strlen("lining!\n"));
 		if (next->is_operator == 1)
 		{
 			prompt_error("minishell: syntax error", NULL, data, 258);
@@ -69,8 +96,12 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		line = readline("> ");
 		if (add_garbage(data, line) == NULL)
 			return (0);
-		while (ft_strcmp(line, next->parameter) != 0)
+		while (ft_strcmp(line, next->parameter) != 0 && g_exit->closeed)
 		{
+			write(2, next->parameter, strlen(next->parameter));
+			write(2, "\n", strlen("\n"));
+			write(2, line, strlen(line));
+			write(2, "\n", strlen("\n"));
 			if (next->in_double_quote == -1 && next->in_quote == -1)
 			{
 				if (handle_dollar(&line, data) == NULL)
@@ -79,10 +110,17 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 			write(pip[1], line, ft_strlen(line));
 			write(pip[1], "\n", 1);
 			line = readline("> ");
+			if (line == NULL) {
+				break;
+			}
 			if (add_garbage(data, line) == NULL)
 				return (0);
 		}
 		close(pip[1]);
+		if (g_exit->closeed == 0)
+			return (0);
+		// if(g_exit->heredoc_statu == 1)
+		// 	return(0);
 		cmd_list->input = pip[0];
 		if (prev)
 			params->prev->next = next->next;

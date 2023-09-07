@@ -84,7 +84,8 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 		{
 			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
 			{
-				if (handle_redirection(params, tmp, data) == 0)
+				int xi = handle_redirection(params, tmp, data);
+				if (xi == 0 || xi == 3)
 					return (0);
 			}
 			params = params->next;
