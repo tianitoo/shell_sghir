@@ -51,9 +51,11 @@ void	free_params(t_params *params)
 	while (tmp)
 	{
 		next = tmp->next;
-		free(tmp->parameter);
+		if (tmp->parameter)
+			free(tmp->parameter);
 		tmp->parameter = NULL;
-		free(tmp);
+		if (tmp)
+			free(tmp);
 		tmp = NULL;
 		tmp = next;
 	}
@@ -70,18 +72,18 @@ void	get_input(t_data *data)
 		add_history(data->commande_line);
 	if (!treat_input(data))
 	{
-		// free_params(&data->params);
+		free_params(&data->params);
 		return ;
 	}
 	if (data->params == NULL || data->parsing_error == 1)
 	{
-		// free_params(&data->params);
+		free_params(&data->params);
 		return ;
 	}
 	data->cmd_list = get_cmd_list(data);
 	if (data->cmd_list == NULL || data->parsing_error == 1)
 	{
-		// free_params(&data->params);
+		free_params(&data->params);
 		return ;
 	}
 	if (data->cmd_list && data->parsing_error == 0)
