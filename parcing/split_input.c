@@ -296,8 +296,12 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 			new_command_line = ft_strjoin_char(new_command_line, '<', data);
 			if (!new_command_line)
 				return (NULL);
+			if (add_garbage(data, new_command_line) == NULL)
+				return (NULL);
 			new_command_line = ft_strjoin_char(new_command_line, '<', data);
 			if (!new_command_line)
+				return (NULL);
+			if (add_garbage(data, new_command_line) == NULL)
 				return (NULL);
 			while (command_line[i] && command_line[i] == ' ')
 			{
@@ -311,6 +315,8 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 					return (NULL);
 				i++;
 			}
+			if (add_garbage(data, new_command_line) == NULL)
+			return (NULL);
 		}
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{

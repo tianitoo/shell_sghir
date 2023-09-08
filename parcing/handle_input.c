@@ -68,8 +68,6 @@ void	get_input(t_data *data)
 	g_exit->in_execMode = 1;
 	if (data->commande_line == NULL)
 		return ;
-	if (data->commande_line && ft_strlen(data->commande_line) > 0)
-		add_history(data->commande_line);
 	if (!treat_input(data))
 	{
 		free_params(&data->params);
@@ -88,6 +86,8 @@ void	get_input(t_data *data)
 	}
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
+	if (data->commande_line && ft_strlen(data->commande_line) > 0)
+		add_history(data->commande_line);
 	free_params(&data->params);
 }
 

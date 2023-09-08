@@ -45,13 +45,25 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	t_params	next;
 	t_params	prev;
+	char	*history;
 	char	*line;
 	int		*pip;
+	int		*history_pipe;
+	int		pid;
 
+	history = malloc(sizeof(char) * 2);
+	if (!history)
+	{
+		prompt_error("minishell: malloc error", NULL, data, 1);
+		return (0);
+	}
+	if (add_garbage(data, history) == NULL)
+		return (0);
+	history[1] = '\0';
 	next = params->next;
 	prev = params->prev;
 	if (next != NULL)
-	{  
+	{
 		if (next->is_operator == 1)
 		{
 			prompt_error("minishell: syntax error", NULL, data, 258);
@@ -66,33 +78,82 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		if (add_garbage(data, pip) == NULL)
 			return (0);
 		pipe(pip);
-		line = readline("> ");
-		if (add_garbage(data, line) == NULL)
-			return (0);
-		while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
+		history_pipe = (int *)malloc(sizeof(int) * 2); // tested
+		if (!history_pipe)
 		{
-			if (next->in_double_quote == -1 && next->in_quote == -1)
-			{
-				if (handle_dollar(&line, data) == NULL)
-					return (0);
-			}
-			write(pip[1], line, ft_strlen(line));
-			write(pip[1], "\n", 1);
+			prompt_error("minishell: malloc error", NULL, data, 1);
+			return (0);
+		}
+		if (add_garbage(data, history_pipe) == NULL)
+			return (0);
+		pipe(history_pipe);
+		pid = fork();
+		if (pid == 0)
+		{
+			add_history(data->commande_line);
+			close(pip[0]);
+			close(history_pipe[0]);
 			line = readline("> ");
 			if (add_garbage(data, line) == NULL)
 				return (0);
+			while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
+			{
+				add_history(line);
+				if (next->in_double_quote == -1 && next->in_quote == -1)
+				{
+					if (handle_dollar(&line, data) == NULL)
+						return (0);
+				}
+				write(history_pipe[1], line, ft_strlen(line));
+				write(history_pipe[1], "\n", 1);
+				write(pip[1], line, ft_strlen(line));
+				write(pip[1], "\n", 1);
+				line = readline("> ");
+				if (add_garbage(data, line) == NULL)
+					return (0);
+			}
+			close(pip[1]);
+			close(history_pipe[1]);
+			free_garbage();
+			free_params(&data->params);
+			rl_clear_history();
+			exit(0);
 		}
-		close(pip[1]);
-		cmd_list->input = pip[0];
-		if (prev)
-			params->prev->next = next->next;
-		if (prev == NULL)
-			cmd_list->args = next->next;
-		if (next->next)
-			next->next->prev = prev;
+		else
+		{
+			waitpid(pid, &g_exit->g_exit_status, 0);
+			close(pip[1]);
+			close(history_pipe[1]);
+			// concat the content of pipe_history to the content to data->command_line using read with a buffer of size 1
+			cmd_list->input = pip[0];
+			if (prev)
+				params->prev->next = next->next;
+			if (prev == NULL)
+				cmd_list->args = next->next;
+			if (next->next)
+				next->next->prev = prev;
+		}
 	}
 	else
 		prompt_error("minishell: syntax error", NULL, data, 258);
+	int eof;
+	eof = read(history_pipe[0], history, 1);
+	data->commande_line = ft_strjoin_char(data->commande_line, '\n', data);
+	if (data->commande_line == NULL)
+		return (0);
+	if (add_garbage(data, data->commande_line) == NULL)
+		return (0);
+	while (eof > 0)
+	{
+		data->commande_line = ft_strjoin_char(data->commande_line, history[0], data);
+		if (data->commande_line == NULL)
+			return (0);
+		if (add_garbage(data, data->commande_line) == NULL)
+			return (0);
+		if (data->commande_line == NULL)
+			return (0);
+		eof = read(history_pipe[0], history, 1);
+	}
 	return (1);
 }
 

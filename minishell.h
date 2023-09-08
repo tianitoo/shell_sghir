@@ -116,6 +116,8 @@ void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
 int			handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
 int			handle_params(t_cmd_list *cmd_list, t_data *data);
+char		*ft_strjoin_char(char *s1, char c, t_data *data);
+void		free_params(t_params *params);
 
 //builtins
 t_data		*ft_cd(t_params params, t_data *data);
