@@ -87,7 +87,7 @@ t_env	*new_env(char *key, char *value, t_data *data)
 	return (env);
 }
 
-void	add_env(t_env *env, char *key, char *value, t_data *data)
+t_env	*add_env(t_env *env, char *key, char *value, t_data *data)
 {
 	t_env	*tmp;
 
@@ -95,11 +95,44 @@ void	add_env(t_env *env, char *key, char *value, t_data *data)
 	if (tmp == NULL)
 	{
 		env = new_env(key, value, data);
-		return ;
+		if (!env)
+			return (NULL);
+		return (env);
 	}
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new_env(key, value, data);
+	if (!tmp->next)
+		return (NULL);
+	return (env);
+}
+
+int	env_len(t_env *env)
+{
+	t_env	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = env;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	return (i);
+}
+
+void	move_node(t_env *tmp)
+{
+	char	*tmp_key;
+	char	*tmp_value;
+
+	tmp_key = tmp->key;
+	tmp_value = tmp->value;
+	tmp->key = tmp->next->key;
+	tmp->value = tmp->next->value;
+	tmp->next->key = tmp_key;
+	tmp->next->value = tmp_value;
 }
 
 // sort env alphabetically by key
@@ -111,14 +144,8 @@ void	sort_env(t_env *env)
 	int		j;
 	int		len;
 
-	len = 0;
+	len = env_len(env);
 	i = 0;
-	tmp = env;
-	while (tmp)
-	{
-		len++;
-		tmp = tmp->next;
-	}
 	tmp = env;
 	while (i < len)
 	{
@@ -126,16 +153,7 @@ void	sort_env(t_env *env)
 		while (j < len)
 		{
 			if (ft_strcmp(tmp->key, tmp->next->key) > 0)
-			{
-				char *tmp_key;
-				char *tmp_value;
-				tmp_key = tmp->key;
-				tmp_value = tmp->value;
-				tmp->key = tmp->next->key;
-				tmp->value = tmp->next->value;
-				tmp->next->key = tmp_key;
-				tmp->next->value = tmp_value;
-			}
+				move_node(tmp);
 			tmp = tmp->next;
 			j++;
 		}
@@ -158,36 +176,16 @@ t_env	*get_env_by_key(t_env *env, char *key)
 	return (NULL);
 }
 
-t_env	*get_env(char **envp, t_data *data)
+t_env	*set_shlvl(t_env *env, t_data *data)
 {
-	t_env	*env;
 	t_env	*tmp;
-	char	*key;
-	char	*value;
 	int		i;
 
-	i = 0;
-	while (envp[i])
-	{
-		key = find_key(envp[i], data);
-		value = get_value(envp[i], data);
-		if (i == 0)
-		{
-
-			env = new_env(key, value, data);
-			if (!env)
-				return (NULL);
-			env->exported = 0;
-			tmp = env;
-		}
-		else
-			add_env(tmp, key, value, data);
-		i++;
-	}
 	tmp = get_env_by_key(env, "SHLVL");
 	if (tmp == NULL)
 	{
-		add_env(env, "SHLVL", "1", data);
+		if (add_env(env, "SHLVL", "1", data) == NULL)
+			return (NULL);
 	}
 	else
 	{
@@ -198,9 +196,56 @@ t_env	*get_env(char **envp, t_data *data)
 		if (!tmp->value)
 			return (NULL);
 	}
-	// sort_env(env);
 	return (env);
 }
+
+char	**get_key_value(char *envp, t_data *data)
+{
+	char	**key_value;
+
+	key_value = malloc(sizeof(char *) * 2); // tested
+	if (!key_value)
+		return (prompt_error("malloc error 8", NULL, data, 1), NULL);
+	if (add_garbage(data, key_value) == NULL)
+		return (NULL);
+	key_value[0] = find_key(envp, data);
+	if (key_value[0] == NULL)
+		return (NULL);
+	key_value[1] = get_value(envp, data);
+	if (key_value[1] == NULL)
+		return (NULL);
+	return (key_value);
+}
+
+t_env	*get_env(char **envp, t_data *data)
+{
+	t_env	*env;
+	t_env	*tmp;
+	char	**key_value;
+	int		i;
+
+	i = 0;
+	while (envp[i])
+	{
+		key_value = get_key_value(envp[i], data);
+		if (i == 0)
+		{
+			env = new_env(key_value[0], key_value[1], data);
+			if (env == NULL)
+				return (NULL);
+			env->exported = 0;
+			tmp = env;
+		}
+		else
+			if (add_env(tmp, key_value[0], key_value[1], data) == NULL)
+				return (NULL);
+		i++;
+	}
+	if (set_shlvl(env, data) == NULL)
+		return (NULL);
+	return (env);
+}
+	// sort_env(env);
 
 char	**get_unset_env(void)
 {
@@ -269,7 +314,8 @@ void	handler(int arg)
 		g_exit->g_exit_status = 1;
 
 	}
-	else{
+	else
+	{
 		// close(g_exit->heredoc_fd);
 		puts("ctl c");
 	}
@@ -309,7 +355,7 @@ int	main(int argc, char **argv, char **envp)
 	if (envp[0] == NULL)
 	{
 		env = get_unset_env();
-		if (!env)
+		if (env == NULL)
 			return (1);
 	}
 	else
@@ -330,7 +376,6 @@ int	main(int argc, char **argv, char **envp)
 		data->parsing_error = 0;
 		get_input(data);
 		free_garbage();
-
 	}
 	return (0);
 }

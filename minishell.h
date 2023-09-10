@@ -134,7 +134,7 @@ t_env		*ft_unset(t_data *data, t_cmd *cmd_list);
 //execution
 void		execute(t_data *data);
 void		pipes_work(t_cmd_list cmd_list);
-void		add_env(t_env *env, char *key, char *value, t_data *data);
+t_env		*add_env(t_env *env, char *key, char *value, t_data *data);
 
 //utils
 t_env		*update_env_var(char *var_key, char *value, t_data *data);
