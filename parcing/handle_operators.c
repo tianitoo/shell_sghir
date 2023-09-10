@@ -74,8 +74,6 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 	t_cmd_list	tmp;
 	t_params	params;
 
-	(void)data;
-
 	tmp = *cmd_list;
 	while (tmp)
 	{
@@ -83,22 +81,17 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 		while (params && tmp->parsing_error == 0 && data->parsing_error == 0)
 		{
 			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
-			{
-				int xi = handle_redirection(params, tmp, data);
-				if (xi == 0 || xi == 3)
+				if (handle_redirection(params, tmp, data) == 0)
 					return (0);
-			}
 			params = params->next;
 		}
 		if (tmp->cmd == NULL)
-		{
 			if (tmp->args && tmp->args->parameter)
 			{
 				tmp->cmd = ft_strdup(tmp->args->parameter);
 				if (add_garbage(data, tmp->cmd) == NULL)
 					return (0);
 			}
-		}
 		tmp = tmp->next;
 	}
 	return (1);
@@ -145,56 +138,69 @@ t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data)
 		last_param->next = clone_t_params(param, data);
 		if (last_param->next == NULL)
 			return (NULL);
-		last_param->next->prev = last_param;
+	last_param->next->prev = last_param;
 	}
 	return (cmd_list->args);
+}
+
+t_cmd_list	first_command(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+{
+	if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
+		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
+	cmd_list = new_cmd(data);
+	if (cmd_list == NULL)
+		return (NULL);
+	return (cmd_list);
+}
+
+t_cmd_list	next_command(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+{
+	if (handling_param->next == NULL)
+		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
+	if (handling_param->next->is_operator == 1 && handling_param->next->parameter[0] == '|')
+		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
+	cmd_list->next = new_cmd(data);
+	cmd_list->next->prev = cmd_list;
+	cmd_list = cmd_list->next;
+	cmd_list->next = NULL;
+	return (cmd_list);
+}
+
+t_cmd_list	add_cmd_list(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+{
+	if (cmd_list == NULL)
+	{
+		cmd_list = first_command(cmd_list, handling_param, data);
+		if (cmd_list == NULL)
+			return (NULL);
+	}
+	if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
+	{
+		cmd_list = next_command(cmd_list, handling_param, data);
+		if (cmd_list == NULL)
+			return (NULL);
+	}
+	else
+		if (add_param_to_cmd(cmd_list, handling_param, data) == NULL)
+			return (NULL);
+	return (cmd_list);
 }
 
 t_cmd_list	get_cmd_list(t_data *data)
 {
 	t_params	handling_param;
-	t_params	unhandled_params;
 	t_cmd_list	cmd_list;
 	t_cmd_list	head;
-	
-	unhandled_params = data->params;
-	cmd_list = NULL;
-	handling_param = unhandled_params;
 
+	handling_param = data->params;
+	cmd_list = NULL;
 	while (handling_param)
 	{
+		cmd_list = add_cmd_list(cmd_list, handling_param, data);
 		if (cmd_list == NULL)
-		{
-			if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
-			{
-				prompt_error("syntax error near unexpected token `|'", NULL, data, 258);
-				return (NULL);
-			}
-			cmd_list = new_cmd(data);
-			if (cmd_list == NULL)
-				return (NULL);
+			return (NULL);
+		if (head == NULL)
 			head = cmd_list;
-		}
-		if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
-		{
-			if (handling_param->next == NULL)
-			{
-				prompt_error("syntax error near unexpected token `|'", NULL, data, 258);
-				return (NULL);
-			}
-			if (handling_param->next->is_operator == 1 && handling_param->next->parameter[0] == '|')
-			{
-				prompt_error("syntax error near unexpected token `||'", NULL, data, 258);
-				return (NULL);
-			}
-			cmd_list->next = new_cmd(data);
-			cmd_list->next->prev = cmd_list;
-			cmd_list = cmd_list->next;
-			cmd_list->next = NULL;
-		}
-		else
-			if (add_param_to_cmd(cmd_list, handling_param, data) == NULL)
-				return (NULL);
 		if (handling_param->next == NULL)
 			break ;
 		handling_param = handling_param->next;
