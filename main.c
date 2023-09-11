@@ -317,7 +317,8 @@ void	handler(int arg)
 	else
 	{
 		// close(g_exit->heredoc_fd);
-		puts("ctl c");
+		// puts("ctl c");
+		exit(1);
 	}
 }
 

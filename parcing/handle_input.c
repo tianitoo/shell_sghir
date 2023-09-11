@@ -18,8 +18,10 @@ void	prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_statu
 		g_exit->g_exit_status = exit_status;
 	if (data)
 		data->parsing_error = 1;
-	if (cmd_list)
+	else if (cmd_list)
 		cmd_list->parsing_error = 1;
+	if (data && data->commande_line && ft_strlen(data->commande_line) > 0)
+		add_history(data->commande_line);
 	ft_printf("%s\n", error);
 }
 

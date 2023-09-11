@@ -19,6 +19,13 @@ int	treat_input(t_data *data)
 
 	param_len = 0;
 	i = 0;
+	while (data->commande_line[i])
+	{
+		if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|')
+			return (ft_printf("Error: special caracter: `%c", data->commande_line[i]), prompt_error("'", NULL, data, 1), 0);
+		i++;
+	}
+	i = 0;
 	if (handle_dollar(NULL, data) == NULL)
 		return (0);
 	while (data->commande_line[i])
@@ -83,6 +90,8 @@ char	*handle_normal_char(t_data *data, int *i, int *p_len)
 			(*p_len)++;
 		}
 	}
+	if (data->commande_line[j] == '\n')
+		return (add_history(data->commande_line), prompt_error("Error: special caracter \\n", NULL, data, 1), NULL);
 	param = ft_substr(data->commande_line, *i, *p_len);
 	if (param == NULL)
 		return (NULL);
