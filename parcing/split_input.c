@@ -21,7 +21,7 @@ int	treat_input(t_data *data)
 	i = 0;
 	while (data->commande_line[i])
 	{
-		if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|')
+		if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|' && data->commande_line[i] != '-')
 			return (ft_printf("Error: special caracter: `%c", data->commande_line[i]), prompt_error("'", NULL, data, 1), 0);
 		i++;
 	}

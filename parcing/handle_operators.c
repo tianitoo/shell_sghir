@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 00:52:56 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/11 00:55:43 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/11 13:39:45 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@ t_cmd_list	get_cmd_list(t_data *data)
 {
 	t_params	handling_param;
 	t_cmd_list	cmd_list;
-	t_cmd_list	head;
+	t_cmd_list	head = NULL;
 
 	handling_param = data->params;
 	cmd_list = NULL;
