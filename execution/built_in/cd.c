@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/31 22:37:06 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/11 00:24:50 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../minishell.h"
 
@@ -35,19 +34,16 @@ t_env	*update_env_var(char *var_key, char *value, t_data *data)
 
 t_data	*ft_cd(t_params params, t_data *data)
 {
+	char	*pwd;
 	char	**args;
-	// char	*path;
-	// char	*oldpwd;
 	char	*pwd;
 	t_env	*env;
 	char	*next_pwd;
-	// DIR		*dir;
 
 	env = data->linked_env;
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	// add_garbage(data, oldpwd);
 	if (args[1] == NULL)
 	{
 		if (chdir(get_variable(env, "HOME")) == -1)
@@ -112,8 +108,6 @@ t_data	*ft_cd(t_params params, t_data *data)
 		}
 		else
 		{
-			char *pwd;
-
 			pwd = find_pwd(data);
 			if (pwd == NULL)
 				return (NULL);

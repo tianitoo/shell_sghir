@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_operators.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/11 00:52:56 by kmouradi          #+#    #+#             */
+/*   Updated: 2023/09/11 00:55:43 by kmouradi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../minishell.h"
 
@@ -29,8 +40,8 @@ char	*get_operator(char *input, int *i, char operator)
 
 	if (operator == '<' && input[*i + 1] == '<')
 	{
-			param = ft_strdup("<<");
-			(*i)++;
+		param = ft_strdup("<<");
+		(*i)++;
 	}
 	else if (operator == '<')
 		param = ft_strdup("<");
@@ -40,9 +51,11 @@ char	*get_operator(char *input, int *i, char operator)
 		(*i)++;
 	}
 	else if (operator == '>')
-			param = ft_strdup(">");
-	else{
-		param = ft_substr(input, *i, 1);}
+		param = ft_strdup(">");
+	else
+	{
+		param = ft_substr(input, *i, 1);
+	}
 	(*i)++;
 	if (param == NULL)
 		return (NULL);
@@ -53,7 +66,7 @@ t_params	new_param(char *param, t_data *data)
 {
 	t_params	new;
 
-	new = malloc(sizeof(t_param)); // tested
+	new = malloc(sizeof(t_param)); 
 	if (new == NULL)
 	{
 		prompt_error("malloc error 1", NULL, data, 1);
@@ -65,7 +78,6 @@ t_params	new_param(char *param, t_data *data)
 	new->is_operator = 0;
 	new->in_double_quote = -1;
 	new->in_quote = -1;
-	// add_garbag//e(new);
 	return (new);
 }
 
@@ -73,7 +85,8 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 {
 	t_cmd_list	tmp;
 	t_params	params;
-
+	
+	(void)data;
 	tmp = *cmd_list;
 	while (tmp)
 	{
@@ -101,7 +114,7 @@ t_params	clone_t_params(t_params params, t_data *data)
 {
 	t_params	new;
 
-	new = malloc(sizeof(t_param)); // tested
+	new = malloc(sizeof(t_param));
 	if (new == NULL)
 	{
 		prompt_error("malloc error 8", NULL, data, 1);
@@ -138,7 +151,7 @@ t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data)
 		last_param->next = clone_t_params(param, data);
 		if (last_param->next == NULL)
 			return (NULL);
-	last_param->next->prev = last_param;
+		last_param->next->prev = last_param;
 	}
 	return (cmd_list->args);
 }
@@ -206,7 +219,7 @@ t_cmd_list	get_cmd_list(t_data *data)
 		handling_param = handling_param->next;
 	}
 	if (data->parsing_error == 0)
-	{	
+	{
 		if (handle_params(&head, data) == 0)
 			return (NULL);
 	}

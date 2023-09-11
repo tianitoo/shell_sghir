@@ -12,7 +12,6 @@
 
 #include "../../minishell.h"
 
-
 char	*find_key(char *str, t_data *data)
 {
 	char	*key;
@@ -42,8 +41,8 @@ char	*find_key(char *str, t_data *data)
 	if (key == NULL)
 	{
 		prompt_error("malloc error", NULL, data, 1);
-		return (NULL);}
-	// ft_printf("key = %s\n", key);
+		return (NULL);
+	}
 	return (key);
 }
 
@@ -56,7 +55,6 @@ char	*update_param(t_data *data, char *key, char *new_param)
 	value = get_value(new_param, data);
 	if (!value)
 		return (NULL);
-	// add_garbage(data, value);
 	tmp = data->linked_env;
 	key_to_find = find_key(new_param, data);
 	while (tmp)
@@ -117,16 +115,16 @@ char	*get_value(char *variable, t_data *data)
 	if (!value)
 	{
 		prompt_error("malloc error", NULL, data, 1);
-		return (NULL);}
+		return (NULL);
+	}
 	return (value);
 }
 
-t_env	 *add_to_env(t_cmd_list cmd_list, t_data *data)
+t_env	*add_to_env(t_cmd_list cmd_list, t_data *data)
 {
-	// t_env	*linked_env;
-	char	*key;
-	char	*value;
-	t_env	*linked_env;
+	char		*key;
+	char		*value;
+	t_env		*linked_env;
 	t_params	tmp;
 
 	linked_env = data->linked_env;
@@ -140,11 +138,10 @@ t_env	 *add_to_env(t_cmd_list cmd_list, t_data *data)
 		else
 		{
 			key = find_key(tmp->parameter, data);
-			// add_garbage(data, key);
 			if (key)
 			{
 				if (key_exists(data->linked_env, key, data) == -1)
-					return NULL;
+					return (NULL);
 				else if (key_exists(data->linked_env, key, data) == 1)
 				{
 					puts("here");

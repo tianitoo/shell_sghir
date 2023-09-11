@@ -66,7 +66,7 @@ t_cmd	*new_cmd(t_data *data)
 {
 	t_cmd	*cmd;
 
-	cmd = malloc(sizeof(t_cmd)); // tested
+	cmd = malloc(sizeof(t_cmd)); 
 	if (cmd == NULL)
 		return (prompt_error("malloc error 2", NULL, data, 1), NULL);
 	if (add_garbage(data, cmd) == NULL)
@@ -78,7 +78,7 @@ t_cmd	*new_cmd(t_data *data)
 	cmd->parsing_error = 0;
 	cmd->input = -1;
 	cmd->output = -1;
-	cmd->pip = (int *)malloc(sizeof(int) * 2);// tested
+	cmd->pip = (int *)malloc(sizeof(int) * 2);
 	if (cmd->pip == NULL)
 		return (prompt_error("malloc error 3", NULL, data, 1), NULL);
 	if (add_garbage(data, cmd->pip) == NULL)
