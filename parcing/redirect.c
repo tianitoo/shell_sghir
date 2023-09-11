@@ -75,6 +75,12 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	int		*history_pipe;
 	int		pid;
 
+	history_pipe = (int *)malloc(sizeof(int) * 2); // tested
+	if (!history_pipe)
+		return (prompt_error("minishell: malloc error", NULL, data, 1), 0);
+	if (add_garbage(data, history_pipe) == NULL)
+		return (0);
+	pipe(history_pipe);
 	next = params->next;
 	prev = params->prev;
 	if (next != NULL)
@@ -87,12 +93,6 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		if (add_garbage(data, pip) == NULL)
 			return (0);
 		pipe(pip);
-		history_pipe = (int *)malloc(sizeof(int) * 2); // tested
-		if (!history_pipe)
-			return (prompt_error("minishell: malloc error", NULL, data, 1), 0);
-		if (add_garbage(data, history_pipe) == NULL)
-			return (0);
-		pipe(history_pipe);
 		pid = fork();
 		if (pid == 0)
 		{
@@ -122,7 +122,7 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 			close(history_pipe[1]);
 			free_garbage();
 			free_params(&data->params);
-			rl_clear_history();
+			// rl_clear_history();
 			exit(0);
 		}
 		else
@@ -167,7 +167,7 @@ void	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", next->parameter);
-			prompt_error(" ", cmd_list, NULL, 1);
+			prompt_error(" ", cmd_list, data, 1);
 			return ;
 		}
 		fd = open(next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
@@ -206,14 +206,14 @@ void	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL, 1);
+			prompt_error(" ", cmd_list, data, 1);
 			return ;
 		}
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
 		{
 			ft_printf("%s: no such file or directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL, 1);
+			prompt_error(" ", cmd_list, data, 1);
 		}
 		cmd_list->input = fd;
 		if (prev)
@@ -248,14 +248,14 @@ void	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 		{
 			closedir(dir);
 			printf("%s: is a directory\n", params->next->parameter);
-			prompt_error(" ", cmd_list, NULL, 1);
+			prompt_error(" ", cmd_list, data, 1);
 			return ;
 		}
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
 		{
 			ft_printf("syntax error: could not open file\n");
-			prompt_error(" ", cmd_list, NULL, 1);
+			prompt_error(" ", cmd_list, data, 1);
 		}
 		cmd_list->output = fd;
 		prev = params->prev;

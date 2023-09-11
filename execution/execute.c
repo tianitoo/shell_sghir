@@ -121,7 +121,7 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_da
 		i++;
 	}
 	ft_printf("Error: %s: command not found1", cmd);
-	prompt_error("", cmd_list, NULL, 127);
+	prompt_error("", cmd_list, data, 127);
 	return (NULL);
 }
 
@@ -143,7 +143,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	else
 	{
 		ft_printf("Error: %s: command not found2", cmd_list->cmd);
-		prompt_error("", cmd_list, NULL, 127);
+		prompt_error("", cmd_list, data, 127);
 		return (NULL);
 	}
 	cmd = get_cmd_path_from_paths(paths, cmd_list->cmd, cmd_list, data);
