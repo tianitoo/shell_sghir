@@ -3,18 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 17:09:30 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/31 20:47:55 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/11 00:23:00 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-
 #include "../../minishell.h"
-
-// int	g_exit_status;
 
 char	*find_pwd(t_data *data)
 {
@@ -47,14 +43,13 @@ char	*find_pwd(t_data *data)
 
 char	*ft_pwd(t_data *data)
 {
-	char *cwd;
+	char	*cwd;
 
 	cwd = find_pwd(data);
 	if (!cwd)
 		return (NULL);
 	ft_putstr_fd(cwd, 1);
 	ft_printf("\n");
-	// free(cwd);
 	cwd = NULL;
 	return (cwd);
 }

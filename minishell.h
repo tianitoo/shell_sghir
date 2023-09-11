@@ -20,39 +20,39 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <string.h>
 # include "./libft/libft.h"
 # include "./ft_printf/ft_printf.h"
-
-#include <string.h>
 
 # define MAX_PATH 1024
 
 typedef struct s_file_descriptors{
-	int		fd;
+	int							fd;
 	struct s_file_descriptors	*next;
-}t_file_descriptors;
+}	t_file_descriptors;
+
 typedef struct s_garbage{
-	void			*ptr;
+	void				*ptr;
 	struct s_garbage	*next;
-}t_garbage;
+}	t_garbage;
 
 typedef struct s_exit{
-	int				g_exit_status;
-	int				in_execMode;
-	t_garbage		*garbage;
+	int					g_exit_status;
+	int					in_exec_mode;
+	t_garbage			*garbage;
 	t_file_descriptors	*file_descriptors;
-	int heredoc_statu;
-	int heredoc_fd;
-	int				closeed;
+	int					heredoc_statu;
+	int					heredoc_fd;
+	int					closeed;
 }t_exit;
 
 extern t_exit	*g_exit;
 
 typedef struct s_env{
-	char	*key;
-	char	*value;
-	int		exported;
-	int		hidden;
+	char			*key;
+	char			*value;
+	int				exported;
+	int				hidden;
 	struct s_env	*next;
 }t_env;
 
@@ -63,7 +63,7 @@ typedef struct s_param{
 	char			*parameter;
 	struct s_param	*next;
 	struct s_param	*prev;
-}t_param,	* t_params;
+}t_param,	*t_params;
 
 typedef struct s_cmd{
 	char				*cmd;
@@ -130,7 +130,6 @@ t_env		*ft_export(t_cmd_list cmd_list, t_data *data);
 void		*ft_exit(t_params params, t_data *data);
 t_env		*ft_unset(t_data *data, t_cmd *cmd_list);
 
-
 //execution
 void		execute(t_data *data);
 void		pipes_work(t_cmd_list cmd_list);
@@ -155,7 +154,4 @@ void		free_garbage(void);
 
 void		*ft_malloc(size_t size);
 
-
-
 #endif
-

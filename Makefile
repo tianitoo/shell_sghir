@@ -91,7 +91,7 @@ $(PRINTF): $(PRINTFSRC)
 	$(MK) -C ./ft_printf
 
 $(NAME): $(LIBFT) $(PRINTF) $(OBJ)
-		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) $(RFLAGS) -fsanitize=address 
+		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) $(RFLAGS) -fsanitize=address -g
 %.o : %.c $(HEAD)
 	$(CC) -Wall -Wextra -Werror $(INC) -g -c $< -o $@
 clean:
