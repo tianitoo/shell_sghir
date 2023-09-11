@@ -36,7 +36,6 @@ t_data	*ft_cd(t_params params, t_data *data)
 {
 	char	*pwd;
 	char	**args;
-	char	*pwd;
 	t_env	*env;
 	char	*next_pwd;
 
