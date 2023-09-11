@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/03 18:02:43 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/11 00:23:59 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	move_pointers_back(char **double_pointer_env, int i)
 t_env	*ft_unset(t_data *data, t_cmd *cmd_list)
 {
 	t_env		*env;
-	t_env 		*prev;
+	t_env		*prev;
 	t_params	params;
 	char		*var_name;
 

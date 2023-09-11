@@ -10,54 +10,58 @@
 /*																			*/
 /* ************************************************************************** */
 
-
 #include "../../minishell.h"
-int check_n(char *str)
+
+int	check_n(char *str)
 {
-	int i = 1;
-//kanmchiw nchofo awel 2 caracters
-	if (ft_strncmp(str,"-n",2) != 0)
-		return(0);
-//hna kanchofo wach hadak ila mora awel n wash n ola la 
-//ila makanch n kanperintiw
-	while(str[i])
+	int	i;
+
+	i = 1;
+	if (ft_strncmp(str, "-n", 2) != 0)
+		return (0);
+	while (str[i])
 	{
 		if (str[i] != 'n')
-			return(0);
+			return (0);
 		i++;
 	}
-	return(1);
+	return (1);
 }
 
-int ft_arrlen(char **args)
+int	ft_arrlen(char **args)
 {
-	int i = 0;
-	while(args[i])
+	int	i;
+
+	i = 0;
+	while (args[i])
 		i++;
-	return(i);
+	return (i);
 }
 
 t_params	ft_echo(t_params params, t_data *data)
 {
 	char	**args;
-	int		i = 1;
-	int		flag = 0;
+	int		len;
+	int		i;
+	int		flag;
 
+	i = 1;
+	flag = 0;
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	int len = ft_arrlen(args) - 1;
-	while(args[i])
+	len = ft_arrlen(args) - 1;
+	while (args[i])
 	{
 		if (check_n(args[i]) == 1)
 			flag = 1;
 		else
-			break;
+			break ;
 		i++;
 	}
-	while(args[i])
+	while (args[i])
 	{
-		ft_printf("%s",args[i]);
+		ft_printf("%s", args[i]);
 		if (i != len)
 			ft_printf(" ");
 		i++;

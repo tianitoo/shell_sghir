@@ -65,7 +65,7 @@ void	free_params(t_params *params)
 void	get_input(t_data *data)
 {
 	data->commande_line = get_commande_line(data);
-	g_exit->in_execMode = 1;
+	g_exit->in_exec_mode = 1;
 	if (data->commande_line == NULL)
 		return ;
 	if (!treat_input(data))

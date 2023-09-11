@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-int is_redirect_operator(t_params param)
+int	is_redirect_operator(t_params param)
 {
 	if (ft_strncmp(param->parameter, ">", 2) == 0
 		|| ft_strncmp(param->parameter, "<", 2) == 0
@@ -22,7 +22,7 @@ int is_redirect_operator(t_params param)
 	return (0);
 }
 
-int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
+int	handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	if (params->parameter[0] == '<' && ft_strlen(params->parameter) == 1)
 		add_input(params, cmd_list, data);
@@ -35,9 +35,6 @@ int handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 	}
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
 		handle_append(params, cmd_list, data);
-	// // else if (params->parameter[0] == '<' && params->parameter[1] == '>'
-	// // 	|| params->parameter[0] == '>' && params->parameter[1] == '<')
-	// // 	prompt_error("minishell: syntax error near unexpected token `newline'");
 	return (1);
 }
 
