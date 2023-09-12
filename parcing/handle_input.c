@@ -64,33 +64,33 @@ void	free_params(t_params *params)
 	*params = NULL;
 }
 
-void	get_input(t_data *data)
+int	get_input(t_data *data)
 {
+	char	*commande_line;
+
 	data->commande_line = get_commande_line(data);
+	if (data->commande_line == NULL)
+		return (0);
+	commande_line = ft_strdup(data->commande_line);
+	if (commande_line == NULL)
+		return (0);
+	if (add_garbage(data, commande_line) == NULL)
+		return (0);
 	g_exit->in_exec_mode = 1;
 	if (data->commande_line == NULL)
-		return ;
+		return (0);
 	if (!treat_input(data))
-	{
-		free_params(&data->params);
-		return ;
-	}
+		return (free_params(&data->params), 0);
 	if (data->params == NULL || data->parsing_error == 1)
-	{
-		free_params(&data->params);
-		return ;
-	}
+		return (free_params(&data->params), 0);
 	data->cmd_list = get_cmd_list(data);
 	if (data->cmd_list == NULL || data->parsing_error == 1)
-	{
-		free_params(&data->params);
-		return ;
-	}
+		return (free_params(&data->params), 0);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
-		add_history(data->commande_line);
-	free_params(&data->params);
+		add_history(commande_line);
+	return (free_params(&data->params), 1);
 }
 
 void	show_command(t_cmd_list cmd_list)

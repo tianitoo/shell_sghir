@@ -90,14 +90,13 @@ typedef struct s_data{
 
 // parsing
 void		handler(int arg);
-void		get_input(t_data *data);
+int		get_input(t_data *data);
 char		**pipe_split(char *input);
 int			handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
 t_cmd_list	get_cmd_list(t_data *data);
 char		*handle_dollar(char **heredoc_input, t_data *data);
 void		add_cmd(t_cmd_list cmd_list, t_params param, t_data *data);
 char		*get_commande_line(t_data *data);
-char		*handle_dollar_in_quotes(char *param, t_data *data);
 int			is_redirect_operator(t_params param);
 t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data);
 t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data);

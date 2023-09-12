@@ -12,26 +12,43 @@
 
 #include "../minishell.h"
 
-int	treat_input(t_data *data)
+int	check_special_char(t_data *data)
 {
-	int			i;
-	int			param_len;
+	int	i;
 
-	param_len = 0;
 	i = 0;
 	while (data->commande_line[i])
 	{
-		if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|' && data->commande_line[i] != '-')
+		if (data->commande_line[i] == '\"')
+		{
+			while (data->commande_line && data->commande_line[++i] != '\"')
+				if (data->commande_line[i] == '\0')
+					return (ft_printf("Error: quote not closed"), prompt_error("'", NULL, data, 1), 0);
+		}
+		else if (data->commande_line[i] == '\'')
+		{
+			while (data->commande_line && data->commande_line[++i] != '\'')
+				if (data->commande_line[i] == '\0')
+					return (ft_printf("Error: quote not closed"), prompt_error("'", NULL, data, 1), 0);
+		}
+		else if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|' && data->commande_line[i] != '-' && data->commande_line[i] != '+' && data->commande_line[i] != '=')
 			return (ft_printf("Error: special caracter: `%c", data->commande_line[i]), prompt_error("'", NULL, data, 1), 0);
 		i++;
 	}
+	return (1);
+}
+
+int	create_params(t_data *data)
+{
+	int		i;
+	int		param_len;
+
 	i = 0;
-	if (handle_dollar(NULL, data) == NULL)
-		return (0);
+	param_len = 0;
 	while (data->commande_line[i])
 	{
 		if (data->commande_line[i] && !is_operator(data->commande_line[i]))
-		{	
+		{
 			if (handle_normal_char(data, &i, &param_len) == NULL)
 				return (0);
 		}
@@ -41,14 +58,23 @@ int	treat_input(t_data *data)
 				return (0);
 		}
 		else if (data->commande_line[i] == '|')
-		{
 			if (add_operator(data, '|', &i) == NULL)
 				return (0);
-		}
 		if (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
 			while (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
 				i++;
 	}
+	return (1);
+}
+
+int	treat_input(t_data *data)
+{
+	if (check_special_char(data) == 0)
+		return (0);
+	if (handle_dollar(NULL, data) == NULL)
+		return (0);
+	if (create_params(data) == 0)
+		return (0);
 	return (1);
 }
 
@@ -63,6 +89,27 @@ t_params	get_last_param(t_params params)
 		tmp = tmp->next;
 	return (tmp);
 }
+int	normal_char_len(t_data *data, int *j, int *k, int *p_len)
+{
+
+	while (data->commande_line[*j] && (!is_operator(data->commande_line[*j]) || data->commande_line[*j] == '\"' || data->commande_line[*j] == '\''))
+	{
+		if (data->commande_line[*j] == '\"' || data->commande_line[*j] == '\'')
+		{
+			*k = *j;
+			handle_quotes(data, j);
+			(*p_len) += *j - *k;
+			if (is_operator(data->commande_line[*j]))
+				break;
+		}
+		else
+		{
+			(*j)++;
+			(*p_len)++;
+		}
+	}
+	return (1);
+}
 
 char	*handle_normal_char(t_data *data, int *i, int *p_len)
 {
@@ -74,33 +121,14 @@ char	*handle_normal_char(t_data *data, int *i, int *p_len)
 	j = *i;
 	k = -1;
 	param = NULL;
-	while (data->commande_line[j] && (!is_operator(data->commande_line[j]) || data->commande_line[j] == '\"' || data->commande_line[j] == '\''))
-	{
-		if (data->commande_line[j] == '\"' || data->commande_line[j] == '\'')
-		{
-			k = j;
-			handle_quotes(data, &j);
-			(*p_len) += j - k;
-			if (is_operator(data->commande_line[j]))
-				break;
-		}
-		else
-		{
-			j++;
-			(*p_len)++;
-		}
-	}
-	if (data->commande_line[j] == '\n')
-		return (add_history(data->commande_line), prompt_error("Error: special caracter \\n", NULL, data, 1), NULL);
+	normal_char_len(data, &j, &k, p_len);
 	param = ft_substr(data->commande_line, *i, *p_len);
 	if (param == NULL)
 		return (NULL);
 	*i = j;
 	*p_len = 0;
 	if (add_param(&data->params, param, data) == NULL)
-	{
 		return (NULL);
-	}
 	last_param = get_last_param(data->params);
 	last_param->is_operator = 0;
 	if (k != -1)
@@ -158,117 +186,81 @@ char	*ft_strjoin_char(char *s1, char c, t_data *data)
 	return (new_str);
 }
 
+char	*expand_normal_variable(char *param, int *i, t_data *data, int *j)
+{
+	char	*value;
+	char	*tmp;
+	while (param[*j] && !is_operator(param[*j]) && param[*j] != '$' && (ft_isalpha(param[*j]) || param[*j] == '_'))
+		(*j)++;
+	tmp = ft_substr(param, *i, *j - *i);
+	if (tmp == NULL)
+		return (NULL);
+	if (add_garbage(data, tmp) == NULL)
+		return (NULL);
+	value = get_env_value(tmp, data);
+	if (value == NULL)
+		return (NULL);
+	*i = *j;
+	return (value);
+}
+
+char	*expand_special_variable(char *param, int *i, t_data *data, int *j)
+{
+	char	*value;
+
+	if (param[*j] == '?')
+	{
+		value = ft_itoa(g_exit->g_exit_status);
+		if (value == NULL)
+			return (NULL);
+		(*i)++;
+	}
+	else
+	{
+		if (param[*j] == '\"' || param[*j] == '\'')
+			(*i)++;
+		value = ft_strdup("");
+		if (value == NULL)
+			return (NULL);
+	}
+	if (add_garbage(data, value) == NULL)
+		return (NULL);
+	return (value);
+}
+
 char	*expand_variable(char *param, int *i, t_data *data)
 {
 	int		j;
-	char	*tmp;
 	char	*value;
 	char	*new_param;
 
 	j = ++*i;
-	// ft_printf("param = %s\n", param[j]);
 	new_param = ft_strdup("");
 	if (new_param == NULL)
 		return (NULL);
-	// if (!ft_isalnum(data->commande_line[j]))
-	// 	return (new_param)
-	if (param[j] == '{')
-	{
-		while (param[j] && param[j] != '}')
-			j++;
-		if (param[j] == '}')
-		{
-			tmp = ft_substr(param, *i + 1, j - *i - 1);
-			if (tmp == NULL)
-				return (NULL);
-			if (add_garbage(data, tmp) == NULL)
-				return (NULL);
-			value = get_env_value(tmp, data);
-			if (value == NULL)
-				return (NULL);
-			j++;
-		}
-		else
-		{
-			value = ft_strdup("");
-			if (value == NULL)
-				return (NULL);
-		}
-		*i = j;
-	}
+	if (ft_isalpha(param[j]) || param[j] == '_')
+		value = expand_normal_variable(param, i, data, &j);
 	else
-	{
-		if (param[j] == '?')
-		{
-			value = ft_itoa(g_exit->g_exit_status);
-			if (value == NULL)
-				return (NULL);
-			(*i)++;
-		}
-		else if (ft_isalpha(param[j]) || param[j] == '_')
-		{
-			while (param[j] && !is_operator(param[j]) && param[j] != '$' && (ft_isalpha(param[j]) || param[j] == '_'))
-				j++;
-			tmp = ft_substr(param, *i, j - *i);
-			if (tmp == NULL)
-				return (NULL);
-			if (add_garbage(data, tmp) == NULL)
-				return (NULL);
-			value = get_env_value(tmp, data);
-			if (value == NULL)
-				return (NULL);
-			*i = j;
-		}
-		else if (param[j] == '\"' || param[j] == '\'')
-		{
-			value = ft_strdup("");
-			if (value == NULL)
-				return (NULL);
-		}
-		else
-		{
-			(*i)++;
-			value = ft_strdup("");
-			if (value == NULL)
-				return (NULL);
-		}
-	}
+		value = expand_special_variable(param, i, data, &j);
+	if (value == NULL)
+		return (NULL);
 	new_param = ft_strjoin(new_param, value, 1);
 	if (add_garbage(data, new_param) == NULL)
 		return (NULL);
 	return (new_param);
 }
 
-char	*handle_dollar_in_quotes(char *param, t_data *data)
+char *expand_join_variable(char *command_line, char *new_command_line, int *i, t_data *data)
 {
-	int		i;
-	char	*new_param;
+	char	*expanded_variable;
 
-	i = 0;
-	new_param = ft_strdup("");
-	if (new_param == NULL)
+	expanded_variable = expand_variable(command_line, i, data);
+	if (!expanded_variable)
 		return (NULL);
-	if (add_garbage(data, new_param) == NULL)
+	new_command_line = ft_strjoin(new_command_line, expanded_variable, 0);
+	if (!new_command_line)
 		return (NULL);
-	while (param[i])
-	{
-		if (param[i] == '$')
-		{
-			new_param = expand_variable(param, &i, data);
-			if (!new_param)
-				return (NULL);
-		}
-		else
-		{
-			new_param = ft_strjoin_char(new_param, param[i], data);
-			if (!new_param)
-				return (NULL);
-		}
-		if (add_garbage(data, new_param) == NULL)
-			return (NULL);
-		i++;
-	}
-	return (new_param);
+	return (new_command_line);
 }
 
 char	*handle_dollar(char **heredoc_input, t_data *data)
@@ -333,12 +325,7 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 		}
 		if (!in_quote && command_line[i] == '$' && !(in_double_quotes && command_line[i + 1] == '"'))
 		{
-			char	*expanded_variable;
-
-			expanded_variable = expand_variable(command_line, &i, data);
-			if (!expanded_variable)
-				return (NULL);
-			new_command_line = ft_strjoin(new_command_line, expanded_variable, 0);
+			new_command_line = expand_join_variable(command_line, new_command_line, &i, data);
 			if (!new_command_line)
 				return (NULL);
 		}
