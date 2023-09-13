@@ -258,36 +258,10 @@ int	get_exitstate(int wait_status)
 	return (1);
 }
 
-void	execute(t_data *data)
+void	close_file_descriptors(t_data *data)
 {
 	t_cmd_list	cmd_list;
-	pid_t		pid;
 
-	pid = 0;
-	cmd_list = data->cmd_list;
-	while (cmd_list)
-	{
-		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
-		{
-			if (cmd_list->next != NULL)
-				pipe(cmd_list->next->pip);
-			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
-			{
-				if (execute_builtin(data, cmd_list) == NULL)
-					break ; // same check
-			}
-			else
-			{
-				if (cmd_list->cmd)
-				{
-					pid = execute_cmd(data, cmd_list);
-					if (pid == -2)
-						break ;// check when pid == -2
-				}
-			}
-		}
-		cmd_list = cmd_list->next;
-	}
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
@@ -304,6 +278,43 @@ void	execute(t_data *data)
 		close(cmd_list->pip[1]);
 		cmd_list = cmd_list->next;
 	}
+}
+
+pid_t	execute_commands(t_data *data)
+{
+	t_cmd_list	cmd_list;
+	pid_t		pid;
+
+	cmd_list = data->cmd_list;
+	while (cmd_list)
+	{
+		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
+		{
+			if (cmd_list->next != NULL)
+				pipe(cmd_list->next->pip);
+			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
+			{
+				if (execute_builtin(data, cmd_list) == NULL)
+					break ; // same check
+			}
+			else if (cmd_list->cmd)
+			{
+				pid = execute_cmd(data, cmd_list);
+				if (pid == -2)
+					break ;// check when pid == -2
+			}
+		}
+		cmd_list = cmd_list->next;
+	}
+	return (pid);
+}
+
+void	execute(t_data *data)
+{
+	pid_t		pid;
+
+	pid = execute_commands(data);
+	close_file_descriptors(data);
 	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
