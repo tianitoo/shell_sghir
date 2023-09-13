@@ -120,7 +120,7 @@ void		free_params(t_params *params);
 
 //builtins
 t_data		*ft_cd(t_params params, t_data *data);
-void		write_env(t_data *data);
+void		*write_env(t_data *data);
 t_params	ft_echo(t_params params, t_data *data);
 char		*find_pwd(t_data *data);
 char		*ft_pwd(t_data *data);

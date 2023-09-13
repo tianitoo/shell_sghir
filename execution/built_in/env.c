@@ -12,11 +12,13 @@
 
 #include "../../minishell.h"
 
-void	write_env(t_data *data)
+void	*write_env(t_data *data)
 {
 	t_env	*env;
 
 	env = data->linked_env;
+	if (env == NULL)
+		return (NULL);
 	while (env)
 	{
 		if (env->value != NULL && ft_strlen(env->value) != 0)
@@ -26,4 +28,5 @@ void	write_env(t_data *data)
 		}
 		env = env->next;
 	}
+	return (data);
 }

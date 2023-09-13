@@ -61,10 +61,8 @@ char	**env_to_double_pointer(t_env *env, t_data *data)
 	int	 i;
 	int		env_count;
 	char	**envp;
-	t_env	*tmp;
 
 	i = 0;
-	tmp = env;
 	env_count = ft_env_count(env);
 	envp = (char **)ft_calloc(sizeof(char *), (env_count + 1));
 	if (envp == NULL)

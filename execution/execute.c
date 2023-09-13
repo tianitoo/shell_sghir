@@ -31,25 +31,10 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
+void	*builtin(t_data *data, t_cmd_list cmd_list)
 {
-	int	input;
-	int	output;
-	void	*ret = 0;
+	void	*ret;
 
-	if (cmd_list->input != -1)
-	{
-		input = dup(0);
-		dup2(cmd_list->input, 0);
-		close(cmd_list->input);
-	}
-	if (cmd_list->output != -1)
-	{
-		output = dup(1);
-		dup2(cmd_list->output, 1);
-		close(cmd_list->output);
-	}
-	pipes_work(cmd_list);
 	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
 		ret = ft_echo(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
@@ -61,9 +46,30 @@ t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 	else if (ft_strcmp(cmd_list->cmd, "unset") == 0)
 		ret = ft_unset(data, cmd_list);
 	else if (ft_strcmp(cmd_list->cmd, "env") == 0)
-		write_env(data);
+		ret = write_env(data);
 	else if (ft_strcmp(cmd_list->cmd, "exit") == 0)
 		ret = ft_exit(cmd_list->args, data);
+	return (ret);
+}
+
+void	set_io_builtin(t_cmd_list cmd_list, int *input, int *output)
+{
+	if (cmd_list->input != -1)
+	{
+		*input = dup(0);
+		dup2(cmd_list->input, 0);
+		close(cmd_list->input);
+	}
+	if (cmd_list->output != -1)
+	{
+		*output = dup(1);
+		dup2(cmd_list->output, 1);
+		close(cmd_list->output);
+	}
+}
+
+void	unset_io_builtin(t_cmd_list cmd_list, int input, int output)
+{
 	if (cmd_list->input != -1)
 	{
 		dup2(input, 0);
@@ -74,9 +80,34 @@ t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 		dup2(output, 1);
 		close(output);
 	}
+}
+
+t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
+{
+	int	input;
+	int	output;
+	void	*ret;
+
+	set_io_builtin(cmd_list, &input, &output);
+	pipes_work(cmd_list);
+	ret = builtin(data, cmd_list);
+	unset_io_builtin(cmd_list, input, output);
 	if (ret == NULL)
 		return (NULL);
 	return (cmd_list);
+}
+
+int	is_directory(char *cmd)
+{
+	DIR	*dir;
+
+	dir = opendir(cmd);
+	if (dir != NULL)
+	{
+		closedir(dir);
+		return (1);
+	}
+	return (0);
 }
 
 char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_data *data)
@@ -84,26 +115,12 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_da
 	int		i;
 	char	*cmd_path;
 	char	*tmp;
-	DIR		*dir;
 
-	(void)data;
-
-	dir = opendir(cmd);
-	if (dir != NULL)
-	{
-		ft_printf("Error: %s: is a directory\n", cmd);
-		g_exit->g_exit_status = 126;
-		(void)closedir(dir);
-		return (NULL);
-	}
 	i = 0;
+	if (is_directory(cmd))
+		return (ft_printf("Error: %s: is a directory", cmd), prompt_error("", cmd_list, data, 126), NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
-	if (paths == NULL)
-	{
-		ft_printf("Error: %s: no such file or directory\n", cmd);
-		g_exit->g_exit_status = 127;
-	}
 	if (ft_strlen(cmd) == 0)
 		return (NULL);
 	while (paths[i])
@@ -112,17 +129,13 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_da
 		if (!tmp)
 			return (NULL);
 		cmd_path = ft_strjoin(tmp, cmd, 1);
-		if (!cmd_path)
-			return (NULL);
-		if (add_garbage(data, cmd_path) == NULL)
+		if (garbage(cmd_path, data) == NULL)
 			return (NULL);
 		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
 			return (cmd_path);
 		i++;
 	}
-	ft_printf("Error: %s: command not found1", cmd);
-	prompt_error("", cmd_list, data, 127);
-	return (NULL);
+	return (ft_printf("Error: %s: command not found1", cmd), prompt_error("", cmd_list, data, 127), NULL);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -138,11 +151,11 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	{	
 		paths = ft_split(path, ':');
 		if (paths == NULL)
-			return (NULL);
+			return (prompt_error("Error: malloc failed", NULL, data, 1), NULL);
 	}
 	else
 	{
-		ft_printf("Error: %s: command not found2", cmd_list->cmd);
+		ft_printf("Error: %s: command not found", cmd_list->cmd);
 		prompt_error("", cmd_list, data, 127);
 		return (NULL);
 	}
@@ -183,16 +196,34 @@ void	pipes_work(t_cmd_list cmd_list)
 	}
 }
 
-int	execute_cmd(t_data *data, t_cmd_list cmd_list)
+int	set_up_execve(t_cmd_list cmd_list, t_data *data)
 {
-	pid_t		pid;
-	char		**args;
-	char		**env;
-	char		*cmd;
+	char	**args;
+	char	**env;
+	char	*cmd;
 
 	cmd = get_cmd_path(data, cmd_list);
 	if (cmd == NULL)
 		return (-2);
+	args = args_to_double_pointer(cmd_list->args, data);
+	if (args == NULL)
+		exit(1);
+	env = env_to_double_pointer(data->linked_env, data);
+	if (env == NULL)
+		exit(1);
+	pipes_work(cmd_list);
+	if (execve(cmd, args, env) == -1)
+	{
+		perror("Error");
+		exit(1);
+	}
+	return (0);
+}
+
+int	execute_cmd(t_data *data, t_cmd_list cmd_list)
+{
+	pid_t		pid;
+
 	pid = fork();
 	if (pid == 0)
 	{
@@ -204,25 +235,11 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			execute_builtin(data, cmd_list);
 			exit(0);
 		}
-		args = args_to_double_pointer(cmd_list->args, data);
-		if (args == NULL)
+		if (set_up_execve(cmd_list, data) == 1)
 			exit(1);
-		env = env_to_double_pointer(data->linked_env, data);
-		if (env == NULL)
-			exit(1);
-		pipes_work(cmd_list);
-		if (execve(cmd, args, env) == -1)
-		{
-			perror("Error");
-			exit(1);
-		}
 	}
 	else if (pid < 0)
-	{
 		prompt_error("Error: fork failed", NULL, data, 1);
-		g_exit->g_exit_status = 1;
-	}
-	// g_exit->cc = 1;
 	return pid;
 }
 
@@ -263,7 +280,6 @@ void	execute(t_data *data)
 			{
 				if (cmd_list->cmd)
 				{
-					// g_exit->cc = 0;
 					pid = execute_cmd(data, cmd_list);
 					if (pid == -2)
 						break ;// check when pid == -2

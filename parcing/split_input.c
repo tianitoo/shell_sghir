@@ -391,7 +391,10 @@ char	*handle_dollar(char **heredoc_input, t_data *data)
 	if (add_garbage(data, new_command_line) == NULL)
 		return (NULL);
 	if (heredoc_input)
+	{
 		command_line = *heredoc_input;
+		data->commande_line = *heredoc_input;
+	}
 	else
 		command_line = data->commande_line;
 	if (!command_line)
