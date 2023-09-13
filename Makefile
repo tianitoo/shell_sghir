@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-FLAGS = -Wall -Werror -Wextra 
+FLAGS = -Wall -Werror -Wextra -fsanitize=address -g
 AR = ar -r
 RM = rm -f
 HEAD = minishell.h
@@ -91,7 +91,7 @@ $(PRINTF): $(PRINTFSRC)
 	$(MK) -C ./ft_printf
 
 $(NAME): $(LIBFT) $(PRINTF) $(OBJ)
-		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) $(RFLAGS) -fsanitize=address -g
+		cc  $(OBJ) -o $(NAME)  -L./libft -lft -L./ft_printf ./ft_printf/ft_printf.a $(FLAGS) $(RFLAGS) 
 %.o : %.c $(HEAD)
 	$(CC) -Wall -Wextra -Werror $(INC) -g -c $< -o $@
 clean:

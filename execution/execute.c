@@ -35,6 +35,7 @@ void	*builtin(t_data *data, t_cmd_list cmd_list)
 {
 	void	*ret;
 
+	ret = 0;
 	if (ft_strcmp(cmd_list->cmd, "echo") == 0)
 		ret = ft_echo(cmd_list->args, data);
 	else if (ft_strcmp(cmd_list->cmd, "cd") == 0)
@@ -148,7 +149,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	env = data->linked_env;
 	path = get_variable(env, "PATH");
 	if (path != NULL)
-	{	
+	{
 		paths = ft_split(path, ':');
 		if (paths == NULL)
 			return (prompt_error("Error: malloc failed", NULL, data, 1), NULL);
@@ -235,8 +236,8 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 			execute_builtin(data, cmd_list);
 			exit(0);
 		}
-		if (set_up_execve(cmd_list, data) == 1)
-			exit(1);
+		set_up_execve(cmd_list, data);
+		exit(1);
 	}
 	else if (pid < 0)
 		prompt_error("Error: fork failed", NULL, data, 1);

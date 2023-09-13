@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 16:47:23 by hnait             #+#    #+#             */
-/*   Updated: 2023/07/31 08:30:26 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/13 22:50:27 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	free_garbage(void)
 		next = tmp->next;
 		if (tmp->ptr)
 		{
-			// ft_printf("freeing: %s\n", tmp->ptr);
 			free(tmp->ptr);
 			tmp->ptr = NULL;
 		}
