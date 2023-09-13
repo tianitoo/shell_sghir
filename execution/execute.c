@@ -211,8 +211,6 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		if (env == NULL)
 			exit(1);
 		pipes_work(cmd_list);
-		
-		
 		if (execve(cmd, args, env) == -1)
 		{
 			perror("Error");
@@ -271,7 +269,6 @@ void	execute(t_data *data)
 						break ;// check when pid == -2
 				}
 			}
-
 		}
 		cmd_list = cmd_list->next;
 	}

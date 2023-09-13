@@ -150,6 +150,8 @@ char		*get_value(char *variable, t_data *data);
 t_env		*get_env(char **envp, t_data *data);
 t_garbage	*add_garbage(t_data *data, void *ptr);
 void		free_garbage(void);
+void		*garbage(void *garbage, t_data *data);
+
 
 void		*ft_malloc(size_t size);
 

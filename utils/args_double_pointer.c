@@ -28,22 +28,32 @@ char	**args_to_double_pointer(t_params params, t_data *data)
 		tmp = tmp->next;
 	}
 	args = (char **)ft_calloc(sizeof(char *), (args_count + 1));
-	if (args == NULL)
-		return (NULL);
-	if (add_garbage(data, args) == NULL)
+	if (garbage(args, data) == NULL)
 		return (NULL);
 	while (params)
 	{
 		args[i] = ft_strdup(params->parameter);
-		if (args[i] == NULL)
-			return (NULL);
-		if (add_garbage(data, args[i]) == NULL)
+		if (garbage(args[i++], data) == NULL)
 			return (NULL);
 		params = params->next;
-		i++;
 	}
 	args[i] = NULL;
 	return (args);
+}
+
+int	ft_env_count(t_env *env)
+{
+	int	 env_count;
+	t_env *tmp;
+
+	env_count = 0;
+	tmp = env;
+	while (tmp)
+	{
+		env_count++;
+		tmp = tmp->next;
+	}
+	return (env_count);
 }
 
 char	**env_to_double_pointer(t_env *env, t_data *data)
@@ -55,26 +65,17 @@ char	**env_to_double_pointer(t_env *env, t_data *data)
 
 	i = 0;
 	tmp = env;
-	env_count = 0;
-	while (tmp)
-	{
-		env_count++;
-		tmp = tmp->next;
-	}
+	env_count = ft_env_count(env);
 	envp = (char **)ft_calloc(sizeof(char *), (env_count + 1));
 	if (envp == NULL)
 		return (NULL);
 	while (env)
 	{
 		envp[i] = ft_strjoin(env->key, "=", 0);
-		if (envp[i] == NULL)
-			return (NULL);
-		if (add_garbage(data, envp[i]) == NULL)
+		if (garbage(envp[i], data) == NULL)
 			return (NULL);
 		envp[i] = ft_strjoin(envp[i], env->value, 0);
-		if (envp[i] == NULL)
-			return (NULL);
-		if (add_garbage(data, envp[i]) == NULL)
+		if (garbage(envp[i], data) == NULL)
 			return (NULL);
 		env = env->next;
 		i++;

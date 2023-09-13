@@ -12,6 +12,19 @@
 
 #include "../minishell.h"
 
+t_garbage	*allocate_garbage(void *garbage, t_data *data)
+{
+	t_garbage	*new;
+	new = (t_garbage *)malloc(sizeof(t_garbage)); // tested
+	if (new == NULL)
+		{
+			prompt_error("malloc error", NULL, data, 1);
+			return (NULL);}
+	new->ptr = garbage;
+	new->next = NULL;
+	return (new);
+}
+
 t_garbage	*add_garbage(t_data *data, void *garbage)
 {
 	t_garbage	*new;
@@ -20,26 +33,18 @@ t_garbage	*add_garbage(t_data *data, void *garbage)
 	new = g_exit->garbage;
 	if (new == NULL)
 	{
-		new = (t_garbage *)malloc(sizeof(t_garbage)); // tested
+		new = allocate_garbage(garbage, data);
 		if (new == NULL)
-			{
-				prompt_error("malloc error", NULL, data, 1);
-				return (NULL);}
-		new->ptr = garbage;
-		new->next = NULL;
+			return (NULL);
 		g_exit->garbage = new;
 	}
 	else
 	{
 		while (new->next)
 			new = new->next;
-		new->next = (t_garbage *)malloc(sizeof(t_garbage)); // tested
+		new->next = allocate_garbage(garbage, data);
 		if (new->next == NULL)
-			{
-				prompt_error("malloc error", NULL, data, 1);
-				return (NULL);}
-		new->next->ptr = garbage;
-		new->next->next = NULL;
+			return (NULL);
 	}
 	return (new);
 }

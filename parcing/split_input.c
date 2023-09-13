@@ -176,6 +176,8 @@ char	*ft_strjoin_char(char *s1, char c, t_data *data)
 		prompt_error("malloc error", NULL, data, 1);
 		return (NULL);
 	}
+	if (add_garbage(data, new_str) == NULL)
+		return (NULL);
 	while (s1[i])
 	{
 		new_str[i] = s1[i];
@@ -270,8 +272,6 @@ char	*skip_spaces(char *command_line, char *new_command_line, int *i, t_data *da
 		new_command_line = ft_strjoin_char(new_command_line, ' ', data);
 		if (!new_command_line)
 			return (NULL);
-		if (add_garbage(data, new_command_line) == NULL)
-			return (NULL);
 		(*i)++;
 	}
 	return (new_command_line);
@@ -290,21 +290,21 @@ char	*heredoc_delimiter(char *command_line, int *i, t_data *data, int in_double_
 {
 	char	*new_command_line;
 
-	i += 2;
+	*i += 2;
 	new_command_line = ft_strdup("");
 	if (garbage(new_command_line, data) == NULL)
 		return (NULL);
 	new_command_line = ft_strjoin_char(new_command_line, '<', data);
-	if (garbage(new_command_line, data) == NULL)
+	if (new_command_line == NULL)
 		return (NULL);
 	new_command_line = ft_strjoin_char(new_command_line, '<', data);
-	if (garbage(new_command_line, data) == NULL)
+	if (new_command_line == NULL)
 		return (NULL);
 	new_command_line = skip_spaces(command_line, new_command_line, i, data);
 	if (command_line[*i] == '$' && !(in_double_quotes && command_line[*i + 1] == '"'))
 	{
 		new_command_line = ft_strjoin_char(new_command_line, '$', data);
-		if (garbage(new_command_line, data) == NULL)
+		if (new_command_line == NULL)
 			return (NULL);
 		i++;
 	}
@@ -329,7 +329,7 @@ char	*check_heredoc(char *command_line, int *i, t_data *data, int *quotes)
 	if (command_line[*i] == '<' && command_line[*i + 1] == '<' && !(quotes[1] || quotes[0]))
 	{
 		new_command_line = heredoc_delimiter(command_line, i, data, quotes[1]);
-		if (garbage(new_command_line, data) == NULL)
+		if (new_command_line == NULL)
 			return (NULL);
 	}
 	return (new_command_line);
@@ -349,7 +349,7 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	else
 	{
 		new_command_line = ft_strjoin_char(new_command_line, command_line[*i], data);
-		if (garbage(new_command_line, data) == NULL)
+		if (new_command_line == NULL)
 			return (NULL);
 		(*i)++;
 	}

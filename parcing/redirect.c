@@ -50,14 +50,12 @@ int	make_history(t_data *data, int history_pipe)
 		return (0);
 	eof = read(history_pipe, history, 1);
 	data->commande_line = ft_strjoin_char(data->commande_line, '\n', data);
-	if (data->commande_line == NULL|| add_garbage(data, data->commande_line) == NULL)
+	if (data->commande_line == NULL)
 		return (0);
 	while (eof > 0)
 	{
 		data->commande_line = ft_strjoin_char(data->commande_line, history[0], data);
 		if (data->commande_line == NULL)
-			return (0);
-		if (add_garbage(data, data->commande_line) == NULL)
 			return (0);
 		if (data->commande_line == NULL)
 			return (0);

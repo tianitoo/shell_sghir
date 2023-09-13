@@ -19,11 +19,6 @@ void	show_params(t_params *params)
 
 t_params	delete_param(t_params *params)
 {
-	// t_params	tmp;
-
-	// tmp = *params;
-
-	// show_params(params);*
 	show_params(params);
 	if ((*params)->prev == NULL)
 	{
@@ -47,7 +42,5 @@ t_params	delete_param(t_params *params)
 			(*params)->prev->next = NULL;
 	}
 	show_params(params);
-	// free(tmp->parameter);
-	// free(tmp);
 	return (*params);
 }
