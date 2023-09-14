@@ -28,7 +28,7 @@ int	check_n(char *str)
 	return (1);
 }
 
-int	ft_arrlen(char **args)
+int	ft_arglen(char **args)
 {
 	int	i;
 
@@ -36,6 +36,18 @@ int	ft_arrlen(char **args)
 	while (args[i])
 		i++;
 	return (i);
+}
+
+void	skip_n_args(char **args, int *i, int *flag)
+{
+	while (args[*i])
+	{
+		if (check_n(args[*i]) == 1)
+			*flag = 1;
+		else
+			break ;
+		(*i)++;
+	}
 }
 
 t_params	ft_echo(t_params params, t_data *data)
@@ -50,15 +62,8 @@ t_params	ft_echo(t_params params, t_data *data)
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	len = ft_arrlen(args) - 1;
-	while (args[i])
-	{
-		if (check_n(args[i]) == 1)
-			flag = 1;
-		else
-			break ;
-		i++;
-	}
+	len = ft_arglen(args) - 1;
+	skip_n_args(args, &i, &flag);
 	while (args[i])
 	{
 		ft_printf("%s", args[i]);
