@@ -85,9 +85,6 @@ void	*ft_exit(t_params params, t_data *data)
 		exit(g_exit->g_exit_status);
 	}
 	if (args[2])
-	{
-		ft_printf("minishell: exit: too many arguments\n");
-		g_exit->g_exit_status = 1;
-	}
+		prompt_error("minishell: exit: too many arguments", NULL, data, 1);
 	return (NULL);
 }
