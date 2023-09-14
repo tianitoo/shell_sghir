@@ -62,11 +62,34 @@ int	ft_check_long(char *str)
 	return (1);
 }
 
+void	free_enve(t_data *data)
+{
+	t_env	*env;
+	t_env	*last;
+
+	env = data->linked_env;
+	while (env)
+	{
+		if (env->exported == 1)
+		{
+			if (last)
+				last->next = env->next;
+			free(env->key);
+			free(env->value);
+			free(env);
+		}
+			last = env;
+			env = env->next;
+	}
+	
+}
+
 void	*ft_exit(t_params params, t_data *data)
 {
 	char	**args;
 
 	g_exit->g_exit_status = 0;
+	free_enve(data);
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);

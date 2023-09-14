@@ -254,20 +254,17 @@ char	**get_unset_env(void)
 
 	env = (char **) malloc(sizeof(char *) * 4); // tested
 	if (!env)
-	{
-		prompt_error("malloc error 6", NULL, NULL, 1);
-		return (NULL);
-	}
+		return (prompt_error("malloc error 5", NULL, NULL, 1), NULL);
 	pwd = getcwd(NULL, 0);
+	if (pwd == NULL)
+		return (prompt_error("malloc error 6", NULL, NULL, 1), NULL);
 	env[0] = ft_strjoin("PWD=", pwd, 0);
+	free(pwd);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;
 	if (!env[0] || !env[1] || !env[2])
-	{
-		prompt_error("malloc error 7", NULL, NULL, 1);
-		return (NULL);
-	}
+		return (prompt_error("malloc error 7", NULL, NULL, 1), NULL);
 	return (env);
 }
 
@@ -330,50 +327,55 @@ void	handler(int arg)
 // 	close(g_exit->heredoc_fd);
 // }
 
-int	main(int argc, char **argv, char **envp)
+void	set_g_exit()
 {
-	t_data		*data;
-	char		**env;
-
-	(void)argc;
-	(void)argv;
-	rl_catch_signals = 0;
 	g_exit = malloc(sizeof(t_exit)); // tested
 	if (!g_exit)
 	{
-		prompt_error("malloc error 5", NULL, NULL, 1);
-		return (1);
+		prompt_error("malloc error 3", NULL, NULL, 1);
+		return ;
 	}
 	g_exit->garbage = NULL;
 	g_exit->g_exit_status = 0;
-	// g_exit->cc = 1;
+}
+
+t_data	*set_data(char **envp)
+{
+	t_data	*data;
+	char	**env;
+
 	data = malloc(sizeof(t_data)); // tested
 	if (!data)
-	{
-		prompt_error("malloc error 4", NULL, data, 1);
-		return (1);
-	}
+		return (prompt_error("malloc error 4", NULL, NULL, 1), NULL);
 	if (envp[0] == NULL)
 	{
 		env = get_unset_env();
 		if (env == NULL)
-			return (1);
+			return (NULL);
 	}
 	else
 		env = envp;
 	data->params = NULL;
 	data->linked_env = get_env(env, data);
 	if (!data->linked_env)
-		return (1);
+		return (NULL);
 	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
+	return (data);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_data		*data;
+
+	(void)argc;
+	(void)argv;
+	set_g_exit();
+	data = set_data(envp);
 	signal(SIGINT, handler);
 	signal(SIGQUIT, SIG_IGN);
-	g_exit->in_exec_mode = 0;
 	while (1)
 	{
 		g_exit->in_exec_mode = 0;
-		// signal(SIGQUIT, SIG_IGN);No such file or directory
-		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
 		get_input(data);
 		free_garbage();
