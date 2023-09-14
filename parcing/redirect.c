@@ -94,32 +94,40 @@ int	*create_heredoc_pipe(t_params next, t_data *data)
 	return (pip);
 }
 
-void	child_process(t_data *data, int *pip, int *history_pipe, t_params next)
+void    signalher(int sig)
 {
-	char *line;
+    (void)sig;
+    ioctl(0, TIOCSTI, "\4");
+}
 
-	add_history(data->commande_line);
-	close(pip[0]);
-	close(history_pipe[0]);
-	line = readline("> ");
-	if (add_garbage(data, line) == NULL)
-		exit (1);
-	while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
-	{
-		add_history(line);
-		if (next->in_double_quote == -1 && next->in_quote == -1)
-			if (handle_dollar(&line, data) == NULL)
-				exit (1);
-		line = read_line_heredoc(data, pip[1], history_pipe[1], line);
-		if (line == NULL)
-			exit (1);
-	}
-	close(pip[1]);
-	close(history_pipe[1]);
-	free_garbage();
-	free_params(&data->params);
-	rl_clear_history();
-	exit(0);
+void    child_process(t_data *data, int *pip, int *history_pipe, t_params next)
+{
+    char *line;
+    add_history(data->commande_line);
+    close(pip[0]);
+    close(history_pipe[0]);
+
+    signal(SIGINT,signalher);
+    line = readline("> ");
+    if (add_garbage(data, line) == NULL)
+        exit (1);
+    while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
+    {
+
+        add_history(line);
+        if (next->in_double_quote == -1 && next->in_quote == -1)
+            if (handle_dollar(&line, data) == NULL)
+                exit (1);
+        line = read_line_heredoc(data, pip[1], history_pipe[1], line);
+        if (line == NULL)
+            exit (1);
+    }
+    close(pip[1]);
+    close(history_pipe[1]);
+    free_garbage();
+    free_params(&data->params);
+    rl_clear_history();
+    exit(0);
 }
 
 void	skip_riderection(t_params params, t_cmd_list cmd_list)
