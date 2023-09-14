@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/11 00:24:50 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/14 13:58:36 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	cwd()
 
 char	*current_parrent_dir(char **args, t_data *data)
 {
-	char	*pwd;
+	char	*pwd =NULL;
 
 	if (chdir(args[1]) == -1)
 		return (ft_printf("cd: %s: No such file or directory\n", args[1]), prompt_error("", NULL, data, 1), NULL);
