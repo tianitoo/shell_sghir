@@ -120,44 +120,46 @@ char	*get_value(char *variable, t_data *data)
 	return (value);
 }
 
+char	*update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
+{
+	char	*key;
+	char	*value;
+
+	key = find_key(tmp->parameter, data);
+	if (key)
+	{
+		if (key_exists(data->linked_env, key, data) == -1)
+			return (NULL);
+		else if (key_exists(data->linked_env, key, data) == 1)
+		{
+			if (update_param(data, key, tmp->parameter) == NULL)
+				return (NULL);
+		}
+		else
+		{
+			value = get_value(tmp->parameter, data);
+			while (linked_env && linked_env->next)
+				linked_env = linked_env->next;
+			linked_env->next = new_env(key, value, data);
+			linked_env->next->exported = 0;
+		}
+	}
+	return (key);
+}
+
 t_env	*add_to_env(t_cmd_list cmd_list, t_data *data)
 {
-	char		*key;
-	char		*value;
 	t_env		*linked_env;
 	t_params	tmp;
 
 	linked_env = data->linked_env;
-	key = NULL;
-	value = NULL;
 	tmp = cmd_list->args->next;
 	while (tmp)
 	{
 		if (tmp->parameter[0] == '=' || ft_isdigit(tmp->parameter[0]) || !(ft_isalpha(tmp->parameter[0]) || tmp->parameter[0] == '_'))
 			ft_printf("minishell: export: `%s': not a valid identifier\n", tmp->parameter);
-		else
-		{
-			key = find_key(tmp->parameter, data);
-			if (key)
-			{
-				if (key_exists(data->linked_env, key, data) == -1)
-					return (NULL);
-				else if (key_exists(data->linked_env, key, data) == 1)
-				{
-					puts("here");
-					if (update_param(data, key, tmp->parameter) == NULL)
-						return (NULL);
-				}
-				else
-				{
-					value = get_value(tmp->parameter, data);
-					while (linked_env && linked_env->next)
-						linked_env = linked_env->next;
-					linked_env->next = new_env(key, value, data);
-					linked_env->next->exported = 0;
-				}
-			}
-		}
+		else if (update_or_add_env(data, tmp, linked_env) == NULL)
+				return (NULL);
 		tmp = tmp->next;
 	}
 	return (data->linked_env);

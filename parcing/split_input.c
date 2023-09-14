@@ -31,12 +31,14 @@ int	check_special_char(t_data *data)
 				if (data->commande_line[i] == '\0')
 					return (ft_printf("Error: quote not closed"), prompt_error("'", NULL, data, 1), 0);
 		}
-		else if (!ft_isalnum(data->commande_line[i]) && data->commande_line[i] != ' ' && data->commande_line[i] != '\t' && data->commande_line[i] != '\"' && data->commande_line[i] != '\'' && data->commande_line[i] != '$' && data->commande_line[i] != '>' && data->commande_line[i] != '<' && data->commande_line[i] != '|' && data->commande_line[i] != '-' && data->commande_line[i] != '+' && data->commande_line[i] != '=' && data->commande_line[i] != '.' && data->commande_line[i] != '/' && data->commande_line[i] != '/')
+		else if (data->commande_line[i] == '\n')
 			return (ft_printf("Error: special caracter: `%c", data->commande_line[i]), prompt_error("'", NULL, data, 1), 0);
 		i++;
 	}
 	return (1);
 }
+
+
 
 int	create_params(t_data *data)
 {

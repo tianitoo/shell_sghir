@@ -46,10 +46,7 @@ t_data	*ft_cd(t_params params, t_data *data)
 	if (args[1] == NULL)
 	{
 		if (chdir(get_variable(env, "HOME")) == -1)
-		{
-			ft_printf("cd: HOME not set\n");
-			return (NULL);
-		}
+			return (prompt_error("cd: HOME not set", NULL, data, 1), NULL);
 	}
 	else if (ft_strncmp(args[1], "$HOME", 5) == 0)
 	{
