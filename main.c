@@ -259,7 +259,13 @@ char	**get_unset_env(void)
 		return (NULL);
 	}
 	pwd = getcwd(NULL, 0);
+	if (pwd == NULL)
+	{
+		prompt_error("malloc error 6", NULL, NULL, 1);
+		return (NULL);
+	}
 	env[0] = ft_strjoin("PWD=", pwd, 0);
+	free(pwd);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;
@@ -372,8 +378,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		g_exit->in_exec_mode = 0;
-		// signal(SIGQUIT, SIG_IGN);No such file or directory
-		// signal(SIGINT, handle_sigint);
 		data->parsing_error = 0;
 		get_input(data);
 		free_garbage();

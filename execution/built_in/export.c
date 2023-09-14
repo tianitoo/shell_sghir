@@ -89,7 +89,7 @@ char	*update_param(t_data *data, char *key, char *new_param)
 	return (value);
 }
 
-int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
+int	key_exists(t_env *env_params, char *key_to_find)
 {
 	t_env	*tmp;
 	char	*key;
@@ -97,10 +97,8 @@ int	key_exists(t_env *env_params, char *key_to_find, t_data *data)
 	tmp = env_params;
 	while (tmp)
 	{
-		key = find_key(tmp->key, data);
-		if (add_garbage(data, key) == NULL)
-			return (-1);
-		if (ft_strcmp(key, key_to_find) == 0)
+		key = tmp->key;
+		if (ft_strcmp(key, key_to_find) == 0 && tmp->hidden == 0)
 			return (1);
 		tmp = tmp->next;
 	}
@@ -135,9 +133,9 @@ int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 	key = find_key(tmp->parameter, data);
 	if (key)
 	{
-		if (key_exists(data->linked_env, key, data) == -1)
+		if (key_exists(data->linked_env, key) == -1)
 			return (0);
-		else if (key_exists(data->linked_env, key, data) == 1)
+		else if (key_exists(data->linked_env, key) == 1)
 		{
 			if (update_param(data, key, tmp->parameter) == NULL)
 				return (0);

@@ -189,7 +189,7 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: could not open file", NULL, data, 1), NULL);
+			return (prompt_error("syntax error: no such file or directory", cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -212,7 +212,7 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
-			return (prompt_error("syntax error: could not open file", NULL, data, 1), NULL);
+			return (prompt_error("syntax error: no such file or directory", cmd_list, NULL, 1), NULL);
 		cmd_list->input = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -235,7 +235,7 @@ t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: could not open file", NULL, data, 1), NULL);
+			return (prompt_error("syntax error: could not open file", cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}
