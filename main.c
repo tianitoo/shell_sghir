@@ -295,7 +295,6 @@ void	handler2(int arg)
 	ft_putstr_fd("Quit: 3\n", 1);
 	rl_redisplay();
 }
-
 // for sigint
 void	handler(int arg)
 {
@@ -315,17 +314,12 @@ void	handler(int arg)
 		g_exit->g_exit_status = 1;
 
 	}
-	// else
-	// {
-	// 	// close(g_exit->heredoc_fd);
-	// 	// puts("ctl c");
-	// 	// exit(1);
-	// 	// ft_putstr_fd("\n", 1);
-    // 	// rl_replace_line("\x04", 0);
-	// 	// rl_redisplay();
-	// 	signalher();
-
-	// }
+	else
+	{
+		// close(g_exit->heredoc_fd);
+		// puts("ctl c");
+		// exit(1);
+	}
 }
 
 // void handler_2(int sig)
@@ -352,7 +346,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	g_exit->garbage = NULL;
 	g_exit->g_exit_status = 0;
-	g_exit->signal_exit = 0;
 	// g_exit->cc = 1;
 	data = malloc(sizeof(t_data)); // tested
 	if (!data)
