@@ -24,26 +24,47 @@ char	*find_key(char *str, t_data *data)
 		{
 			key = ft_substr(str, 0, i);
 			if (key == NULL)
-			{
-				prompt_error("malloc error", NULL, data, 1);
-				return (NULL);
-			}
+				return (prompt_error("malloc error", NULL, data, 1), NULL);
 			return (key);
 		}
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-		{
-			prompt_error("minishell: export: not a valid identifier", NULL, data, 1);
-			return (NULL);
-		}
+		if (!ft_isalnum(str[i]) && str[i] != '_'){
+			ft_printf("|%c|\n", str[i]);
+			return (prompt_error("minishell: export: not a valid identifier", NULL, data, 1), NULL);}
 		i++;
 	}
 	key = ft_substr(str, 0, i);
 	if (key == NULL)
-	{
-		prompt_error("malloc error", NULL, data, 1);
-		return (NULL);
-	}
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	return (key);
+}
+
+char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
+{
+	char	*value;
+
+	if (new_param[ft_strlen(key)] == '+')
+	{
+		value = get_value(new_param, data);
+		if (value == NULL)
+			return (NULL);
+		if (tmp->value)
+			tmp->value = ft_strjoin(tmp->value, value, 1);
+		else
+		{
+			tmp->value = ft_strdup(value);
+			if (tmp->value == NULL)
+				return (prompt_error("malloc error", NULL, data, 1), NULL);
+		}
+	}
+	else
+	{
+		free(tmp->value);
+		value = get_value(new_param, data);
+		if (!value)
+			return (NULL);
+		tmp->value = value;
+	}
+	return (value);
 }
 
 char	*update_param(t_data *data, char *key, char *new_param)
@@ -52,34 +73,19 @@ char	*update_param(t_data *data, char *key, char *new_param)
 	char	*value;
 	char	*key_to_find;
 
-	value = get_value(new_param, data);
-	if (!value)
-		return (NULL);
 	tmp = data->linked_env;
 	key_to_find = find_key(new_param, data);
 	while (tmp)
 	{
 		if (ft_strcmp(key_to_find, tmp->key) == 0)
 		{
-			if (new_param[ft_strlen(key)] == '+')
-			{
-				if (tmp->value)
-					tmp->value = ft_strjoin(tmp->value, value, 1);
-				else
-				{
-					tmp->value = ft_strdup(value);
-					if (tmp->value == NULL)
-						return (NULL);
-				}
-			}
-			else
-			{
-				free(tmp->value);
-				tmp->value = value;
-			}
+			value = change_var_value(new_param, key, tmp, data);
+			if (value == NULL)
+				return (NULL);
 		}
 		tmp = tmp->next;
 	}
+	free(key_to_find);
 	return (value);
 }
 
@@ -110,13 +116,14 @@ char	*get_value(char *variable, t_data *data)
 	while (variable[i] != '=' && variable[i])
 		i++;
 	if (variable[i] == '\0')
-		return (NULL);
+	{
+		value = ft_strdup("");
+		if (garbage(value, data) == NULL)
+			return (prompt_error("malloc error", NULL, data, 1), NULL);
+	}
 	value = ft_substr(variable, i + 1, ft_strlen(variable));
 	if (!value)
-	{
-		prompt_error("malloc error", NULL, data, 1);
-		return (NULL);
-	}
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	return (value);
 }
 
@@ -140,10 +147,11 @@ int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 			value = get_value(tmp->parameter, data);
 			while (linked_env && linked_env->next)
 				linked_env = linked_env->next;
-			linked_env->next = new_env(key, value, data);
+			linked_env->next = new_env(ft_strdup(key), value, data);
 			linked_env->next->exported = 0;
 		}
 	}
+	free(key);
 	return (1);
 }
 
