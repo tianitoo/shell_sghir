@@ -23,7 +23,7 @@ char	*ft_strdup(const char *s)
 	{
 		i++;
 	}
-	ss = (char *) malloc (sizeof(char) * i + 1); // tested
+	ss = (char *) malloc (sizeof(char) * i + 1);
 	if (!ss)
 	{
 		ft_printf("malloc error\n");

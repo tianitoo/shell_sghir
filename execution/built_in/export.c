@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   export.c										   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/07/09 15:54:25 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/07/09 15:54:27 by hnait			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/15 16:23:35 by kmouradi          #+#    #+#             */
+/*   Updated: 2023/09/15 16:25:39 by kmouradi         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
@@ -27,9 +27,12 @@ char	*find_key(char *str, t_data *data)
 				return (prompt_error("malloc error", NULL, data, 1), NULL);
 			return (key);
 		}
-		if (!ft_isalnum(str[i]) && str[i] != '_'){
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+		{
 			ft_printf("|%c|\n", str[i]);
-			return (prompt_error("minishell: export: not a valid identifier", NULL, data, 1), NULL);}
+			return (prompt_error("minishell: export: not a valid identifier",
+					NULL, data, 1), NULL);
+		}
 		i++;
 	}
 	key = ft_substr(str, 0, i);
@@ -164,10 +167,13 @@ t_env	*add_to_env(t_cmd_list cmd_list, t_data *data)
 	tmp = cmd_list->args->next;
 	while (tmp)
 	{
-		if (tmp->parameter[0] == '=' || ft_isdigit(tmp->parameter[0]) || !(ft_isalpha(tmp->parameter[0]) || tmp->parameter[0] == '_'))
-			ft_printf("minishell: export: `%s': not a valid identifier\n", tmp->parameter);
+		if (tmp->parameter[0] == '='
+			|| ft_isdigit(tmp->parameter[0])
+			|| !(ft_isalpha(tmp->parameter[0]) || tmp->parameter[0] == '_'))
+			ft_printf("minishell: export: `%s': not a valid identifier\n",
+				tmp->parameter);
 		else if (update_or_add_env(data, tmp, linked_env) == 0)
-				return (NULL);
+			return (NULL);
 		tmp = tmp->next;
 	}
 	return (data->linked_env);

@@ -23,22 +23,24 @@ int	check_special_char(t_data *data)
 		{
 			while (data->commande_line && data->commande_line[++i] != '\"')
 				if (data->commande_line[i] == '\0')
-					return (ft_printf("Error: quote not closed"), prompt_error("'", NULL, data, 1), 0);
+					return (ft_printf("Error: quote not closed"),
+						prompt_error("'", NULL, data, 1), 0);
 		}
 		else if (data->commande_line[i] == '\'')
 		{
 			while (data->commande_line && data->commande_line[++i] != '\'')
 				if (data->commande_line[i] == '\0')
-					return (ft_printf("Error: quote not closed"), prompt_error("'", NULL, data, 1), 0);
+					return (ft_printf("Error: quote not closed"),
+						prompt_error("'", NULL, data, 1), 0);
 		}
 		else if (data->commande_line[i] == '\n')
-			return (ft_printf("Error: special caracter: `%c", data->commande_line[i]), prompt_error("'", NULL, data, 1), 0);
+			return (ft_printf("Error: special caracter: `%c",
+					data->commande_line[i]),
+				prompt_error("'", NULL, data, 1), 0);
 		i++;
 	}
 	return (1);
 }
-
-
 
 int	create_params(t_data *data)
 {
@@ -62,8 +64,10 @@ int	create_params(t_data *data)
 		else if (data->commande_line[i] == '|')
 			if (add_operator(data, '|', &i) == NULL)
 				return (0);
-		if (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
-			while (data->commande_line[i] && (data->commande_line[i] == ' ' || data->commande_line[i] == '\t'))
+		if (data->commande_line[i] && (data->commande_line[i] == ' '
+				|| data->commande_line[i] == '\t'))
+			while (data->commande_line[i] && (data->commande_line[i] == ' '
+					|| data->commande_line[i] == '\t'))
 				i++;
 	}
 	return (1);
@@ -91,10 +95,12 @@ t_params	get_last_param(t_params params)
 		tmp = tmp->next;
 	return (tmp);
 }
+
 int	normal_char_len(t_data *data, int *j, int *k, int *p_len)
 {
-
-	while (data->commande_line[*j] && (!is_operator(data->commande_line[*j]) || data->commande_line[*j] == '\"' || data->commande_line[*j] == '\''))
+	while (data->commande_line[*j] && (!is_operator(data->commande_line[*j]) 
+			|| data->commande_line[*j] == '\"' 
+			|| data->commande_line[*j] == '\''))
 	{
 		if (data->commande_line[*j] == '\"' || data->commande_line[*j] == '\'')
 		{
@@ -102,7 +108,7 @@ int	normal_char_len(t_data *data, int *j, int *k, int *p_len)
 			handle_quotes(data, j);
 			(*p_len) += *j - *k;
 			if (is_operator(data->commande_line[*j]))
-				break;
+				break ;
 		}
 		else
 		{
@@ -115,9 +121,9 @@ int	normal_char_len(t_data *data, int *j, int *k, int *p_len)
 
 char	*handle_normal_char(t_data *data, int *i, int *p_len)
 {
-	int		j;
-	int		k;
-	char	*param;
+	int			j;
+	int			k;
+	char		*param;
 	t_params	last_param;
 
 	j = *i;
@@ -172,7 +178,7 @@ char	*ft_strjoin_char(char *s1, char c, t_data *data)
 	int		i;
 
 	i = 0;
-	new_str = malloc(ft_strlen(s1) + 2); // tested
+	new_str = malloc(ft_strlen(s1) + 2);
 	if (!new_str)
 	{
 		prompt_error("malloc error", NULL, data, 1);
@@ -194,7 +200,9 @@ char	*expand_normal_variable(char *param, int *i, t_data *data, int *j)
 {
 	char	*value;
 	char	*tmp;
-	while (param[*j] && !is_operator(param[*j]) && param[*j] != '$' && (ft_isalpha(param[*j]) || param[*j] == '_'))
+
+	while (param[*j] && !is_operator(param[*j]) && param[*j] != '$'
+		&& (ft_isalpha(param[*j]) || param[*j] == '_'))
 		(*j)++;
 	tmp = ft_substr(param, *i, *j - *i);
 	if (tmp == NULL)
@@ -254,7 +262,8 @@ char	*expand_variable(char *param, int *i, t_data *data)
 	return (new_param);
 }
 
-char *expand_join_variable(char *command_line, char *new_command_line, int *i, t_data *data)
+char	*expand_join_variable(char *command_line, char *new_command_line,
+	int *i, t_data *data)
 {
 	char	*expanded_variable;
 
@@ -267,7 +276,8 @@ char *expand_join_variable(char *command_line, char *new_command_line, int *i, t
 	return (new_command_line);
 }
 
-char	*skip_spaces(char *command_line, char *new_command_line, int *i, t_data *data)
+char	*skip_spaces(char *command_line, char *new_command_line,
+	int *i, t_data *data)
 {
 	while (command_line[*i] && command_line[*i] == ' ')
 	{
@@ -288,7 +298,8 @@ void	*garbage(void *garbage, t_data *data)
 	return (garbage);
 }
 
-char	*heredoc_delimiter(char *command_line, int *i, t_data *data, int in_double_quotes)
+char	*heredoc_delimiter(char *command_line, int *i,
+	t_data *data, int in_double_quotes)
 {
 	char	*new_command_line;
 
@@ -303,7 +314,8 @@ char	*heredoc_delimiter(char *command_line, int *i, t_data *data, int in_double_
 	if (new_command_line == NULL)
 		return (NULL);
 	new_command_line = skip_spaces(command_line, new_command_line, i, data);
-	if (command_line[*i] == '$' && !(in_double_quotes && command_line[*i + 1] == '"'))
+	if (command_line[*i] == '$' && !(in_double_quotes
+			&& command_line[*i + 1] == '"'))
 	{
 		new_command_line = ft_strjoin_char(new_command_line, '$', data);
 		if (new_command_line == NULL)
@@ -328,7 +340,8 @@ char	*check_heredoc(char *command_line, int *i, t_data *data, int *quotes)
 	new_command_line = ft_strdup("");
 	if (garbage(new_command_line, data) == NULL)
 		return (NULL);
-	if (command_line[*i] == '<' && command_line[*i + 1] == '<' && !(quotes[1] || quotes[0]))
+	if (command_line[*i] == '<' && command_line[*i + 1] == '<'
+		&& !(quotes[1] || quotes[0]))
 	{
 		new_command_line = heredoc_delimiter(command_line, i, data, quotes[1]);
 		if (new_command_line == NULL)
@@ -342,15 +355,18 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	char	*command_line;
 
 	command_line = data->commande_line;
-	if (!quotes[0] && command_line[*i] == '$' && !(quotes[1] && command_line[*i + 1] == '"'))
+	if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
+			&& command_line[*i + 1] == '"'))
 	{
-		new_command_line = expand_join_variable(command_line, new_command_line, i, data);
+		new_command_line = expand_join_variable(command_line,
+				new_command_line, i, data);
 		if (garbage(new_command_line, data) == NULL)
 			return (NULL);
 	}
 	else
 	{
-		new_command_line = ft_strjoin_char(new_command_line, command_line[*i], data);
+		new_command_line = ft_strjoin_char(new_command_line,
+				command_line[*i], data);
 		if (new_command_line == NULL)
 			return (NULL);
 		(*i)++;
@@ -374,7 +390,8 @@ char	*expand_command_line(char *command_line, t_data *data)
 	while (command_line[i])
 	{
 		check_quote(command_line, &i, quotes);
-		new_command_line = ft_strjoin(new_command_line, check_heredoc(command_line, &i, data, quotes), 0);
+		new_command_line = ft_strjoin(new_command_line,
+				check_heredoc(command_line, &i, data, quotes), 0);
 		if (garbage(new_command_line, data) == NULL)
 			return (NULL);
 		new_command_line = expand(&i, data, new_command_line, quotes);
@@ -416,7 +433,8 @@ void	handle_quotes(t_data *data, int *i)
 	int		lenght;
 
 	quote = data->commande_line[*i];
-	ft_memmove(&data->commande_line[*i], &data->commande_line[*i + 1], ft_strlen(&data->commande_line[*i + 1]));
+	ft_memmove(&data->commande_line[*i], &data->commande_line[*i + 1],
+		ft_strlen(&data->commande_line[*i + 1]));
 	data->commande_line[ft_strlen(data->commande_line) - 1] = 0;
 	lenght = 0;
 	j = (*i);
@@ -429,7 +447,8 @@ void	handle_quotes(t_data *data, int *i)
 		prompt_error("Error: quote not closed", NULL, data, 1);
 	else
 	{
-		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1], ft_strlen(&data->commande_line[j + 1]));
+		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1],
+			ft_strlen(&data->commande_line[j + 1]));
 		data->commande_line[ft_strlen(data->commande_line) - 1] = 0;
 	}
 	*i = j;

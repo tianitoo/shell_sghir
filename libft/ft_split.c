@@ -70,7 +70,7 @@ char	**ft_split(char const *s, char c)
 	j = 0;
 	if (!s)
 		return (0);
-	ss = (char **) malloc (sizeof(char *) * sslen(s, c) + 1); // tested
+	ss = (char **) malloc (sizeof(char *) * sslen(s, c) + 1);
 	if (!ss)
 		return (0);
 	while (s[j] != 0)

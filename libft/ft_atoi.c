@@ -39,7 +39,7 @@ int	ft_atoi(const char *str)
 	{
 		if (*str++ == '-')
 			signe *= -1;
-	}	
+	}
 	while (ft_isdigit(*str))
 	{
 		nbr = nbr * 10 + (*str++ - '0');

@@ -41,11 +41,12 @@ char	*ft_itoa(int n)
 	if (n == 0)
 		return (ft_strdup("0"));
 	len = nlen(n);
-	s = (char *) malloc (sizeof(char) * (len + 1));// tested
+	s = (char *) malloc (sizeof(char) * (len + 1));
 	if (!s)
-		{
-			ft_printf("malloc error\n");
-			return (0);}
+	{
+		ft_printf("malloc error\n");
+		return (0);
+	}
 	if (n < 0)
 	{
 		s[0] = '-';

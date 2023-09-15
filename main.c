@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 t_exit	*g_exit = NULL;
 
 char	*get_variable(t_env *env, char *var)
@@ -33,48 +32,11 @@ char	*get_variable(t_env *env, char *var)
 	return (NULL);
 }
 
-// void	handle_sigint(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		g_exit_status = 1;
-		
-// 		write(1, "\n", 1);
-// 		rl_replace_line("", 0);
-// 		rl_on_new_line();
-// 		rl_redisplay();
-// 		// ft_printf("helloo\n");
-// 		// ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 	}
-// }
-
-// void	sigquit_handler(int sig)
-// {
-// 	if (sig == SIGQUIT)
-// 	{
-// 		g_exit_status = 131;
-// 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 		// rl_replace_line("jskdjfkj", 0);
-// 		// rl_on_new_line();
-// 	}
-// }
-// int a = 0;
-// void	heredoc_sigint_handler(int sig)
-// {
-// 	if (sig == SIGINT)
-// 	{
-// 		g_exit_status = 1;
-// 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
-// 		// rl_replace_line("f", 0);
-// 		rl_on_new_line();
-// 	}
-// }
-
 t_env	*new_env(char *key, char *value, t_data *data)
 {
 	t_env	*env;
 
-	env = malloc(sizeof(t_env)); // tested
+	env = malloc(sizeof(t_env));
 	if (!env)
 	{
 		prompt_error("malloc error 7", NULL, data, 1);
@@ -134,8 +96,6 @@ void	move_node(t_env *tmp)
 	tmp->next->key = tmp_key;
 	tmp->next->value = tmp_value;
 }
-
-// sort env alphabetically by key
 
 void	sort_env(t_env *env)
 {
@@ -203,7 +163,7 @@ char	**get_key_value(char *envp, t_data *data)
 {
 	char	**key_value;
 
-	key_value = malloc(sizeof(char *) * 2); // tested
+	key_value = malloc(sizeof(char *) * 2);
 	if (!key_value)
 		return (prompt_error("malloc error 8", NULL, data, 1), NULL);
 	if (add_garbage(data, key_value) == NULL)
@@ -245,14 +205,13 @@ t_env	*get_env(char **envp, t_data *data)
 		return (NULL);
 	return (env);
 }
-	// sort_env(env);
 
 char	**get_unset_env(void)
 {
 	char	**env;
 	char	*pwd;
 
-	env = (char **) malloc(sizeof(char *) * 4); // tested
+	env = (char **) malloc(sizeof(char *) * 4);
 	if (!env)
 		return (prompt_error("malloc error 5", NULL, NULL, 1), NULL);
 	pwd = getcwd(NULL, 0);
@@ -282,26 +241,19 @@ void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 	hidden_path->hidden = 1;
 	tmp->next = hidden_path;
 }
-// for sigquit
+
 void	handler2(int arg)
 {
-	if(g_exit->in_exec_mode != 0)
-		return;
+	if (g_exit->in_exec_mode != 0)
+		return ;
 	(void)arg;
-		// g_exit->cc = 1;
 	ft_putstr_fd("Quit: 3\n", 1);
 	rl_redisplay();
 }
-// for sigint
+
 void	handler(int arg)
 {
-	// if(g_exit->cc == 0)
-	// {
-	// 	g_exit->cc = 1;
-	// 	ft_putstr_fd("\n", 1);
-	// 	return;
-	// }
-	if(g_exit->in_exec_mode != 1)
+	if (g_exit->in_exec_mode != 1)
 	{
 		(void)arg;
 		ft_putstr_fd("\n", 1);
@@ -309,27 +261,12 @@ void	handler(int arg)
 		rl_on_new_line();
 		rl_redisplay();
 		g_exit->g_exit_status = 1;
-
-	}
-	else
-	{
-		// close(g_exit->heredoc_fd);
-		// puts("ctl c");
-		// exit(1);
 	}
 }
 
-// void handler_2(int sig)
-// {
-// 	(void)sig;
-// 	puts("sdsdsd");
-// 	g_exit->heredoc_statu = 1;
-// 	close(g_exit->heredoc_fd);
-// }
-
-void	set_g_exit()
+void	set_g_exit(void)
 {
-	g_exit = malloc(sizeof(t_exit)); // tested
+	g_exit = malloc(sizeof(t_exit));
 	if (!g_exit)
 	{
 		prompt_error("malloc error 3", NULL, NULL, 1);
@@ -369,14 +306,16 @@ t_env	*get_linked_env(char **envp, t_data *data)
 t_data	*set_data(char **envp)
 {
 	t_data	*data;
-	data = malloc(sizeof(t_data)); // tested
+
+	data = malloc(sizeof(t_data));
 	if (!data)
 		return (prompt_error("malloc error 4", NULL, NULL, 1), NULL);
 	data->params = NULL;
 	data->linked_env = get_linked_env(envp, data);
 	if (!data->linked_env)
 		return (NULL);
-	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
+	add_hidden_env(data->linked_env, "PATH",
+		"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
 	return (data);
 }
 
