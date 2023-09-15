@@ -82,7 +82,7 @@ typedef struct s_data{
 	t_env		*linked_env;
 	t_env		*declare;
 	char		*commande_line;
-	int			last_command_status;
+	char		*original_commande_line;
 	int			parsing_error;
 }t_data;
 

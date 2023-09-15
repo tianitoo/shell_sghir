@@ -49,7 +49,7 @@ int	make_history(t_data *data, int history_pipe)
 	if (add_garbage(data, history) == NULL)
 		return (0);
 	eof = read(history_pipe, history, 1);
-	data->commande_line = ft_strjoin_char(data->commande_line, '\n', data);
+	data->commande_line = ft_strjoin_char(data->original_commande_line, '\n', data);
 	if (data->commande_line == NULL)
 		return (0);
 	while (eof > 0)
@@ -62,7 +62,9 @@ int	make_history(t_data *data, int history_pipe)
 			return (0);
 		eof = read(history_pipe, history, 1);
 	}
-	add_history(data->commande_line);
+	data->original_commande_line = ft_strdup(data->commande_line);
+	if (garbage(data->original_commande_line, data) == NULL)
+		return (0);
 	return (1);
 }
 
@@ -104,31 +106,29 @@ void	signalher(int sig)
 
 void	child_process(t_data *data, int *pip, int *history_pipe, t_params next)
 {
-	char	*line;
+    char *line;
 
-	add_history(data->commande_line);
-	close(pip[0]);
-	close(history_pipe[0]);
-	signal(SIGINT, signalher);
-	line = readline("> ");
-	if (add_garbage(data, line) == NULL)
-		exit (1);
-	while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
-	{
-		add_history(line);
-		if (next->in_double_quote == -1 && next->in_quote == -1)
-			if (handle_dollar(&line, data) == NULL)
-				exit (1);
-		line = read_line_heredoc(data, pip[1], history_pipe[1], line);
-		if (line == NULL)
-			exit (1);
-	}
-	close(pip[1]);
-	close(history_pipe[1]);
-	free_garbage();
-	free_params(&data->params);
-	rl_clear_history();
-	exit(0);
+    add_history(data->original_commande_line);
+    close(pip[0]);
+    close(history_pipe[0]);
+    signal(SIGINT, signalher);
+    line = readline("> ");
+    if (add_garbage(data, line) == NULL)
+        exit (1);
+    while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
+    {
+        add_history(line);
+        if (next->in_double_quote == -1 && next->in_quote == -1)
+            if (handle_dollar(&line, data) == NULL)
+                exit (1);
+        line = read_line_heredoc(data, pip[1], history_pipe[1], line);
+    }
+    close(pip[1]);
+    close(history_pipe[1]);
+    free_garbage();
+    free_params(&data->params);
+    rl_clear_history();
+    exit(0);
 }
 
 void	skip_riderection(t_params params, t_cmd_list cmd_list)

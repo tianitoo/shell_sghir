@@ -28,11 +28,8 @@ char	*find_key(char *str, t_data *data)
 			return (key);
 		}
 		if (!ft_isalnum(str[i]) && str[i] != '_')
-		{
-			ft_printf("|%c|\n", str[i]);
 			return (prompt_error("minishell: export: not a valid identifier",
 					NULL, data, 1), NULL);
-		}
 		i++;
 	}
 	key = ft_substr(str, 0, i);
@@ -191,7 +188,7 @@ t_env	*ft_export(t_cmd_list cmd_list, t_data *data)
 			if (env->hidden == 0)
 			{
 				ft_printf("declare -x %s", env->key);
-				if (env->value)
+				if (env->value != NULL && ft_strlen(env->value) > 0)
 					ft_printf("=\"%s\"\n", env->value);
 				else
 					ft_printf("\n");
