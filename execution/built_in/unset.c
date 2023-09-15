@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/11 00:23:59 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/15 23:38:18 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,12 @@ t_env	*remove_variable(t_data *data, char *var_name)
 {
 	t_env	*env;
 	t_env	*prev;
-	t_env	*free_me;
 
-	free_me = NULL;
 	env = data->linked_env;
 	while (env)
 	{
 		if (ft_strcmp(env->key, var_name) == 0)
 		{
-			free_me = env;
 			if (prev == NULL)
 				data->linked_env = env->next;
 			else
@@ -54,7 +51,6 @@ t_env	*remove_variable(t_data *data, char *var_name)
 		prev = env;
 		env = env->next;
 	}
-	free_env(free_me);
 	return (data->linked_env);
 }
 
