@@ -387,6 +387,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	set_g_exit();
+	rl_catch_signals = 0;
 	data = set_data(envp);
 	signal(SIGINT, handler);
 	signal(SIGQUIT, SIG_IGN);
