@@ -292,7 +292,7 @@ pid_t	execute_commands(t_data *data)
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
 		{
 			if (cmd_list->next != NULL)
-				pipe(cmd_list->next->pip);
+				pipe(cmd_list->next->pip); // pipe between commands
 			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
 			{
 				if (execute_builtin(data, cmd_list) == NULL)
