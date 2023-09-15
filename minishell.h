@@ -52,6 +52,7 @@ typedef struct s_env{
 	char			*key;
 	char			*value;
 	int				exported;
+	int				show_value;
 	int				hidden;
 	struct s_env	*next;
 }t_env;

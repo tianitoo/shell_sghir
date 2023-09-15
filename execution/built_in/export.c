@@ -125,10 +125,25 @@ char	*get_value(char *variable, t_data *data)
 	return (value);
 }
 
+char	*add_new_env(char *key, t_params tmp, t_env *linked_env, t_data *data)
+{
+	char	*value;
+
+	value = get_value(tmp->parameter, data);
+	if (value == NULL)
+		return (0);
+	while (linked_env && linked_env->next)
+		linked_env = linked_env->next;
+	linked_env->next = new_env(ft_strdup(key), value, data);
+	linked_env->next->exported = 0;
+	if (ft_strchr(tmp->parameter, '=') != NULL)
+		linked_env->next->show_value = 1;
+	return (key);
+}
+
 int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 {
 	char	*key;
-	char	*value;
 
 	key = find_key(tmp->parameter, data);
 	if (key)
@@ -137,18 +152,16 @@ int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 			return (0);
 		else if (key_exists(data->linked_env, key) == 1)
 		{
-			if (update_param(data, key, tmp->parameter) == NULL)
-				return (0);
+			if (ft_strchr(tmp->parameter, '=') != NULL)
+			{
+				if (update_param(data, key, tmp->parameter) == NULL)
+					return (0);
+			}
 		}
 		else
 		{
-			value = get_value(tmp->parameter, data);
-			if (value == NULL)
+			if(add_new_env(key, tmp, linked_env, data) == NULL)
 				return (0);
-			while (linked_env && linked_env->next)
-				linked_env = linked_env->next;
-			linked_env->next = new_env(ft_strdup(key), value, data);
-			linked_env->next->exported = 0;
 		}
 	}
 	free(key);
@@ -190,6 +203,8 @@ t_env	*ft_export(t_cmd_list cmd_list, t_data *data)
 				ft_printf("declare -x %s", env->key);
 				if (env->value != NULL && ft_strlen(env->value) > 0)
 					ft_printf("=\"%s\"\n", env->value);
+				else if (env->show_value)
+					ft_printf("=\"\"\n");
 				else
 					ft_printf("\n");
 			}

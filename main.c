@@ -45,6 +45,7 @@ t_env	*new_env(char *key, char *value, t_data *data)
 	env->key = key;
 	env->value = value;
 	env->hidden = 0;
+	env->show_value = 0;
 	env->next = NULL;
 	return (env);
 }
