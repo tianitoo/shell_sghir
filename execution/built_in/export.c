@@ -143,6 +143,8 @@ int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 		else
 		{
 			value = get_value(tmp->parameter, data);
+			if (value == NULL)
+				return (0);
 			while (linked_env && linked_env->next)
 				linked_env = linked_env->next;
 			linked_env->next = new_env(ft_strdup(key), value, data);

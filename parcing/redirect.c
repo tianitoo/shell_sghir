@@ -61,6 +61,7 @@ int	make_history(t_data *data, int history_pipe)
 			return (0);
 		eof = read(history_pipe, history, 1);
 	}
+	add_history(data->commande_line);
 	return (1);
 }
 

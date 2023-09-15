@@ -66,15 +66,8 @@ void	free_params(t_params *params)
 
 int	get_input(t_data *data)
 {
-	char	*commande_line;
-
 	data->commande_line = get_commande_line(data);
 	if (data->commande_line == NULL)
-		return (0);
-	commande_line = ft_strdup(data->commande_line);
-	if (commande_line == NULL)
-		return (0);
-	if (add_garbage(data, commande_line) == NULL)
 		return (0);
 	g_exit->in_exec_mode = 1;
 	if (data->commande_line == NULL)
@@ -89,7 +82,7 @@ int	get_input(t_data *data)
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
 	if (data->commande_line && ft_strlen(data->commande_line) > 0)
-		add_history(commande_line);
+		add_history(data->commande_line);
 	return (free_params(&data->params), 1);
 }
 

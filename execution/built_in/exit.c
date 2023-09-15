@@ -81,7 +81,6 @@ void	free_enve(t_data *data)
 			last = env;
 			env = env->next;
 	}
-	
 }
 
 void	*ft_exit(t_params params, t_data *data)

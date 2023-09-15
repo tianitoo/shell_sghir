@@ -339,24 +339,41 @@ void	set_g_exit()
 	g_exit->g_exit_status = 0;
 }
 
-t_data	*set_data(char **envp)
+t_env	*get_linked_env(char **envp, t_data *data)
 {
-	t_data	*data;
 	char	**env;
+	int		unset;
+	t_env	*linked_env;
 
-	data = malloc(sizeof(t_data)); // tested
-	if (!data)
-		return (prompt_error("malloc error 4", NULL, NULL, 1), NULL);
+	unset = 0;
 	if (envp[0] == NULL)
 	{
 		env = get_unset_env();
 		if (env == NULL)
 			return (NULL);
+		unset = 1;
 	}
 	else
 		env = envp;
+	linked_env = get_env(env, data);
+	if (linked_env == NULL)
+		return (NULL);
+	if (unset == 1)
+	{
+		free_ss(env);
+		free(env);
+	}
+	return (linked_env);
+}
+
+t_data	*set_data(char **envp)
+{
+	t_data	*data;
+	data = malloc(sizeof(t_data)); // tested
+	if (!data)
+		return (prompt_error("malloc error 4", NULL, NULL, 1), NULL);
 	data->params = NULL;
-	data->linked_env = get_env(env, data);
+	data->linked_env = get_linked_env(envp, data);
 	if (!data->linked_env)
 		return (NULL);
 	add_hidden_env(data->linked_env, "PATH", "/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
