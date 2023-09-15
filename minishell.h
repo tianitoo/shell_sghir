@@ -90,7 +90,7 @@ typedef struct s_data{
 
 // parsing
 void		handler(int arg);
-int		get_input(t_data *data);
+int			get_input(t_data *data);
 char		**pipe_split(char *input);
 int			handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data);
 t_cmd_list	get_cmd_list(t_data *data);
@@ -113,7 +113,8 @@ char		*get_param(char *input, int *i, char operator);
 t_params	get_last_param(t_params params);
 void		handle_quotes(t_data *data, int *i);
 void		show_command(t_cmd_list cmd_list);
-int			handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data);
+int			handle_redirection(t_params params, \
+						t_cmd_list cmd_list, t_data *data);
 int			handle_params(t_cmd_list *cmd_list, t_data *data);
 char		*ft_strjoin_char(char *s1, char c, t_data *data);
 void		free_params(t_params *params);
@@ -143,7 +144,8 @@ char		**args_to_double_pointer(t_params params, t_data *data);
 char		*get_env_value(char *param, t_data *data);
 char		*get_variable(t_env *env, char *var);
 char		*find_key(char *str, t_data *data);
-void		prompt_error(char *error, t_cmd_list cmd_list, t_data *data, int exit_status);
+void		prompt_error(char *error, \
+				t_cmd_list cmd_list, t_data *data, int exit_status);
 t_params	delete_param(t_params *params);
 t_env		*new_env(char *key, char *value, t_data *data);
 char		*get_value(char *variable, t_data *data);
@@ -151,8 +153,6 @@ t_env		*get_env(char **envp, t_data *data);
 t_garbage	*add_garbage(t_data *data, void *ptr);
 void		free_garbage(void);
 void		*garbage(void *garbage, t_data *data);
-
-
 void		*ft_malloc(size_t size);
 
 #endif

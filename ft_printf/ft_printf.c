@@ -57,7 +57,7 @@ int	ft_printf(const char *str, ...)
 			va_end(vl);
 			return (-1);
 		}
-	i++;
+		i++;
 	}
 	va_end(vl);
 	return (printed);

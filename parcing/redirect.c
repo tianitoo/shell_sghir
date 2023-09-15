@@ -40,8 +40,8 @@ int	handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 
 int	make_history(t_data *data, int history_pipe)
 {
-	int eof;
-	char *history;
+	int		eof;
+	char	*history;
 
 	history = ft_calloc(sizeof(char), 2);
 	if (!history)
@@ -54,7 +54,8 @@ int	make_history(t_data *data, int history_pipe)
 		return (0);
 	while (eof > 0)
 	{
-		data->commande_line = ft_strjoin_char(data->commande_line, history[0], data);
+		data->commande_line = ft_strjoin_char(data->commande_line,
+				history[0], data);
 		if (data->commande_line == NULL)
 			return (0);
 		if (data->commande_line == NULL)
@@ -79,12 +80,12 @@ char	*read_line_heredoc(t_data *data, int pip, int history_pipe, char *line)
 
 int	*create_heredoc_pipe(t_params next, t_data *data)
 {
-	int *pip;
+	int	*pip;
 	int	pip_test;
 
 	if (next->is_operator == 1)
 		return (prompt_error("minishell: syntax error", NULL, data, 258), NULL);
-	pip = (int *)malloc(sizeof(int) * 2); // tested
+	pip = (int *)malloc(sizeof(int) * 2);
 	if (!pip)
 		return (prompt_error("minishell: malloc error", NULL, data, 1), NULL);
 	if (add_garbage(data, pip) == NULL)
@@ -95,19 +96,19 @@ int	*create_heredoc_pipe(t_params next, t_data *data)
 	return (pip);
 }
 
-void    signalher(int sig)
+void	signalher(int sig)
 {
-    (void)sig;
-    ioctl(0, TIOCSTI, "\4");
+	(void)sig;
+	ioctl(0, TIOCSTI, "\4");
 }
 
-void    child_process(t_data *data, int *pip, int *history_pipe, t_params next)
+void	child_process(t_data *data, int *pip, int *history_pipe, t_params next)
 {
     char *line;
+
     add_history(data->original_commande_line);
     close(pip[0]);
     close(history_pipe[0]);
-
     signal(SIGINT, signalher);
     line = readline("> ");
     if (add_garbage(data, line) == NULL)
@@ -138,7 +139,8 @@ void	skip_riderection(t_params params, t_cmd_list cmd_list)
 		params->next->next->prev = params->prev;
 }
 
-int	create_heredoc_process(t_data *data, int *history_pipe, t_cmd_list cmd_list, t_params params)
+int	create_heredoc_process(t_data *data, int *history_pipe,
+	t_cmd_list cmd_list, t_params params)
 {
 	int		*pip;
 	int		pid;
@@ -168,7 +170,7 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	int		*history_pipe;
 
-	history_pipe = (int *)malloc(sizeof(int) * 2); // tested
+	history_pipe = (int *)malloc(sizeof(int) * 2);
 	if (!history_pipe)
 		return (prompt_error("minishell: malloc error", NULL, data, 1), 0);
 	if (add_garbage(data, history_pipe) == NULL)
@@ -189,13 +191,17 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (prompt_error("minishell: syntax error", NULL, data, 258), NULL);
+			return (prompt_error("minishell: syntax error",
+					NULL, data, 258), NULL);
 		dir = opendir(params->next->parameter);
 		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
+			return (closedir(dir), ft_printf("%s: is a directory\n",
+					params->next->parameter), prompt_error(" ",
+					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: no such file or directory", cmd_list, NULL, 1), NULL);
+			return (prompt_error("syntax error: no such file or directory",
+					cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -212,13 +218,17 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (prompt_error("minishell: syntax error", NULL, data, 258), NULL);
+			return (prompt_error("minishell: syntax error",
+					NULL, data, 258), NULL);
 		dir = opendir(params->next->parameter);
 		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
+			return (closedir(dir), ft_printf("%s: is a directory\n",
+					params->next->parameter), prompt_error(" ",
+					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
-			return (prompt_error("syntax error: no such file or directory", cmd_list, NULL, 1), NULL);
+			return (prompt_error("syntax error: no such file or directory",
+					cmd_list, NULL, 1), NULL);
 		cmd_list->input = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -235,13 +245,17 @@ t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (prompt_error("minishell: syntax error", NULL, data, 258), NULL);
+			return (prompt_error("minishell: syntax error",
+					NULL, data, 258), NULL);
 		dir = opendir(params->next->parameter);
 		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n", params->next->parameter), prompt_error(" ", cmd_list, data, 1), NULL);
+			return (closedir(dir), ft_printf("%s: is a directory\n",
+					params->next->parameter), prompt_error(" ",
+					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: could not open file", cmd_list, NULL, 1), NULL);
+			return (prompt_error("syntax error: could not open file",
+					cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}

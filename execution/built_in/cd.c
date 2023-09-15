@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 16:28:31 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/14 19:43:15 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/15 17:38:32 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_env	*update_env_var(char *var_key, char *value, t_data *data)
 	return (env);
 }
 
-int	cwd()
+int	cwd(void)
 {
 	char	*cwd;
 
@@ -45,17 +45,20 @@ int	cwd()
 
 char	*current_parrent_dir(char **args, t_data *data)
 {
-	char	*pwd = 0;
+	char	*pwd;
 
+	pwd = 0;
 	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory\n", args[1]), prompt_error("", NULL, data, 1), NULL);
+		return (ft_printf("cd: %s: No such file or directory\n",
+				args[1]), prompt_error("", NULL, data, 1), NULL);
 	else
 	{
 		if (cwd() == 0)
 		{
 			pwd = get_env_value("PWD", data);
 			if (pwd == NULL)
-				prompt_error("cd: error retrieving current directory", NULL, data, 1);
+				prompt_error("cd: error retrieving current directory",
+					NULL, data, 1);
 			if (pwd)
 			{
 				pwd = ft_strjoin(pwd, "/", 0);
@@ -76,14 +79,17 @@ char	*change_directory(char **args, t_data *data)
 {
 	char	*pwd;
 	char	*next_pwd;
-	if (strcmp(args[1], ".") == 0 || strcmp(args[1], "..") == 0 || strcmp(args[1], "./") == 0 || strcmp(args[1], "../") == 0)
+
+	if (strcmp(args[1], ".") == 0 || strcmp(args[1], "..") == 0
+		|| strcmp(args[1], "./") == 0 || strcmp(args[1], "../") == 0)
 	{
 		pwd = current_parrent_dir(args, data);
 		if (pwd == NULL)
 			return (NULL);
 	}
 	else if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory\n", args[1]), prompt_error("", NULL, data, 1), NULL);
+		return (ft_printf("cd: %s: No such file or directory\n",
+				args[1]), prompt_error("", NULL, data, 1), NULL);
 	else
 	{
 		pwd = find_pwd(data);

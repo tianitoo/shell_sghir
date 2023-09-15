@@ -14,9 +14,9 @@
 
 char	**args_to_double_pointer(t_params params, t_data *data)
 {
-	int	 i;
-	int		args_count;
-	char	**args;
+	int			i;
+	int			args_count;
+	char		**args;
 	t_params	tmp;
 
 	i = 0;
@@ -43,8 +43,8 @@ char	**args_to_double_pointer(t_params params, t_data *data)
 
 int	ft_env_count(t_env *env)
 {
-	int	 env_count;
-	t_env *tmp;
+	int		env_count;
+	t_env	*tmp;
 
 	env_count = 0;
 	tmp = env;
@@ -58,7 +58,7 @@ int	ft_env_count(t_env *env)
 
 char	**env_to_double_pointer(t_env *env, t_data *data)
 {
-	int	 i;
+	int		i;
 	int		env_count;
 	char	**envp;
 

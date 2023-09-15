@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   execute.c										  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/07/09 14:04:42 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/07/09 16:26:04 by hnait			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/15 17:26:44 by kmouradi          #+#    #+#             */
+/*   Updated: 2023/09/15 17:35:25 by kmouradi         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -85,8 +85,8 @@ void	unset_io_builtin(t_cmd_list cmd_list, int input, int output)
 
 t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list)
 {
-	int	input;
-	int	output;
+	int		input;
+	int		output;
 	void	*ret;
 
 	set_io_builtin(cmd_list, &input, &output);
@@ -111,7 +111,8 @@ int	is_directory(char *cmd)
 	return (0);
 }
 
-char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_data *data)
+char	*get_cmd_path_from_paths(char **paths, char *cmd,
+	t_cmd_list cmd_list, t_data *data)
 {
 	int		i;
 	char	*cmd_path;
@@ -119,7 +120,8 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_da
 
 	i = 0;
 	if (is_directory(cmd))
-		return (ft_printf("Error: %s: is a directory", cmd), prompt_error("", cmd_list, data, 126), NULL);
+		return (ft_printf("Error: %s: is a directory", cmd),
+			prompt_error("", cmd_list, data, 126), NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
 	if (ft_strlen(cmd) == 0)
@@ -136,7 +138,8 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list, t_da
 			return (cmd_path);
 		i++;
 	}
-	return (ft_printf("Error: %s: command not found1", cmd), prompt_error("", cmd_list, data, 127), NULL);
+	return (ft_printf("Error: %s: command not found1", cmd),
+		prompt_error("", cmd_list, data, 127), NULL);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -241,7 +244,7 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 	}
 	else if (pid < 0)
 		prompt_error("Error: fork failed", NULL, data, 1);
-	return pid;
+	return (pid);
 }
 
 int	get_exitstate(int wait_status)
@@ -292,17 +295,18 @@ pid_t	execute_commands(t_data *data)
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
 		{
 			if (cmd_list->next != NULL)
-				pipe(cmd_list->next->pip); // pipe between commands
-			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL && cmd_list->prev == NULL)
+				pipe(cmd_list->next->pip);
+			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL
+				&& cmd_list->prev == NULL)
 			{
 				if (execute_builtin(data, cmd_list) == NULL)
-					break ; // same check
+					break ;
 			}
 			else if (cmd_list->cmd)
 			{
 				pid = execute_cmd(data, cmd_list);
 				if (pid == -2)
-					break ;// check when pid == -2
+					break ;
 			}
 		}
 		cmd_list = cmd_list->next;

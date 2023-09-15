@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 00:52:56 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/11 13:39:45 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:17:40 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 {
 	t_cmd_list	tmp;
 	t_params	params;
-	
+
 	(void)data;
 	tmp = *cmd_list;
 	while (tmp)
@@ -93,18 +93,21 @@ int	handle_params(t_cmd_list *cmd_list, t_data *data)
 		params = tmp->args;
 		while (params && tmp->parsing_error == 0 && data->parsing_error == 0)
 		{
-			if ((params->parameter[0] == '>' || params->parameter[0] == '<') && params->is_operator == 1)
+			if ((params->parameter[0] == '>' || params->parameter[0] == '<')
+				&& params->is_operator == 1)
 				if (handle_redirection(params, tmp, data) == 0)
 					return (0);
 			params = params->next;
 		}
 		if (tmp->cmd == NULL)
+		{
 			if (tmp->args && tmp->args->parameter)
 			{
 				tmp->cmd = ft_strdup(tmp->args->parameter);
 				if (add_garbage(data, tmp->cmd) == NULL)
 					return (0);
 			}
+		}
 		tmp = tmp->next;
 	}
 	return (1);
@@ -156,22 +159,29 @@ t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data)
 	return (cmd_list->args);
 }
 
-t_cmd_list	first_command(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+t_cmd_list	first_command(t_cmd_list cmd_list,
+	t_params handling_param, t_data *data)
 {
-	if (handling_param->parameter[0] == '|' && handling_param->is_operator == 1)
-		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
+	if (handling_param->parameter[0] == '|'
+		&& handling_param->is_operator == 1)
+		return (prompt_error("syntax error near unexpected token `|'",
+				NULL, data, 258), NULL);
 	cmd_list = new_cmd(data);
 	if (cmd_list == NULL)
 		return (NULL);
 	return (cmd_list);
 }
 
-t_cmd_list	next_command(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+t_cmd_list	next_command(t_cmd_list cmd_list,
+	t_params handling_param, t_data *data)
 {
 	if (handling_param->next == NULL)
-		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
-	if (handling_param->next->is_operator == 1 && handling_param->next->parameter[0] == '|')
-		return (prompt_error("syntax error near unexpected token `|'", NULL, data, 258), NULL);
+		return (prompt_error("syntax error near unexpected token `|'",
+				NULL, data, 258), NULL);
+	if (handling_param->next->is_operator == 1
+		&& handling_param->next->parameter[0] == '|')
+		return (prompt_error("syntax error near unexpected token `|'",
+				NULL, data, 258), NULL);
 	cmd_list->next = new_cmd(data);
 	cmd_list->next->prev = cmd_list;
 	cmd_list = cmd_list->next;
@@ -179,7 +189,8 @@ t_cmd_list	next_command(t_cmd_list cmd_list, t_params handling_param, t_data *da
 	return (cmd_list);
 }
 
-t_cmd_list	add_cmd_list(t_cmd_list cmd_list, t_params handling_param, t_data *data)
+t_cmd_list	add_cmd_list(t_cmd_list cmd_list,
+	t_params handling_param, t_data *data)
 {
 	if (cmd_list == NULL)
 	{
@@ -203,8 +214,9 @@ t_cmd_list	get_cmd_list(t_data *data)
 {
 	t_params	handling_param;
 	t_cmd_list	cmd_list;
-	t_cmd_list	head = NULL;
+	t_cmd_list	head;
 
+	head = NULL;
 	handling_param = data->params;
 	cmd_list = NULL;
 	while (handling_param)

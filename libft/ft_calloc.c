@@ -17,7 +17,7 @@ void	*ft_calloc(size_t count, size_t size)
 {
 	void	*tab;
 
-	tab = malloc(count * size); // tested
+	tab = malloc(count * size);
 	if (!tab)
 	{
 		ft_printf("malloc error\n");
