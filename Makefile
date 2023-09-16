@@ -78,6 +78,7 @@ SRC = parcing/handle_input.c\
 		utils/params_utils.c\
 		utils/garbage.c\
 		f.c\
+		gnl/get_next_line.c\
 		main.c
 
 OBJ = $(SRC:.c=.o)
@@ -109,3 +110,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all bonus clean fclean re
+

@@ -43,6 +43,8 @@ typedef struct s_exit{
 	t_file_descriptors	*file_descriptors;
 	int					heredoc_statu;
 	int					heredoc_fd;
+	int					heredoc_ctrlc;
+	int					number_of_lines;
 	int					closeed;
 }t_exit;
 
@@ -155,5 +157,7 @@ t_garbage	*add_garbage(t_data *data, void *ptr);
 void		free_garbage(void);
 void		*garbage(void *garbage, t_data *data);
 void		*ft_malloc(size_t size);
+
+char		*get_next_line(int fd);
 
 #endif
