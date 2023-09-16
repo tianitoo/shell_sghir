@@ -291,13 +291,14 @@ pid_t	execute_commands(t_data *data)
 
 	cmd_list = data->cmd_list;
 	while (cmd_list->next != NULL)
-		cmd_list = cmd_list->next;
+	{
+		if (cmd_list->next != NULL)
+			pipe(cmd_list->next->pip);
+		cmd_list = cmd_list->next;}
 	while (cmd_list)
 	{
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
 		{
-			if (cmd_list->next != NULL)
-				pipe(cmd_list->next->pip);
 			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL
 				&& cmd_list->prev == NULL)
 			{

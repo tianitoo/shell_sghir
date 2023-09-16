@@ -12,7 +12,7 @@
 
 NAME = ft_printf.a
 CC = gcc
-FLAGS = -Wall -Werror -Wextra -fsanitize=address
+FLAGS = -Wall -Werror -Wextra 
 AR = ar rc
 RM = rm -f
 HEAD = ft_printf.h

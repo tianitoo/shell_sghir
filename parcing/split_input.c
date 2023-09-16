@@ -240,13 +240,62 @@ char	*expand_special_variable(char *param, int *i, t_data *data, int *j)
 	return (value);
 }
 
+void	ft_skip_spaces(char *command_line, int *i)
+{
+	while (command_line[*i] && command_line[*i] == ' ')
+		(*i)++;
+}
+
+// suround every word between spaces with double quotes
+
+char	*ft_quote(char *str, t_data *data)
+{
+	int		i;
+	int		j;
+	char	*new_str;
+
+	i = 0;
+	j = 0;
+	new_str = ft_strdup("");
+	if (new_str == NULL)
+		return (NULL);
+	if (add_garbage(data, new_str) == NULL)
+		return (NULL);
+	while (str[i])
+	{
+		new_str = ft_strjoin_char(new_str, '\"', data);
+		if (new_str == NULL)
+			return (NULL);
+		while (str[i] && str[i] != ' ')
+		{
+			new_str = ft_strjoin_char(new_str, str[i], data);
+			if (new_str == NULL)
+				return (NULL);
+			i++;
+		}
+		new_str = ft_strjoin_char(new_str, '\"', data);
+		if (new_str == NULL)
+			return (NULL);
+		while (str[i] && str[i] == ' ') {
+			new_str = ft_strjoin_char(new_str, str[i], data);
+			if (new_str == NULL)
+				return (NULL);
+			i++;
+		}
+	}
+	return (new_str);
+}
+
+
 char	*expand_variable(char *param, int *i, t_data *data)
 {
 	int		j;
+	int		k;
 	char	*value;
 	char	*new_param;
 
 	j = ++*i;
+	k = 0;
 	new_param = ft_strdup("");
 	if (new_param == NULL)
 		return (NULL);
@@ -256,6 +305,7 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		value = expand_special_variable(param, i, data, &j);
 	if (value == NULL)
 		return (NULL);
+	value = ft_quote(value, data);
 	new_param = ft_strjoin(new_param, value, 1);
 	if (add_garbage(data, new_param) == NULL)
 		return (NULL);

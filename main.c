@@ -234,7 +234,10 @@ void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 	t_env	*hidden_path;
 
 	if (get_env_by_key(env, key) != NULL)
+	{
+		free(value);
 		return ;
+	}
 	tmp = env;
 	while (tmp->next)
 		tmp = tmp->next;
@@ -340,3 +343,5 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
+
+

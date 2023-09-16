@@ -38,40 +38,8 @@ int	handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 	return (1);
 }
 
-int	make_history(t_data *data, int history_pipe)
+char	*read_line_heredoc(t_data *data, int pip, char *line)
 {
-	int		eof;
-	char	*history;
-
-	history = ft_calloc(sizeof(char), 2);
-	if (!history)
-		return (prompt_error("minishell: malloc error", NULL, data, 1), 0);
-	if (add_garbage(data, history) == NULL)
-		return (0);
-	eof = read(history_pipe, history, 1);
-	data->commande_line = ft_strjoin_char(data->original_commande_line, '\n', data);
-	if (data->commande_line == NULL)
-		return (0);
-	while (eof > 0)
-	{
-		data->commande_line = ft_strjoin_char(data->commande_line,
-				history[0], data);
-		if (data->commande_line == NULL)
-			return (0);
-		if (data->commande_line == NULL)
-			return (0);
-		eof = read(history_pipe, history, 1);
-	}
-	data->original_commande_line = ft_strdup(data->commande_line);
-	if (garbage(data->original_commande_line, data) == NULL)
-		return (0);
-	return (1);
-}
-
-char	*read_line_heredoc(t_data *data, int pip, int history_pipe, char *line)
-{
-	write(history_pipe, line, ft_strlen(line));
-	write(history_pipe, "\n", 1);
 	write(pip, line, ft_strlen(line));
 	write(pip, "\n", 1);
 	line = readline("> ");
@@ -101,30 +69,30 @@ int	*create_heredoc_pipe(t_params next, t_data *data)
 void	signalher(int sig)
 {
 	(void)sig;
+	// exit(0);
+	rl_replace_line("", 0);
 	ioctl(0, TIOCSTI, "\4");
 }
 
-void	child_process(t_data *data, int *pip, int *history_pipe, t_params next)
+void	child_process(t_data *data, int *pip, t_params next)
 {
     char *line;
 
     add_history(data->original_commande_line);
     close(pip[0]);
-    close(history_pipe[0]);
     signal(SIGINT, signalher);
     line = readline("> ");
     if (add_garbage(data, line) == NULL)
         exit (1);
     while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
     {
-        add_history(line);
+        // add_history(line);
         if (next->in_double_quote == -1 && next->in_quote == -1)
             if (handle_dollar(&line, data) == NULL)
                 exit (1);
-        line = read_line_heredoc(data, pip[1], history_pipe[1], line);
+        line = read_line_heredoc(data, pip[1], line);
     }
     close(pip[1]);
-    close(history_pipe[1]);
     free_garbage();
     free_params(&data->params);
     rl_clear_history();
@@ -141,14 +109,14 @@ void	skip_riderection(t_params params, t_cmd_list cmd_list)
 		params->next->next->prev = params->prev;
 }
 
-int	create_heredoc_process(t_data *data, int *history_pipe,
+int	create_heredoc_process(t_data *data,
 	t_cmd_list cmd_list, t_params params)
 {
 	int		*pip;
 	int		pid;
 
 	if (params->next == NULL)
-		return (prompt_error("minishell: syntax error 0", NULL, data, 258), 0);
+		return (prompt_error("minishell: syntax error", NULL, data, 258), 0);
 	pip = create_heredoc_pipe(params->next, data);
 	if (pip == NULL)
 		return (0);
@@ -156,12 +124,12 @@ int	create_heredoc_process(t_data *data, int *history_pipe,
 	if (pid == -1)
 		return (prompt_error("minishell: fork error", NULL, data, 1), 0);
 	else if (pid == 0)
-		child_process(data, pip, history_pipe, params->next);
+		child_process(data, pip, params->next);
 	else
 	{
 		waitpid(pid, &g_exit->g_exit_status, 0);
+		close(pip[0]);
 		close(pip[1]);
-		close(history_pipe[1]);
 		cmd_list->input = pip[0];
 		skip_riderection(params, cmd_list);
 	}
@@ -170,17 +138,7 @@ int	create_heredoc_process(t_data *data, int *history_pipe,
 
 int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
-	int		*history_pipe;
-
-	history_pipe = (int *)malloc(sizeof(int) * 2);
-	if (!history_pipe)
-		return (prompt_error("minishell: malloc error", NULL, data, 1), 0);
-	if (add_garbage(data, history_pipe) == NULL)
-		return (0);
-	pipe(history_pipe);
-	if (create_heredoc_process(data, history_pipe, cmd_list, params) == 0)
-		return (0);
-	if (make_history(data, history_pipe[0]) == 0)
+	if (create_heredoc_process(data, cmd_list, params) == 0)
 		return (0);
 	return (1);
 }

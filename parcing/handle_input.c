@@ -73,7 +73,7 @@ int	get_input(t_data *data)
 	data->original_commande_line = ft_strdup(data->commande_line);
 	if (garbage(data->original_commande_line, data) == NULL)
 		return (0);
-	if (ft_strcmp(data->commande_line, "\"\"") == 0 || ft_strcmp(
+	if (ft_strncmp(data->commande_line, "\"\"", 2) == 0 || ft_strcmp(
 			data->commande_line, "\'\'") == 0)
 		return (prompt_error("minishell: command not found", NULL, data, 127), 0);
 	g_exit->in_exec_mode = 1;

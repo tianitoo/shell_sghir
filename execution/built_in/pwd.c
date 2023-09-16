@@ -36,7 +36,7 @@ char	*find_pwd(t_data *data)
 	}
 	else
 	{
-		add_hidden_env(data->linked_env, "HIDDEN_ENV", cwd, data);
+		add_hidden_env(data->linked_env, "HIDDEN_PWD", cwd, data);
 	}
 	return (cwd);
 }
