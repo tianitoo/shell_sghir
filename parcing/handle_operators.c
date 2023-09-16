@@ -177,7 +177,7 @@ t_cmd_list	next_command(t_cmd_list cmd_list,
 {
 	if (handling_param->next == NULL)
 		return (prompt_error("syntax error near unexpected token `|'",
-				NULL, data, 258), NULL);
+				NULL, data, 1), NULL);
 	if (handling_param->next->is_operator == 1
 		&& handling_param->next->parameter[0] == '|')
 		return (prompt_error("syntax error near unexpected token `|'",

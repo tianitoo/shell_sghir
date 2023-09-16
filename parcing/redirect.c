@@ -193,7 +193,7 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (prompt_error("minishell: syntax error",
+			return (ft_printf("minishell: syntax error near unexpected token `%s'" , params->next->parameter), prompt_error("",
 					NULL, data, 258), NULL);
 		dir = opendir(params->next->parameter);
 		if (dir != NULL)
@@ -202,7 +202,7 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: no such file or directory",
+			return (prompt_error("minishell: no such file or directory",
 					cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
@@ -229,7 +229,7 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
-			return (prompt_error("syntax error: no such file or directory",
+			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
 		cmd_list->input = fd;
 		skip_riderection(params, cmd_list);
@@ -256,7 +256,7 @@ t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
-			return (prompt_error("syntax error: could not open file",
+			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
