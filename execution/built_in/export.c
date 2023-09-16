@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 16:23:35 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/15 16:25:39 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/16 00:37:04 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 		if (!value)
 			return (NULL);
 		tmp->value = value;
+		tmp->hidden = 0;
 	}
 	return (value);
 }
@@ -87,6 +88,22 @@ char	*update_param(t_data *data, char *key, char *new_param)
 	}
 	free(key_to_find);
 	return (value);
+}
+
+int	key_exists_hidden(t_env *env_params, char *key_to_find)
+{
+	t_env	*tmp;
+	char	*key;
+
+	tmp = env_params;
+	while (tmp)
+	{
+		key = tmp->key;
+		if (ft_strcmp(key, key_to_find) == 0)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
 }
 
 int	key_exists(t_env *env_params, char *key_to_find)
@@ -148,9 +165,9 @@ int	update_or_add_env(t_data *data, t_params tmp, t_env *linked_env)
 	key = find_key(tmp->parameter, data);
 	if (key)
 	{
-		if (key_exists(data->linked_env, key) == -1)
+		if (key_exists_hidden(data->linked_env, key) == -1)
 			return (0);
-		else if (key_exists(data->linked_env, key) == 1)
+		else if (key_exists_hidden(data->linked_env, key) == 1)
 		{
 			if (ft_strchr(tmp->parameter, '=') != NULL)
 			{

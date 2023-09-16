@@ -316,7 +316,7 @@ t_data	*set_data(char **envp)
 	if (!data->linked_env)
 		return (NULL);
 	add_hidden_env(data->linked_env, "PATH",
-		"/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:.", data);
+		ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
 	return (data);
 }
 
