@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 11:37:08 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/16 01:49:19 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/11 00:23:59 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,21 @@ t_env	*remove_variable(t_data *data, char *var_name)
 {
 	t_env	*env;
 	t_env	*prev;
+	t_env	*free_me;
 
+	free_me = NULL;
+	prev = NULL;
 	env = data->linked_env;
 	while (env)
 	{
 		if (ft_strcmp(env->key, var_name) == 0)
 		{
+			free_me = env;
 			if (prev == NULL)
 				data->linked_env = env->next;
 			else
 				prev->next = env->next;
+			free_env(free_me);
 			break ;
 		}
 		prev = env;
@@ -59,26 +64,13 @@ t_env	*ft_unset(t_data *data, t_cmd *cmd_list)
 	t_env		*env;
 	t_params	params;
 	char		*var_name;
-	int			i;
 
-	i = 0;
 	params = cmd_list->args->next;
 	while (params)
 	{
-		ft_printf("here\n");
 		var_name = params->parameter;
-		if (var_name[0] == '='
-			|| ft_isdigit(var_name[0])
-			|| !(ft_isalpha(var_name[0]) || var_name[0] == '_'))
-			ft_printf("minishell: unset: `%s': not a valid identifier\n",
-				var_name);
-		while (var_name[i])
-		{
-			if (ft_isalnum(var_name[i]) == 0)
-			ft_printf("minishell: unset: `%s': not a valid identifier\n",
-				var_name);
-			i++;
-		}
+		if (ft_strcmp(var_name, "_") == 0)
+			return (data->linked_env);
 		env = remove_variable(data, var_name);
 		params = params->next;
 	}
