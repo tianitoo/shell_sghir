@@ -290,6 +290,8 @@ pid_t	execute_commands(t_data *data)
 	pid_t		pid;
 
 	cmd_list = data->cmd_list;
+	while (cmd_list->next != NULL)
+		cmd_list = cmd_list->next;
 	while (cmd_list)
 	{
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
@@ -309,7 +311,7 @@ pid_t	execute_commands(t_data *data)
 					break ;
 			}
 		}
-		cmd_list = cmd_list->next;
+		cmd_list = cmd_list->prev;
 	}
 	return (pid);
 }
