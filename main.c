@@ -277,6 +277,7 @@ void	set_g_exit(void)
 		return ;
 	}
 	g_exit->garbage = NULL;
+	g_exit->heredoc_ctrlc = 0;
 	g_exit->g_exit_status = 0;
 }
 
