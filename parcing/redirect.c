@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   redirect.c										 :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/06/02 10:39:31 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/06/02 13:49:36 by hnait			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/17 22:31:12 by kmouradi          #+#    #+#             */
+/*   Updated: 2023/09/17 22:31:25 by kmouradi         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -69,7 +69,6 @@ int	*create_heredoc_pipe(t_params next, t_data *data)
 void	signalher(int sig)
 {
 	(void)sig;
-	// exit(0);
 	rl_replace_line("", 0);
 	ioctl(0, TIOCSTI, "\4");
 	g_exit->heredoc_ctrlc = 1;
@@ -167,8 +166,8 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (ft_printf("minishell: syntax error near unexpected token `%s'" , params->next->parameter), prompt_error("",
-					NULL, data, 258), NULL);
+			return (ft_printf("minishell: syntax error near unexpected token `%s'",
+					params->next->parameter), prompt_error("",NULL, data, 258), NULL);
 		dir = opendir(params->next->parameter);
 		if (dir != NULL)
 			return (closedir(dir), ft_printf("%s: is a directory\n",
@@ -205,7 +204,8 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_RDONLY);
 		if (fd == -1)
-			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
+			return (ft_printf("minishell: %s: no such file or directory",
+					params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
 		if (cmd_list->input != -1)
 			close(cmd_list->input);
@@ -234,7 +234,8 @@ t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 					cmd_list, data, 1), NULL);
 		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (fd == -1)
-			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
+			return (ft_printf("minishell: %s: no such file or directory",
+					params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
 		if (cmd_list->output != -1)
 			close(cmd_list->output);
