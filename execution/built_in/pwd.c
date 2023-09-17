@@ -23,19 +23,6 @@ char	*find_pwd(t_data *data)
 		if (cwd == NULL)
 			return (NULL);
 	}
-	if (ft_strlen(cwd) == 0)
-		return (get_env_value("HIDDEN_PWD", data));
-	if (key_exists(data->linked_env, "HIDDEN_PWD") == -1)
-		return (NULL);
-	else if (key_exists(data->linked_env, "HIDDEN_PWD") == 1)
-	{
-		if (update_env_var("HIDDEN_PWD", cwd, data) == NULL)
-			return (NULL);
-	}
-	else
-	{
-		add_hidden_env(data->linked_env, "HIDDEN_PWD", cwd, data);
-	}
 	return (cwd);
 }
 
