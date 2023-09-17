@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-#include <sys/_types/_null.h>
+// #include <sys/_types/_null.h>
 
 int	ft_atoi(const char *str)
 {
