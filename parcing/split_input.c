@@ -402,7 +402,14 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	char	*command_line;
 
 	command_line = data->commande_line;
-	if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
+	if (command_line[*i] == '$' && !(ft_isalpha(command_line[*i + 1]) ||
+			command_line[*i + 1] == '_' || command_line[*i + 1] == '?'))
+		{(*i)++;
+		new_command_line = ft_strjoin_char(new_command_line, '$', data);
+		if (new_command_line == NULL)
+			return (NULL);
+		}
+	else if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
 			&& command_line[*i + 1] == '"'))
 	{
 		new_command_line = expand_join_variable(command_line,
