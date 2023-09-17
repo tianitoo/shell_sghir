@@ -110,8 +110,6 @@ char *get_cmd_path_from_paths(char **paths, char *cmd, t_cmd_list cmd_list,
   if (is_directory(cmd))
     return (ft_printf("Error: %s: is a directory", cmd),
             prompt_error("", cmd_list, data, 126), NULL);
-  if (cmd[0] == '/' || cmd[0] == '.')
-    return (cmd);
   if (ft_strlen(cmd) == 0)
     return (NULL);
   while (paths[i]) {
@@ -135,7 +133,10 @@ char *get_cmd_path(t_data *data, t_cmd_list cmd_list) {
   char **paths;
   t_env *env;
 
+  cmd = cmd_list->cmd;
   env = data->linked_env;
+  if (cmd[0] == '/' || cmd[0] == '.')
+    return (cmd);
   path = get_variable(env, "PATH");
   if (path != NULL) {
     paths = ft_split(path, ':');
@@ -146,7 +147,7 @@ char *get_cmd_path(t_data *data, t_cmd_list cmd_list) {
     prompt_error("", cmd_list, data, 127);
     return (NULL);
   }
-  cmd = get_cmd_path_from_paths(paths, cmd_list->cmd, cmd_list, data);
+  cmd = get_cmd_path_from_paths(paths, cmd, cmd_list, data);
   free_ss(paths);
   free(paths);
   if (cmd == NULL)

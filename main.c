@@ -150,10 +150,16 @@ t_env	*set_shlvl(t_env *env, t_data *data)
 	}
 	else
 	{
-		i = ft_atoi(tmp->value);
+		if (tmp->value[0] == '\0')
+			i = 0;
+		else
+			i = ft_atoi(tmp->value);
 		i++;
 		free(tmp->value);
-		tmp->value = ft_itoa(i);
+		if (i == 1000)
+			tmp->value = ft_strdup("");
+		else
+			tmp->value = ft_itoa(i);
 		if (!tmp->value)
 			return (NULL);
 	}
@@ -268,17 +274,18 @@ void	handler(int arg)
 	}
 }
 
-void	set_g_exit(void)
+int	set_g_exit(void)
 {
 	g_exit = malloc(sizeof(t_exit));
 	if (!g_exit)
 	{
 		prompt_error("malloc error 3", NULL, NULL, 1);
-		return ;
+		return (1);
 	}
 	g_exit->garbage = NULL;
 	g_exit->heredoc_ctrlc = 0;
 	g_exit->g_exit_status = 0;
+	return (0);
 }
 
 t_env	*get_linked_env(char **envp, t_data *data)
@@ -330,9 +337,12 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	set_g_exit();
+	if (set_g_exit())
+		return (1);
 	rl_catch_signals = 0;
 	data = set_data(envp);
+	if (!data)
+		return (1);
 	signal(SIGINT, handler);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)

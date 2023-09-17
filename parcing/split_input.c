@@ -305,7 +305,8 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		value = expand_special_variable(param, i, data, &j);
 	if (value == NULL)
 		return (NULL);
-	value = ft_quote(value, data);
+	if (g_exit->in_exec_mode == 0)
+		value = ft_quote(value, data);
 	new_param = ft_strjoin(new_param, value, 1);
 	if (add_garbage(data, new_param) == NULL)
 		return (NULL);
