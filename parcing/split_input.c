@@ -251,11 +251,9 @@ void	ft_skip_spaces(char *command_line, int *i)
 char	*ft_quote(char *str, t_data *data)
 {
 	int		i;
-	int		j;
 	char	*new_str;
 
 	i = 0;
-	j = 0;
 	new_str = ft_strdup("");
 	if (new_str == NULL)
 		return (NULL);
@@ -290,12 +288,10 @@ char	*ft_quote(char *str, t_data *data)
 char	*expand_variable(char *param, int *i, t_data *data)
 {
 	int		j;
-	int		k;
 	char	*value;
 	char	*new_param;
 
 	j = ++*i;
-	k = 0;
 	new_param = ft_strdup("");
 	if (new_param == NULL)
 		return (NULL);
