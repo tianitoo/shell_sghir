@@ -26,10 +26,7 @@
 
 # define MAX_PATH 1024
 
-typedef struct s_file_descriptors{
-	int							fd;
-	struct s_file_descriptors	*next;
-}	t_file_descriptors;
+
 
 typedef struct s_garbage{
 	void				*ptr;
@@ -40,12 +37,8 @@ typedef struct s_exit{
 	int					g_exit_status;
 	int					in_exec_mode;
 	t_garbage			*garbage;
-	t_file_descriptors	*file_descriptors;
-	int					heredoc_statu;
-	int					heredoc_fd;
 	int					heredoc_ctrlc;
 	int					number_of_lines;
-	int					closeed;
 }t_exit;
 
 extern t_exit	*g_exit;
@@ -83,7 +76,6 @@ typedef struct s_data{
 	t_cmd_list	cmd_list;
 	t_params	params;
 	t_env		*linked_env;
-	t_env		*declare;
 	char		*commande_line;
 	char		*original_commande_line;
 	int			parsing_error;
