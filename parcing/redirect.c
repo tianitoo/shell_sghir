@@ -72,6 +72,7 @@ void	signalher(int sig)
 	// exit(0);
 	rl_replace_line("", 0);
 	ioctl(0, TIOCSTI, "\4");
+	g_exit->heredoc_ctrlc = 1;
 }
 
 void	child_process(t_data *data, int *pip, t_params next)
@@ -79,7 +80,7 @@ void	child_process(t_data *data, int *pip, t_params next)
     char *line;
 
     add_history(data->original_commande_line);
-    close(pip[0]);
+    // close(pip[0]);
     signal(SIGINT, signalher);
     line = readline("> ");
     if (add_garbage(data, line) == NULL)
@@ -91,7 +92,20 @@ void	child_process(t_data *data, int *pip, t_params next)
             if (handle_dollar(&line, data) == NULL)
                 exit (1);
         line = read_line_heredoc(data, pip[1], line);
+		g_exit->number_of_lines++;
     }
+	if (line == NULL && g_exit->heredoc_ctrlc == 1)
+	{
+		line = get_next_line(pip[0]);
+		while (g_exit->number_of_lines > 1)
+		{
+			line = get_next_line(pip[0]);
+			g_exit->number_of_lines--;
+		
+		}
+		g_exit->heredoc_ctrlc = 0;
+	}
+	close(pip[0]);
     close(pip[1]);
     free_garbage();
     free_params(&data->params);
@@ -128,8 +142,10 @@ int	create_heredoc_process(t_data *data,
 	else
 	{
 		waitpid(pid, &g_exit->g_exit_status, 0);
-		close(pip[0]);
+		// close(pip[0]);
 		close(pip[1]);
+		if (cmd_list->input != -1)
+			close(cmd_list->input);
 		cmd_list->input = pip[0];
 		skip_riderection(params, cmd_list);
 	}
@@ -162,6 +178,8 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 		if (fd == -1)
 			return (prompt_error("minishell: no such file or directory",
 					cmd_list, NULL, 1), NULL);
+		if (cmd_list->output != -1)
+			close(cmd_list->output);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -189,6 +207,8 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 		if (fd == -1)
 			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
+		if (cmd_list->input != -1)
+			close(cmd_list->input);
 		cmd_list->input = fd;
 		skip_riderection(params, cmd_list);
 	}
@@ -216,6 +236,8 @@ t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 		if (fd == -1)
 			return (ft_printf("minishell: %s: no such file or directory", params->next->parameter), prompt_error("",
 					cmd_list, NULL, 1), NULL);
+		if (cmd_list->output != -1)
+			close(cmd_list->output);
 		cmd_list->output = fd;
 		skip_riderection(params, cmd_list);
 	}

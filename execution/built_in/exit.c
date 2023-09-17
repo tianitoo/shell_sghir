@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+#include <sys/_types/_null.h>
 
 int	ft_atoi(const char *str)
 {
@@ -55,13 +56,6 @@ int	ft_only_dig(char *str)
 	return (1);
 }
 
-int	ft_check_long(char *str)
-{
-	if (ft_strcmp(str, "9223372036854775807") != 0 && ft_strcmp(str, "-9223372036854775808") != 0)
-		return (0);
-	return (1);
-}
-
 void	free_enve(t_data *data)
 {
 	t_env	*env;
@@ -78,9 +72,60 @@ void	free_enve(t_data *data)
 			free(env->value);
 			free(env);
 		}
-			last = env;
-			env = env->next;
+		last = env;
+		env = env->next;
 	}
+}
+
+void	exit_error(char *str, t_data *data)
+{
+	ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putendl_fd(": numeric argument required", 2);
+	free_enve(data);
+	g_exit->g_exit_status = 255;
+	exit(g_exit->g_exit_status);
+}
+
+int	check_max(char *arg, t_data *data)
+{
+	if (ft_strlen(arg) < 19)
+		return (1);
+	else if (ft_strlen(arg) > 19)
+		exit_error(arg, data);
+	else
+	{
+		if (ft_strcmp(arg, "9223372036854775807") > 0)
+			return (0);
+		else
+			return (1);
+	}
+	return (1);
+}
+
+int	check_min(char *arg, t_data *data)
+{
+	if (ft_strlen(arg) < 20)
+		return (1);
+	else if (ft_strlen(arg) > 20)
+		exit_error(arg, data);
+	else
+	{
+		if (ft_strcmp(arg, "-9223372036854775808") > 0)
+			return (0);
+		else
+			return (1);
+	}
+	return (1);
+}
+
+void	check_exit_errors(char **args, t_data *data)
+{
+	if (!ft_only_dig(args[1])
+		|| !check_min(args[1], data)
+		|| !check_max(args[1], data))
+		exit_error(args[1], data);
 }
 
 void	*ft_exit(t_params params, t_data *data)
@@ -88,25 +133,25 @@ void	*ft_exit(t_params params, t_data *data)
 	char	**args;
 
 	g_exit->g_exit_status = 0;
-	free_enve(data);
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	ft_printf("%s\n", args[0]);
 	if (!args[1])
-		exit(g_exit->g_exit_status);
-	if (!args[2] && (!ft_only_dig(args[1]) || !ft_check_long(args[1])))
 	{
-		ft_printf("minishell: exit: %s: numeric argument required\n", args[1]);
-		g_exit->g_exit_status = 255;
+		ft_putendl_fd("exit", 1);
+		free_enve(data);
 		exit(g_exit->g_exit_status);
 	}
-	else if (!args[2] && ft_only_dig(args[1]))
-	{
-		g_exit->g_exit_status = ft_atoi(args[1]) % 256;
-		exit(g_exit->g_exit_status);
-	}
+	check_exit_errors(args, data);
 	if (args[2])
-		prompt_error("minishell: exit: too many arguments", NULL, data, 1);
+	{
+		ft_putendl_fd("exit", 2);
+		ft_putendl_fd("exit: too many arguments", 2);
+		g_exit->g_exit_status = 1;
+		return (NULL);
+	}
+	g_exit->g_exit_status = ft_atoi(args[1]) % 256;
+	ft_putendl_fd("exit", 1);
+	exit(g_exit->g_exit_status);
 	return (NULL);
 }
