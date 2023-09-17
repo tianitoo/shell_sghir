@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   split_input.c									  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/06/02 10:40:09 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/07/09 14:55:42 by hnait			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_input.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/17 22:17:45 by kmouradi          #+#    #+#             */
+/*   Updated: 2023/09/17 22:24:46 by kmouradi         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -274,7 +274,8 @@ char	*ft_quote(char *str, t_data *data)
 		new_str = ft_strjoin_char(new_str, '\"', data);
 		if (new_str == NULL)
 			return (NULL);
-		while (str[i] && str[i] == ' ') {
+		while (str[i] && str[i] == ' ')
+		{
 			new_str = ft_strjoin_char(new_str, str[i], data);
 			if (new_str == NULL)
 				return (NULL);
@@ -283,7 +284,6 @@ char	*ft_quote(char *str, t_data *data)
 	}
 	return (new_str);
 }
-
 
 char	*expand_variable(char *param, int *i, t_data *data)
 {
@@ -402,13 +402,14 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	char	*command_line;
 
 	command_line = data->commande_line;
-	if (command_line[*i] == '$' && !(ft_isalpha(command_line[*i + 1]) ||
-			command_line[*i + 1] == '_' || command_line[*i + 1] == '?'))
-		{(*i)++;
+	if (command_line[*i] == '$' && !(ft_isalpha(command_line[*i + 1])
+			|| command_line[*i + 1] == '_' || command_line[*i + 1] == '?'))
+	{
+		(*i)++;
 		new_command_line = ft_strjoin_char(new_command_line, '$', data);
 		if (new_command_line == NULL)
 			return (NULL);
-		}
+	}
 	else if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
 			&& command_line[*i + 1] == '"'))
 	{
