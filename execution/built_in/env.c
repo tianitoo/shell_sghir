@@ -21,10 +21,12 @@ void	*write_env(t_data *data)
 		return (NULL);
 	while (env)
 	{
-		if (env->value != NULL && ft_strlen(env->value) != 0)
+		if (env->hidden == 0)
 		{
-			if (env->hidden == 0)
+			if (env->value != NULL && ft_strlen(env->value) > 0)
 				ft_printf("%s=%s\n", env->key, env->value);
+			else if (env->show_value == 1)
+				ft_printf("%s=\n", env->key);
 		}
 		env = env->next;
 	}
