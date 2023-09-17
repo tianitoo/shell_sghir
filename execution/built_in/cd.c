@@ -16,6 +16,8 @@ t_env	*update_env_var(char *var_key, char *value, t_data *data)
 {
 	t_env	*env;
 
+	if (value == NULL)
+		return (NULL);
 	env = data->linked_env;
 	while (env)
 	{
