@@ -132,6 +132,7 @@ int			key_exists(t_env *env_params, char *key_to_find);
 t_env		*ft_export(t_cmd_list cmd_list, t_data *data);
 void		*ft_exit(t_params params, t_data *data);
 t_env		*ft_unset(t_data *data, t_cmd *cmd_list);
+t_env		*remove_variable(t_data *data, char *var_name);
 
 //execution
 void		execute(t_data *data);

@@ -343,6 +343,7 @@ int	main(int argc, char **argv, char **envp)
 	data = set_data(envp);
 	if (!data)
 		return (1);
+	remove_variable(data, "OLDPWD");
 	signal(SIGINT, handler);
 	signal(SIGQUIT, SIG_IGN);
 	while (1)

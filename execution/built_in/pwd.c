@@ -24,9 +24,7 @@ char	*find_pwd(t_data *data)
 			return (NULL);
 	}
 	if (ft_strlen(cwd) == 0)
-	{
 		return (get_env_value("HIDDEN_PWD", data));
-	}
 	if (key_exists(data->linked_env, "HIDDEN_PWD") == -1)
 		return (NULL);
 	else if (key_exists(data->linked_env, "HIDDEN_PWD") == 1)

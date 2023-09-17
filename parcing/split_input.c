@@ -251,11 +251,9 @@ void	ft_skip_spaces(char *command_line, int *i)
 char	*ft_quote(char *str, t_data *data)
 {
 	int		i;
-	int		j;
 	char	*new_str;
 
 	i = 0;
-	j = 0;
 	new_str = ft_strdup("");
 	if (new_str == NULL)
 		return (NULL);
@@ -290,12 +288,10 @@ char	*ft_quote(char *str, t_data *data)
 char	*expand_variable(char *param, int *i, t_data *data)
 {
 	int		j;
-	int		k;
 	char	*value;
 	char	*new_param;
 
 	j = ++*i;
-	k = 0;
 	new_param = ft_strdup("");
 	if (new_param == NULL)
 		return (NULL);
@@ -406,7 +402,14 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	char	*command_line;
 
 	command_line = data->commande_line;
-	if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
+	if (command_line[*i] == '$' && !(ft_isalpha(command_line[*i + 1]) ||
+			command_line[*i + 1] == '_' || command_line[*i + 1] == '?'))
+		{(*i)++;
+		new_command_line = ft_strjoin_char(new_command_line, '$', data);
+		if (new_command_line == NULL)
+			return (NULL);
+		}
+	else if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
 			&& command_line[*i + 1] == '"'))
 	{
 		new_command_line = expand_join_variable(command_line,
