@@ -77,7 +77,6 @@ SRC = parcing/handle_input.c\
 		utils/double_pointer_args.c\
 		utils/params_utils.c\
 		utils/garbage.c\
-		f.c\
 		gnl/get_next_line.c\
 		signals.c\
 		env/env_1.c\
