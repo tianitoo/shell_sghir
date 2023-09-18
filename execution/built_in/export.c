@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:28 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:57:51 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 18:13:00 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ char	*update_param(t_data *data, char *key, char *new_param)
 			value = change_var_value(new_param, key, tmp, data);
 			if (value == NULL)
 				return (NULL);
+			tmp->show_value = 1;
 		}
 		tmp = tmp->next;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:43 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:26:37 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 18:19:14 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	set_g_exit(void)
 	g_exit = malloc(sizeof(t_exit));
 	if (!g_exit)
 	{
-		prompt_error("malloc error 3", NULL, NULL, 1);
+		prompt_error("malloc error", NULL, NULL, 1);
 		return (1);
 	}
 	g_exit->garbage = NULL;

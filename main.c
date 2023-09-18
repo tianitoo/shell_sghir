@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:32 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:59:52 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 18:19:05 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_data	*set_data(char **envp)
 
 	data = malloc(sizeof(t_data));
 	if (!data)
-		return (prompt_error("malloc error 4", NULL, NULL, 1), NULL);
+		return (prompt_error("malloc error", NULL, NULL, 1), NULL);
 	data->params = NULL;
 	data->linked_env = get_linked_env(envp, data);
 	if (!data->linked_env)
