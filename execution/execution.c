@@ -27,30 +27,43 @@ int	get_exitstate(int wait_status)
 	return (1);
 }
 
+pid_t	fork_or_one_builtin(t_data *data, t_cmd_list cmd_list)
+{
+	pid_t	pid;
+
+	pid = 0;
+	if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL
+				&& cmd_list->prev == NULL)
+	{
+		if (execute_builtin(data, cmd_list) == NULL)
+			return (-2);
+	}
+	else if (cmd_list->cmd)
+	{
+		pid = execute_cmd(data, cmd_list);
+		if (pid == -2)
+			return (-2);
+	}
+	return (pid);
+}
+
 pid_t	execute_commands(t_data *data)
 {
 	t_cmd_list	cmd_list;
 	pid_t		pid;
 
-	cmd_list = init_pipes(data);
+	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
+		if (cmd_list->next != NULL)
+			pipe(cmd_list->next->pip);
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)
 		{
-			if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL
-				&& cmd_list->prev == NULL)
-			{
-				if (execute_builtin(data, cmd_list) == NULL)
-					break ;
-			}
-			else if (cmd_list->cmd)
-			{
-				pid = execute_cmd(data, cmd_list);
-				if (pid == -2)
-					break ;
-			}
+			pid = fork_or_one_builtin(data, cmd_list);
+			if (pid == -2)
+				break ;
 		}
-		cmd_list = cmd_list->prev;
+		cmd_list = cmd_list->next;
 	}
 	return (pid);
 }

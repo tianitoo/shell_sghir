@@ -54,16 +54,14 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 		prompt_error("", cmd_list, data, 127), NULL);
 }
 
-char	**get_double_pointer_path(t_data *data, t_cmd_list cmd_list)
+char	**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd)
 {
-	char	*path;
 	char	**paths;
+	char	*path;
 	t_env	*env;
-	char	*cmd;
 
-	paths = NULL;
-	cmd = cmd_list->cmd;
 	env = data->linked_env;
+
 	path = get_variable(env, "PATH");
 	if (path != NULL)
 	{
@@ -84,11 +82,10 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 {
 	char	*cmd;
 	char	**paths;
-
 	cmd = cmd_list->cmd;
 	if (cmd[0] == '/' || cmd[0] == '.')
 		return (cmd);
-	paths = get_double_pointer_path(data, cmd_list);
+	paths = get_paths(data, cmd_list, cmd);
 	cmd = get_cmd_path_from_paths(paths, cmd, cmd_list, data);
 	free_ss(paths);
 	free(paths);

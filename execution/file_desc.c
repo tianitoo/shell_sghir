@@ -63,16 +63,3 @@ void	close_file_descriptors(t_data *data)
 	}
 }
 
-t_cmd_list	init_pipes(t_data *data)
-{
-	t_cmd_list	cmd_list;
-
-	cmd_list = data->cmd_list;
-	while (cmd_list->next != NULL)
-	{
-		if (cmd_list->next != NULL)
-			pipe(cmd_list->next->pip);
-		cmd_list = cmd_list->next;
-	}
-	return (cmd_list);
-}
