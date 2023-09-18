@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 05:35:54 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 20:03:24 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void		empty_pipe(char *line, int *pip);
 int			*create_heredoc_pipe(t_params next, t_data *data);
 t_env		*get_linked_env(char **envp, t_data *data);
 void		signalher(int sig);
+int			get_exitstate(int wait_status);
 int			set_g_exit(void);
 
 #endif

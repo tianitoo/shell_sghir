@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:51 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:56:33 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 20:07:13 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	child_process(t_data *data, int *pip, t_params next)
 	free_garbage();
 	free_params(&data->params);
 	rl_clear_history();
+	if(g_exit->heredoc_ctrlc == 1)
+		exit(1);
 	exit(0);
 }
 
@@ -68,6 +70,7 @@ int	create_heredoc_process(t_data *data,
 	else
 	{
 		waitpid(pid, &g_exit->g_exit_status, 0);
+		g_exit->g_exit_status = get_exitstate(g_exit->g_exit_status);
 		close(pip[1]);
 		if (cmd_list->input != -1)
 			close(cmd_list->input);
@@ -81,5 +84,10 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	if (create_heredoc_process(data, cmd_list, params) == 0)
 		return (0);
+	if (g_exit->g_exit_status == 1)
+	{
+		add_history(data->original_commande_line);
+		return (0);
+	}
 	return (1);
 }

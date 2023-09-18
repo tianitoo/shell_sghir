@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_pipe.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:50:34 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:50:43 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 20:01:21 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,5 @@ void	empty_pipe(char *line, int *pip)
 			line = get_next_line(pip[0]);
 			g_exit->number_of_lines--;
 		}
-		g_exit->heredoc_ctrlc = 0;
 	}
 }
