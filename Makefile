@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc 
-FLAGS = -Wall -Werror -Wextra -fsanitize=address -g
+FLAGS = -Wall -Werror -Wextra
 AR = ar -r
 RM = rm -f
 HEAD = minishell.h

@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   handle_operators.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/11 00:52:56 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/15 16:17:40 by kmouradi         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   handle_operators.c								 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: kmouradi <kmouradi@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/09/11 00:52:56 by kmouradi		  #+#	#+#			 */
+/*   Updated: 2023/09/15 16:17:40 by kmouradi		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -81,33 +81,40 @@ t_params	new_param(char *param, t_data *data)
 	return (new);
 }
 
+int	handle_param(t_cmd_list tmp, t_data *data)
+{
+	t_params	params;
+
+	params = tmp->args;
+	while (params && tmp->parsing_error == 0 && data->parsing_error == 0)
+	{
+		if ((params->parameter[0] == '>' || params->parameter[0] == '<')
+			&& params->is_operator == 1)
+			if (handle_redirection(params, tmp, data) == 0)
+				return (0);
+		params = params->next;
+	}
+	if (tmp->cmd == NULL)
+	{
+		if (tmp->args && tmp->args->parameter)
+		{
+			tmp->cmd = ft_strdup(tmp->args->parameter);
+			if (add_garbage(data, tmp->cmd) == NULL)
+				return (0);
+		}
+	}
+	return (1);
+}
+
 int	handle_params(t_cmd_list *cmd_list, t_data *data)
 {
 	t_cmd_list	tmp;
-	t_params	params;
 
-	(void)data;
 	tmp = *cmd_list;
 	while (tmp)
 	{
-		params = tmp->args;
-		while (params && tmp->parsing_error == 0 && data->parsing_error == 0)
-		{
-			if ((params->parameter[0] == '>' || params->parameter[0] == '<')
-				&& params->is_operator == 1)
-				if (handle_redirection(params, tmp, data) == 0)
-					return (0);
-			params = params->next;
-		}
-		if (tmp->cmd == NULL)
-		{
-			if (tmp->args && tmp->args->parameter)
-			{
-				tmp->cmd = ft_strdup(tmp->args->parameter);
-				if (add_garbage(data, tmp->cmd) == NULL)
-					return (0);
-			}
-		}
+		if (handle_param(tmp, data) == 0)
+			return (0);
 		tmp = tmp->next;
 	}
 	return (1);

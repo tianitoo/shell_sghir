@@ -43,10 +43,7 @@ char	*ft_itoa(int n)
 	len = nlen(n);
 	s = (char *) malloc (sizeof(char) * (len + 1));
 	if (!s)
-	{
-		ft_printf("malloc error\n");
-		return (0);
-	}
+		return (ft_printf("malloc error\n"), NULL);
 	if (n < 0)
 	{
 		s[0] = '-';

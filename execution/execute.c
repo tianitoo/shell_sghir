@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 17:26:44 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/15 17:35:25 by kmouradi         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   execute.c										  :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: kmouradi <kmouradi@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/09/15 17:26:44 by kmouradi		  #+#	#+#			 */
+/*   Updated: 2023/09/15 17:35:25 by kmouradi		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -140,17 +140,16 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 		prompt_error("", cmd_list, data, 127), NULL);
 }
 
-char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
+char	**get_double_pointer_path(t_data *data, t_cmd_list cmd_list)
 {
-	char	*cmd;
 	char	*path;
 	char	**paths;
 	t_env	*env;
+	char	*cmd;
 
-	env = data->linked_env;
+	paths = NULL;
 	cmd = cmd_list->cmd;
-	if (cmd[0] == '/' || cmd[0] == '.')
-		return (cmd);
+	env = data->linked_env;
 	path = get_variable(env, "PATH");
 	if (path != NULL)
 	{
@@ -164,6 +163,18 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 		prompt_error("", cmd_list, data, 127);
 		return (NULL);
 	}
+	return (paths);
+}
+
+char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
+{
+	char	*cmd;
+	char	**paths;
+
+	cmd = cmd_list->cmd;
+	if (cmd[0] == '/' || cmd[0] == '.')
+		return (cmd);
+	paths = get_double_pointer_path(data, cmd_list);
 	cmd = get_cmd_path_from_paths(paths, cmd, cmd_list, data);
 	free_ss(paths);
 	free(paths);
@@ -285,17 +296,26 @@ void	close_file_descriptors(t_data *data)
 	}
 }
 
-pid_t	execute_commands(t_data *data)
+t_cmd_list	init_pipes(t_data *data)
 {
 	t_cmd_list	cmd_list;
-	pid_t		pid;
 
 	cmd_list = data->cmd_list;
 	while (cmd_list->next != NULL)
 	{
 		if (cmd_list->next != NULL)
 			pipe(cmd_list->next->pip);
-		cmd_list = cmd_list->next;}
+		cmd_list = cmd_list->next;
+	}
+	return (cmd_list);
+}
+
+pid_t	execute_commands(t_data *data)
+{
+	t_cmd_list	cmd_list;
+	pid_t		pid;
+
+	cmd_list = init_pipes(data);
 	while (cmd_list)
 	{
 		if (cmd_list->parsing_error == 0 && data->parsing_error == 0)

@@ -12,6 +12,29 @@
 
 #include "../minishell.h"
 
+int	is_special_char(t_data *data, int *i)
+{
+	if (data->commande_line[*i] == '\"')
+	{
+		while (data->commande_line && data->commande_line[++(*i)] != '\"')
+			if (data->commande_line[*i] == '\0')
+				return (ft_printf("Error: quote not closed"),
+					prompt_error("'", NULL, data, 1), 0);
+	}
+	else if (data->commande_line[*i] == '\'')
+	{
+		while (data->commande_line && data->commande_line[++(*i)] != '\'')
+			if (data->commande_line[*i] == '\0')
+				return (ft_printf("Error: quote not closed"),
+					prompt_error("'", NULL, data, 1), 0);
+	}
+	else if (data->commande_line[*i] == '\n')
+		return (ft_printf("Error: special caracter: `%c",
+				data->commande_line[*i]),
+			prompt_error("'", NULL, data, 1), 0);
+	return (1);
+}
+
 int	check_special_char(t_data *data)
 {
 	int	i;
@@ -19,24 +42,8 @@ int	check_special_char(t_data *data)
 	i = 0;
 	while (data->commande_line[i])
 	{
-		if (data->commande_line[i] == '\"')
-		{
-			while (data->commande_line && data->commande_line[++i] != '\"')
-				if (data->commande_line[i] == '\0')
-					return (ft_printf("Error: quote not closed"),
-						prompt_error("'", NULL, data, 1), 0);
-		}
-		else if (data->commande_line[i] == '\'')
-		{
-			while (data->commande_line && data->commande_line[++i] != '\'')
-				if (data->commande_line[i] == '\0')
-					return (ft_printf("Error: quote not closed"),
-						prompt_error("'", NULL, data, 1), 0);
-		}
-		else if (data->commande_line[i] == '\n')
-			return (ft_printf("Error: special caracter: `%c",
-					data->commande_line[i]),
-				prompt_error("'", NULL, data, 1), 0);
+		if (is_special_char(data, &i) == 0)
+			return (0);
 		i++;
 	}
 	return (1);
@@ -64,11 +71,9 @@ int	create_params(t_data *data)
 		else if (data->commande_line[i] == '|')
 			if (add_operator(data, '|', &i) == NULL)
 				return (0);
-		if (data->commande_line[i] && (data->commande_line[i] == ' '
+		while (data->commande_line[i] && (data->commande_line[i] == ' '
 				|| data->commande_line[i] == '\t'))
-			while (data->commande_line[i] && (data->commande_line[i] == ' '
-					|| data->commande_line[i] == '\t'))
-				i++;
+			i++;
 	}
 	return (1);
 }
@@ -246,7 +251,23 @@ void	ft_skip_spaces(char *command_line, int *i)
 		(*i)++;
 }
 
-// suround every word between spaces with double quotes
+char	*add_quotes_to_word(char *str, char *new_str, int *i, t_data *data)
+{
+	new_str = ft_strjoin_char(new_str, '\"', data);
+	if (new_str == NULL)
+		return (NULL);
+	while (str[*i] && str[*i] != ' ')
+	{
+		new_str = ft_strjoin_char(new_str, str[*i], data);
+		if (new_str == NULL)
+			return (NULL);
+		(*i)++;
+	}
+	new_str = ft_strjoin_char(new_str, '\"', data);
+	if (new_str == NULL)
+		return (NULL);
+	return (new_str);
+}
 
 char	*ft_quote(char *str, t_data *data)
 {
@@ -261,19 +282,7 @@ char	*ft_quote(char *str, t_data *data)
 		return (NULL);
 	while (str[i])
 	{
-		new_str = ft_strjoin_char(new_str, '\"', data);
-		if (new_str == NULL)
-			return (NULL);
-		while (str[i] && str[i] != ' ')
-		{
-			new_str = ft_strjoin_char(new_str, str[i], data);
-			if (new_str == NULL)
-				return (NULL);
-			i++;
-		}
-		new_str = ft_strjoin_char(new_str, '\"', data);
-		if (new_str == NULL)
-			return (NULL);
+		new_str = add_quotes_to_word(str, new_str, &i, data);
 		while (str[i] && str[i] == ' ')
 		{
 			new_str = ft_strjoin_char(new_str, str[i], data);
@@ -301,7 +310,7 @@ char	*expand_variable(char *param, int *i, t_data *data)
 		value = expand_special_variable(param, i, data, &j);
 	if (value == NULL)
 		return (NULL);
-	if (g_exit->in_exec_mode == 0)
+	if (g_exit->in_exec_mode == 1)
 		value = ft_quote(value, data);
 	new_param = ft_strjoin(new_param, value, 1);
 	if (add_garbage(data, new_param) == NULL)
@@ -397,11 +406,9 @@ char	*check_heredoc(char *command_line, int *i, t_data *data, int *quotes)
 	return (new_command_line);
 }
 
-char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
+char	*not_expandable(char *command_line, int *i, t_data *data,
+	char *new_command_line)
 {
-	char	*command_line;
-
-	command_line = data->commande_line;
 	if (command_line[*i] == '$' && !(ft_isalpha(command_line[*i + 1])
 			|| command_line[*i + 1] == '_' || command_line[*i + 1] == '?'))
 	{
@@ -410,6 +417,17 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 		if (new_command_line == NULL)
 			return (NULL);
 	}
+	return (new_command_line);
+}
+
+char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
+{
+	char	*command_line;
+
+	command_line = data->commande_line;
+	new_command_line = not_expandable(command_line, i, data, new_command_line);
+	if (new_command_line == NULL)
+		return (NULL);
 	else if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
 			&& command_line[*i + 1] == '"'))
 	{

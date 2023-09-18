@@ -73,7 +73,6 @@ int	get_input(t_data *data)
 	data->original_commande_line = ft_strdup(data->commande_line);
 	if (garbage(data->original_commande_line, data) == NULL)
 		return (0);
-	g_exit->in_exec_mode = 1;
 	if (data->commande_line == NULL)
 		return (0);
 	if (!treat_input(data))
@@ -82,7 +81,8 @@ int	get_input(t_data *data)
 		return (free_params(&data->params), 0);
 	if (ft_strncmp(data->commande_line, "\"\"", 2) == 0 || ft_strcmp(
 			data->commande_line, "\'\'") == 0)
-		return (prompt_error("minishell: command not found", NULL, data, 127), 0);
+		return (prompt_error("minishell: command not found", NULL,
+				data, 127), 0);
 	data->cmd_list = get_cmd_list(data);
 	if (data->cmd_list == NULL || data->parsing_error == 1)
 		return (free_params(&data->params), 0);
@@ -90,34 +90,4 @@ int	get_input(t_data *data)
 		execute(data);
 	add_history(data->original_commande_line);
 	return (free_params(&data->params), 1);
-}
-
-void	show_command(t_cmd_list cmd_list)
-{
-	t_cmd_list	tmp;
-	t_params	tmp_params;
-
-	if (cmd_list == NULL)
-		return ;
-	tmp = cmd_list;
-	while (tmp)
-	{
-		ft_printf("=============================================\n");
-		ft_printf("cmd: |%s|\n", tmp->cmd);
-		tmp_params = tmp->args;
-		ft_printf("args:\n");
-		while (tmp_params)
-		{
-			ft_printf(" arg: |%s| len: %d is_operator: %d\n",
-				tmp_params->parameter,
-				ft_strlen(tmp_params->parameter), tmp_params->is_operator);
-			tmp_params = tmp_params->next;
-		}
-		ft_printf("\n");
-		ft_printf("in: %d\n", tmp->input);
-		ft_printf("out: %d\n", tmp->output);
-		ft_printf("\n");
-		tmp = tmp->next;
-		ft_printf("=============================================\n");
-	}
 }

@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   redirect.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/17 22:31:12 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/17 22:31:25 by kmouradi         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   redirect.c										 :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: kmouradi <kmouradi@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/09/17 22:31:12 by kmouradi		  #+#	#+#			 */
+/*   Updated: 2023/09/17 22:31:25 by kmouradi		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../minishell.h"
@@ -74,25 +74,8 @@ void	signalher(int sig)
 	g_exit->heredoc_ctrlc = 1;
 }
 
-void	child_process(t_data *data, int *pip, t_params next)
+void	empty_pipe(char *line, int *pip)
 {
-    char *line;
-
-    add_history(data->original_commande_line);
-    // close(pip[0]);
-    signal(SIGINT, signalher);
-    line = readline("> ");
-    if (add_garbage(data, line) == NULL)
-        exit (1);
-    while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
-    {
-        // add_history(line);
-        if (next->in_double_quote == -1 && next->in_quote == -1)
-            if (handle_dollar(&line, data) == NULL)
-                exit (1);
-        line = read_line_heredoc(data, pip[1], line);
-		g_exit->number_of_lines++;
-    }
 	if (line == NULL && g_exit->heredoc_ctrlc == 1)
 	{
 		line = get_next_line(pip[0]);
@@ -100,16 +83,36 @@ void	child_process(t_data *data, int *pip, t_params next)
 		{
 			line = get_next_line(pip[0]);
 			g_exit->number_of_lines--;
-		
 		}
 		g_exit->heredoc_ctrlc = 0;
 	}
+}
+
+void	child_process(t_data *data, int *pip, t_params next)
+{
+	char	*line;
+
+	g_exit->in_exec_mode = 0;
+	add_history(data->original_commande_line);
+	signal(SIGINT, signalher);
+	line = readline("> ");
+	if (add_garbage(data, line) == NULL)
+		exit (1);
+	while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
+	{
+		if (next->in_double_quote == -1 && next->in_quote == -1)
+			if (handle_dollar(&line, data) == NULL)
+				exit (1);
+		line = read_line_heredoc(data, pip[1], line);
+		g_exit->number_of_lines++;
+	}
+	empty_pipe(line, pip);
 	close(pip[0]);
-    close(pip[1]);
-    free_garbage();
-    free_params(&data->params);
-    rl_clear_history();
-    exit(0);
+	close(pip[1]);
+	free_garbage();
+	free_params(&data->params);
+	rl_clear_history();
+	exit(0);
 }
 
 void	skip_riderection(t_params params, t_cmd_list cmd_list)
@@ -141,7 +144,6 @@ int	create_heredoc_process(t_data *data,
 	else
 	{
 		waitpid(pid, &g_exit->g_exit_status, 0);
-		// close(pip[0]);
 		close(pip[1]);
 		if (cmd_list->input != -1)
 			close(cmd_list->input);
@@ -158,25 +160,43 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	return (1);
 }
 
+int	open_file(char *file, t_cmd_list cmd_list, int redirect_type)
+{
+	int		fd;
+	DIR		*dir;
+
+	fd = -1;
+	dir = opendir(file);
+	if (dir != NULL)
+		return (closedir(dir), ft_printf("%s: is a directory",
+				file), prompt_error(" ", cmd_list, NULL, 1), -1);
+	if (redirect_type == 0)
+		fd = open(file, O_RDONLY);
+	else if (redirect_type == 1)
+		fd = open(file, O_CREAT | O_WRONLY | O_APPEND, 0644);
+	else if (redirect_type == 2)
+		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd == -1)
+		return (prompt_error("minishell: no such file or directory",
+				cmd_list, NULL, 1), -1);
+	return (fd);
+}
+
 t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 {
-	DIR			*dir;
 	int			fd;
 
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
-			return (ft_printf("minishell: syntax error near unexpected token `%s'",
-					params->next->parameter), prompt_error("",NULL, data, 258), NULL);
-		dir = opendir(params->next->parameter);
-		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n",
-					params->next->parameter), prompt_error(" ",
-					cmd_list, data, 1), NULL);
-		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_APPEND, 0644);
+		{
+			ft_printf("minishell: syntax error near unexpected token `%s'",
+				params->next->parameter);
+			return (prompt_error("", NULL, data, 258), NULL);
+		}
+		fd = open_file(params->next->parameter, cmd_list, 1);
 		if (fd == -1)
-			return (prompt_error("minishell: no such file or directory",
-					cmd_list, NULL, 1), NULL);
+			return (NULL);
 		if (cmd_list->output != -1)
 			close(cmd_list->output);
 		cmd_list->output = fd;
@@ -190,23 +210,13 @@ t_params	handle_append(t_params params, t_cmd_list cmd_list, t_data *data)
 t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	int			fd;
-	DIR			*dir;
 
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
 			return (prompt_error("minishell: syntax error",
 					NULL, data, 258), NULL);
-		dir = opendir(params->next->parameter);
-		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n",
-					params->next->parameter), prompt_error(" ",
-					cmd_list, data, 1), NULL);
-		fd = open(params->next->parameter, O_RDONLY);
-		if (fd == -1)
-			return (ft_printf("minishell: %s: no such file or directory",
-					params->next->parameter), prompt_error("",
-					cmd_list, NULL, 1), NULL);
+		fd = open_file(params->next->parameter, cmd_list, 0);
 		if (cmd_list->input != -1)
 			close(cmd_list->input);
 		cmd_list->input = fd;
@@ -220,23 +230,15 @@ t_params	add_input(t_params params, t_cmd_list cmd_list, t_data *data)
 t_params	add_output(t_params params, t_cmd_list cmd_list, t_data *data)
 {
 	int			fd;
-	DIR			*dir;
 
 	if (params->next != NULL)
 	{
 		if (params->next->is_operator == 1)
 			return (prompt_error("minishell: syntax error",
 					NULL, data, 258), NULL);
-		dir = opendir(params->next->parameter);
-		if (dir != NULL)
-			return (closedir(dir), ft_printf("%s: is a directory\n",
-					params->next->parameter), prompt_error(" ",
-					cmd_list, data, 1), NULL);
-		fd = open(params->next->parameter, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		fd = open_file(params->next->parameter, cmd_list, 2);
 		if (fd == -1)
-			return (ft_printf("minishell: %s: no such file or directory",
-					params->next->parameter), prompt_error("",
-					cmd_list, NULL, 1), NULL);
+			return (NULL);
 		if (cmd_list->output != -1)
 			close(cmd_list->output);
 		cmd_list->output = fd;

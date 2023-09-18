@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 16:23:35 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/16 00:37:04 by kmouradi         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   export.c										   :+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: kmouradi <kmouradi@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2023/09/15 16:23:35 by kmouradi		  #+#	#+#			 */
+/*   Updated: 2023/09/16 00:37:04 by kmouradi		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "../../minishell.h"
@@ -38,6 +38,19 @@ char	*find_key(char *str, t_data *data)
 	return (key);
 }
 
+char	*update_value(char *new_param, t_env *tmp, t_data *data)
+{
+	char	*value;
+
+	free(tmp->value);
+	value = get_value(new_param, data);
+	if (!value)
+		return (NULL);
+	tmp->value = value;
+	tmp->hidden = 0;
+	return (value);
+}
+
 char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 {
 	char	*value;
@@ -57,14 +70,7 @@ char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 		}
 	}
 	else
-	{
-		free(tmp->value);
-		value = get_value(new_param, data);
-		if (!value)
-			return (NULL);
-		tmp->value = value;
-		tmp->hidden = 0;
-	}
+		value = update_value(new_param, tmp, data);
 	return (value);
 }
 
