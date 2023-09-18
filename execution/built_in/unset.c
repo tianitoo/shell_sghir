@@ -69,8 +69,6 @@ t_env	*ft_unset(t_data *data, t_cmd *cmd_list)
 	while (params)
 	{
 		var_name = params->parameter;
-		if (ft_strcmp(var_name, "_") == 0)
-			return (data->linked_env);
 		env = remove_variable(data, var_name);
 		params = params->next;
 	}

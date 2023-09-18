@@ -34,7 +34,8 @@ int	handle_redirection(t_params params, t_cmd_list cmd_list, t_data *data)
 			return (0);
 	}
 	else if (params->parameter[0] == '>' && params->parameter[1] == '>')
-		handle_append(params, cmd_list, data);
+		if (handle_append(params, cmd_list, data) == NULL)
+			return (0);
 	return (1);
 }
 

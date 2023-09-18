@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:47:47 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 20:58:35 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/19 00:14:55 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ pid_t	execute_commands(t_data *data)
 	t_cmd_list	cmd_list;
 	pid_t		pid;
 
+	pid = -1;
 	cmd_list = data->cmd_list;
 	while (cmd_list)
 	{
@@ -76,7 +77,7 @@ void	execute(t_data *data)
 
 	pid = execute_commands(data);
 	close_file_descriptors(data);
-	if (pid == -3 || pid == -2)
+	if (pid == -3 || pid == -2 || pid == -1)
 		return ;
 	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
