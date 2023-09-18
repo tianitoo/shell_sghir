@@ -83,6 +83,9 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	char	**paths;
 
 	cmd = cmd_list->cmd;
+	if (cmd[0] == '\0')
+		return (prompt_error("Error: command not found", NULL, data, 127),
+			NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
 		if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
