@@ -26,8 +26,6 @@
 
 # define MAX_PATH 1024
 
-
-
 typedef struct s_garbage{
 	void				*ptr;
 	struct s_garbage	*next;
@@ -150,7 +148,41 @@ t_garbage	*add_garbage(t_data *data, void *ptr);
 void		free_garbage(void);
 void		*garbage(void *garbage, t_data *data);
 void		*ft_malloc(size_t size);
-
 char		*get_next_line(int fd);
+
+//redirection
+int			open_file(char *file, t_cmd_list cmd_list, int redirect_type);
+void		skip_riderection(t_params params, t_cmd_list cmd_list);
+int			cwd(t_data *data);
+int			key_exists_hidden(t_env *env_params, char *key_to_find);
+t_env		*add_to_env(t_cmd_list cmd_list, t_data *data);
+t_env		*get_env_by_key(t_env *env, char *key);
+
+int			ft_only_dig(char *str);
+t_cmd_list	init_pipes(t_data *data);
+int			check_min(char *arg, t_data *data);
+int			check_max(char *arg, t_data *data);
+void		free_enve(t_data *data);
+t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data);
+int			env_len(t_env *env);
+void		move_node(t_env *tmp);
+char		*update_param(t_data *data, char *key, char *new_param);
+void		close_file_descriptors(t_data *data);
+int			set_up_execve(t_cmd_list cmd_list, t_data *data);
+int			execute_cmd(t_data *data, t_cmd_list cmd_list);
+t_cmd_list	execute_builtin(t_data *data, t_cmd_list cmd_list);
+void		check_quote(char *command_line, int *i, int *quotes);
+char		*check_heredoc(char *command_line, int *i, t_data *data,
+				int *quotes);
+int			is_builtin(char *cmd);
+void		exit_error(char *str, t_data *data);
+char		*expand_join_variable(char *command_line, char *new_command_line,
+				int *i, t_data *data);
+char		*expand_variable(char *param, int *i, t_data *data);
+void		empty_pipe(char *line, int *pip);
+int			*create_heredoc_pipe(t_params next, t_data *data);
+t_env		*get_linked_env(char **envp, t_data *data);
+void		signalher(int sig);
+int			set_g_exit(void);
 
 #endif

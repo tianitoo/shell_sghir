@@ -1,51 +1,16 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   cd.c											   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: kmouradi <kmouradi@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/07/09 16:28:31 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/09/15 17:38:32 by kmouradi		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
+/*   Updated: 2023/09/18 04:58:59 by hnait            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-t_env	*update_env_var(char *var_key, char *value, t_data *data)
-{
-	t_env	*env;
-
-	if (value == NULL)
-		return (NULL);
-	env = data->linked_env;
-	while (env)
-	{
-		if (ft_strcmp(env->key, var_key) == 0)
-		{
-			free(env->value);
-			env->value = ft_strdup(value);
-			if (env->value == NULL)
-				return (NULL);
-			break ;
-		}
-		env = env->next;
-	}
-	return (env);
-}
-
-int	cwd(t_data *data)
-{
-	char	*cwd;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd == NULL)
-		return (free(cwd),
-			prompt_error("cd: error retrieving current directory",
-				NULL, data, 1), 0);
-	free(cwd);
-	return (1);
-}
 
 char	*current_parrent_dir(char **args, t_data *data)
 {

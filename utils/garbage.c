@@ -74,3 +74,12 @@ void	free_garbage(void)
 	}
 	g_exit->garbage = NULL;
 }
+
+void	*garbage(void *garbage, t_data *data)
+{
+	if (garbage == NULL)
+		return (NULL);
+	if (add_garbage(data, garbage) == NULL)
+		return (NULL);
+	return (garbage);
+}

@@ -79,7 +79,26 @@ SRC = parcing/handle_input.c\
 		utils/garbage.c\
 		f.c\
 		gnl/get_next_line.c\
-		main.c
+		signals.c\
+		env/env_1.c\
+		env/env_2.c\
+		env/env_3.c\
+		env/env_4.c\
+		execution/execute_built_in.c\
+		execution/execution.c\
+		execution/file_desc.c\
+		execution/built_in/exit_1.c\
+		parcing/cmd_list.c\
+		parcing/expand.c\
+		parcing/expand_1.c\
+		parcing/expand_2.c\
+		parcing/handle_params.c\
+		parcing/heredoc_pipe.c\
+		parcing/heredoc.c\
+		parcing/redirect_utils.c\
+		parcing/split_input_1.c\
+		utils/ft_strjoin_char.c\
+		main.c\
 
 OBJ = $(SRC:.c=.o)
 

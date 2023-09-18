@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   env.c											  :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: hnait <hnait@student.42.fr>				+#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2023/07/10 09:55:45 by hnait			 #+#	#+#			 */
-/*   Updated: 2023/07/31 09:04:00 by hnait			###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/18 04:23:10 by hnait             #+#    #+#             */
+/*   Updated: 2023/09/18 04:58:49 by hnait            ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
@@ -31,4 +31,17 @@ void	*write_env(t_data *data)
 		env = env->next;
 	}
 	return (data);
+}
+
+int	cwd(t_data *data)
+{
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
+		return (free(cwd),
+			prompt_error("cd: error retrieving current directory",
+				NULL, data, 1), 0);
+	free(cwd);
+	return (1);
 }
