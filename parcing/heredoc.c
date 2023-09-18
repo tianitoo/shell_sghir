@@ -30,7 +30,7 @@ void	child_process(t_data *data, int *pip, t_params next)
 	add_history(data->original_commande_line);
 	signal(SIGINT, signalher);
 	line = readline("> ");
-	if (add_garbage(data, line) == NULL)
+	if (garbage(line, data) == NULL)
 		exit (1);
 	while (ft_strcmp(line, next->parameter) != 0 && line != NULL)
 	{
