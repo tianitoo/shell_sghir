@@ -84,7 +84,13 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 	char	**paths;
 	cmd = cmd_list->cmd;
 	if (cmd[0] == '/' || cmd[0] == '.')
-		return (cmd);
+	{
+		if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
+			return (cmd);
+		else
+			return (ft_printf("Error: %s: command not found", cmd),
+				prompt_error("", cmd_list, data, 127), NULL);
+	}
 	paths = get_paths(data, cmd_list, cmd);
 	cmd = get_cmd_path_from_paths(paths, cmd, cmd_list, data);
 	free_ss(paths);
@@ -105,10 +111,10 @@ int	set_up_execve(t_cmd_list cmd_list, t_data *data)
 		return (-2);
 	args = args_to_double_pointer(cmd_list->args, data);
 	if (args == NULL)
-		exit(1);
+		exit(g_exit->g_exit_status);
 	env = env_to_double_pointer(data->linked_env, data);
 	if (env == NULL)
-		exit(1);
+		exit(g_exit->g_exit_status);
 	pipes_work(cmd_list);
 	if (execve(cmd, args, env) == -1)
 	{

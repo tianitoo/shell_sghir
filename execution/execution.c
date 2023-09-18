@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:47:47 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 05:15:38 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 19:35:12 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <sys/wait.h>
 
 int	get_exitstate(int wait_status)
 {
@@ -37,6 +38,7 @@ pid_t	fork_or_one_builtin(t_data *data, t_cmd_list cmd_list)
 	{
 		if (execute_builtin(data, cmd_list) == NULL)
 			return (-2);
+		pid = -3;
 	}
 	else if (cmd_list->cmd)
 	{
@@ -74,6 +76,8 @@ void	execute(t_data *data)
 
 	pid = execute_commands(data);
 	close_file_descriptors(data);
+	if (pid == -3 || pid == -2)
+		return ;
 	waitpid(pid, &g_exit->g_exit_status, 0);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
@@ -93,10 +97,10 @@ int	execute_cmd(t_data *data, t_cmd_list cmd_list)
 		{
 			pipes_work(cmd_list);
 			execute_builtin(data, cmd_list);
-			exit(0);
+			exit(g_exit->g_exit_status);
 		}
 		set_up_execve(cmd_list, data);
-		exit(1);
+		exit(g_exit->g_exit_status);
 	}
 	else if (pid < 0)
 		prompt_error("Error: fork failed", NULL, data, 1);

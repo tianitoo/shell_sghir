@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:58:59 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 19:16:55 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*current_parrent_dir(char **args, t_data *data)
 
 	old_pwd = getcwd(NULL, 0);
 	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory",
+		return (ft_printf("cd: %s: No such file or directory  d",
 				args[1]), prompt_error("", NULL, data, 1), NULL);
 	else if (cwd(data) == 0)
 	{
@@ -46,7 +46,7 @@ char	*move_to_dir(char **args, t_data *data)
 	if (pwd == NULL)
 		return (NULL);
 	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory",
+		return (ft_printf("cd: %s: No such file or directory  d",
 				args[1]), prompt_error("", NULL, data, 1), NULL);
 	return (pwd);
 }

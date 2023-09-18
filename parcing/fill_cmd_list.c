@@ -80,7 +80,7 @@ t_cmd	*new_cmd(t_data *data)
 	cmd->output = -1;
 	cmd->pip = (int *)malloc(sizeof(int) * 2);
 	if (cmd->pip == NULL)
-		return (prompt_error("malloc error 3", NULL, data, 1), NULL);
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	if (add_garbage(data, cmd->pip) == NULL)
 		return (NULL);
 	cmd->next = NULL;

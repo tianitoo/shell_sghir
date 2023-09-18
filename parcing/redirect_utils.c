@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:18 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:56:28 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 19:14:37 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	open_file(char *file, t_cmd_list cmd_list, int redirect_type)
 	else if (redirect_type == 2)
 		fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
-		return (prompt_error("minishell: no such file or directory",
-				cmd_list, NULL, 1), -1);
+		return (prompt_error("minishell: no such file or directory  d",
+				cmd_list, NULL, 1), 127);
 	return (fd);
 }
 
