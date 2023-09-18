@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:47:47 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 19:35:12 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/18 20:58:35 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ pid_t	fork_or_one_builtin(t_data *data, t_cmd_list cmd_list)
 
 	pid = 0;
 	if (is_builtin(cmd_list->cmd) && cmd_list->next == NULL
-				&& cmd_list->prev == NULL)
+		&& cmd_list->prev == NULL)
 	{
 		if (execute_builtin(data, cmd_list) == NULL)
 			return (-2);

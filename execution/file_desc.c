@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   file_desc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
+/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:48:59 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:59:06 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/18 20:58:20 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,3 @@ void	close_file_descriptors(t_data *data)
 		cmd_list = cmd_list->next;
 	}
 }
-

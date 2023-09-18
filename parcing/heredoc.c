@@ -6,7 +6,7 @@
 /*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:51 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 20:07:13 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/18 20:57:12 by kmouradi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	child_process(t_data *data, int *pip, t_params next)
 	free_garbage();
 	free_params(&data->params);
 	rl_clear_history();
-	if(g_exit->heredoc_ctrlc == 1)
+	if (g_exit->heredoc_ctrlc == 1)
 		exit(1);
 	exit(0);
 }

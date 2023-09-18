@@ -61,7 +61,6 @@ char	**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd)
 	t_env	*env;
 
 	env = data->linked_env;
-
 	path = get_variable(env, "PATH");
 	if (path != NULL)
 	{
@@ -82,6 +81,7 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 {
 	char	*cmd;
 	char	**paths;
+
 	cmd = cmd_list->cmd;
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
