@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 18:08:28 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:37:25 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,8 @@ t_env		*get_env_by_key(t_env *env, char *key);
 
 int			ft_only_dig(char *str);
 t_cmd_list	init_pipes(t_data *data);
-int			check_min(char *arg, t_data *data);
-int			check_max(char *arg, t_data *data);
+int			check_min(char *arg);
+int			check_max(char *arg);
 void		free_enve(t_data *data);
 t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data);
 int			env_len(t_env *env);
@@ -176,13 +176,14 @@ void		check_quote(char *command_line, int *i, int *quotes);
 char		*check_heredoc(char *command_line, int *i, t_data *data,
 				int *quotes);
 int			is_builtin(char *cmd);
-void		exit_error(char *str, t_data *data);
+void		exit_error(char *str);
 char		*expand_join_variable(char *command_line, char *new_command_line,
 				int *i, t_data *data);
 char		*expand_variable(char *param, int *i, t_data *data);
 void		empty_pipe(char *line, int *pip);
 int			*create_heredoc_pipe(t_params next, t_data *data);
 t_env		*get_linked_env(char **envp, t_data *data);
+char		**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd);
 void		signalher(int sig);
 int			get_exitstate(int wait_status);
 int			set_g_exit(void);

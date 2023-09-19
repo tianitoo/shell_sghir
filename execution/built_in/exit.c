@@ -73,23 +73,22 @@ void	free_enve(t_data *data)
 	}
 }
 
-void	exit_error(char *str, t_data *data)
+void	exit_error(char *str)
 {
 	ft_putstr_fd("exit\n", 2);
 	ft_putstr_fd("minishell: exit: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putendl_fd(": numeric argument required", 2);
-	free_enve(data);
 	g_exit->g_exit_status = 255;
 	exit(g_exit->g_exit_status);
 }
 
-int	check_max(char *arg, t_data *data)
+int	check_max(char *arg)
 {
 	if (ft_strlen(arg) < 19)
 		return (1);
 	else if (ft_strlen(arg) > 19)
-		exit_error(arg, data);
+		exit_error(arg);
 	else
 	{
 		if (ft_strcmp(arg, "9223372036854775807") > 0)

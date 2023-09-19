@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:51 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 04:03:45 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:34:08 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,6 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 	if (create_heredoc_process(data, cmd_list, params) == 0)
 		return (0);
 	if (g_exit->g_exit_status == 1)
-	{
-		// add_history(data->original_commande_line);
 		return (0);
-	}
 	return (1);
 }

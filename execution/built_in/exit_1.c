@@ -6,18 +6,18 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:06 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 04:13:44 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:07:02 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	check_min(char *arg, t_data *data)
+int	check_min(char *arg)
 {
 	if (ft_strlen(arg) < 20)
 		return (1);
 	else if (ft_strlen(arg) > 20)
-		exit_error(arg, data);
+		exit_error(arg);
 	else
 	{
 		if (ft_strcmp(arg, "-9223372036854775808") > 0)
@@ -28,15 +28,15 @@ int	check_min(char *arg, t_data *data)
 	return (1);
 }
 
-void	check_exit_errors(char **args, t_data *data)
+void	check_exit_errors(char **args)
 {
 	if (args[1] == NULL)
 		return ;
 	if (!ft_only_dig(args[1])
-		|| !check_min(args[1], data)
-		|| !check_max(args[1], data)
+		|| !check_min(args[1])
+		|| !check_max(args[1])
 		|| args[1][0] == '\0')
-		exit_error(args[1], data);
+		exit_error(args[1]);
 }
 
 void	*ft_exit(t_params params, t_data *data)
@@ -47,11 +47,10 @@ void	*ft_exit(t_params params, t_data *data)
 	args = args_to_double_pointer(params, data);
 	if (args == NULL)
 		return (NULL);
-	check_exit_errors(args, data);
+	check_exit_errors(args);
 	if (args[1] == NULL)
 	{
 		ft_putendl_fd("exit", 1);
-		free_enve(data);
 		exit(g_exit->g_exit_status);
 	}
 	if (args[2])

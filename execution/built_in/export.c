@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:28 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 02:55:23 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:30:42 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,13 @@ char	*find_key(char *str, t_data *data)
 	return (key);
 }
 
-char	*update_value(char *new_param, t_env *tmp, t_data *data)
+char	*update_value(char *new_param, t_data *data)
 {
 	char	*value;
 
-	// free(tmp->value);
 	value = get_value(new_param, data);
 	if (!value)
 		return (NULL);
-	tmp->value = value;
-	tmp->hidden = 0;
 	return (value);
 }
 
@@ -71,7 +68,13 @@ char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 		}
 	}
 	else
-		value = update_value(new_param, tmp, data);
+	{
+		value = get_value(new_param, data);
+		if (value == NULL)
+			return (NULL);
+		free(tmp->value);
+		tmp->value = ft_strdup(value);
+	}
 	free(value);
 	value = NULL;
 	return (tmp->value);

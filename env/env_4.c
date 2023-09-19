@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:31:42 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 04:44:54 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:35:12 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,7 @@ t_env	*get_env(char **envp, t_data *data)
 		key_value = get_key_value(envp[i], data);
 		if (add_env(tmp, key_value[0], key_value[1], data) == NULL)
 			return (free(key_value[0]), free(key_value[1]), free(key_value),
-			 NULL);
-		// free(key_value[0]);
-		// free(key_value[1]);
+				NULL);
 		free(key_value);
 		i++;
 	}

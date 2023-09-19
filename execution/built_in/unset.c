@@ -44,11 +44,11 @@ t_env	*remove_variable(t_data *data, char *var_name)
 	prev = NULL;
 	env = data->linked_env;
 	if (!ft_isalpha(var_name[0]) && var_name[0] != '_')
-		return (ft_printf("not a valid identifier"), env);
+		return (ft_printf("not a valid identifier\n"), env);
 	while (var_name[i])
 	{
 		if (!ft_isalnum(var_name[i]) && var_name[i] != '_')
-			return (ft_printf("not a valid identifier"), env);
+			return (ft_printf("not a valid identifier\n"), env);
 		i++;
 	}
 	while (env)

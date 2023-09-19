@@ -25,7 +25,8 @@ int	is_directory(char *cmd)
 	return (0);
 }
 
-char	*check_commande(char *path, char *cmd, t_cmd_list cmd_list, t_data *data)
+char	*check_commande(char *path, char *cmd,
+	t_cmd_list cmd_list, t_data *data)
 {
 	char	*tmp;
 	char	*cmd_path;
@@ -71,29 +72,6 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 	}
 	return (ft_printf("Error: %s: command not found 1", cmd),
 		prompt_error("", cmd_list, data, 127), NULL);
-}
-
-char	**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd)
-{
-	char	**paths;
-	char	*path;
-	t_env	*env;
-
-	env = data->linked_env;
-	path = get_variable(env, "PATH");
-	if (path != NULL)
-	{
-		paths = ft_split(path, ':');
-		if (paths == NULL)
-			return (prompt_error("Error: malloc failed", NULL, data, 1), NULL);
-	}
-	else
-	{
-		ft_printf("Error: %s: command not found 2", cmd);
-		prompt_error("", cmd_list, data, 127);
-		return (NULL);
-	}
-	return (paths);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)

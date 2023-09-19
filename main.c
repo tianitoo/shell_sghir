@@ -6,13 +6,36 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:32 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 18:21:54 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:37:10 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 t_exit	*g_exit = NULL;
+
+char	**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd)
+{
+	char	**paths;
+	char	*path;
+	t_env	*env;
+
+	env = data->linked_env;
+	path = get_variable(env, "PATH");
+	if (path != NULL)
+	{
+		paths = ft_split(path, ':');
+		if (paths == NULL)
+			return (prompt_error("Error: malloc failed", NULL, data, 1), NULL);
+	}
+	else
+	{
+		ft_printf("Error: %s: command not found 2", cmd);
+		prompt_error("", cmd_list, data, 127);
+		return (NULL);
+	}
+	return (paths);
+}
 
 t_data	*set_data(char **envp)
 {

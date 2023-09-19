@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 04:26:56 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:34:39 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*move_to_dir(char **args, t_data *data)
 		return (NULL);
 	if (chdir(args[1]) == -1)
 		return (ft_printf("cd: %s: No such file or directory  d",
-				args[1]), prompt_error("", NULL, data, 1),free(pwd), NULL);
+				args[1]), prompt_error("", NULL, data, 1), free(pwd), NULL);
 	return (pwd);
 }
 

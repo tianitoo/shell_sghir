@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:29:53 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 05:11:41 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 19:20:15 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,17 @@ char	*get_value(char *variable, t_data *data)
 char	*add_new_env(char *key, t_params tmp, t_env *linked_env, t_data *data)
 {
 	char	*value;
+	char	*new_key;
 
 	value = get_value(tmp->parameter, data);
 	if (value == NULL)
 		return (0);
+	new_key = ft_strdup(key);
+	if (new_key == NULL)
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	while (linked_env && linked_env->next)
 		linked_env = linked_env->next;
-	linked_env->next = new_env(ft_strdup(key), value, data);
+	linked_env->next = new_env(new_key, value, data);
 	linked_env->next->exported = 0;
 	if (ft_strchr(tmp->parameter, '=') != NULL)
 		linked_env->next->show_value = 1;
