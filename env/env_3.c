@@ -24,7 +24,7 @@ char	**get_unset_env(void)
 	if (pwd == NULL)
 		return (prompt_error("malloc error 6", NULL, NULL, 1), NULL);
 	env[0] = ft_strjoin("PWD=", pwd, 0);
-	free(pwd);
+	pwd = free_to_null(pwd);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;
@@ -75,6 +75,9 @@ void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 		tmp = tmp->next;
 	hidden_path = new_env(key, value, data);
 	hidden_path->hidden = 1;
+	hidden_path->show_value = 0;
+	hidden_path->exported = 0;
+	hidden_path->unsetable = 0;
 	tmp->next = hidden_path;
 }
 

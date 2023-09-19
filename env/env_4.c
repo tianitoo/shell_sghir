@@ -85,14 +85,14 @@ char	**get_key_value(char *envp, t_data *data)
 	char	**key_value;
 
 	key_value = malloc(sizeof(char *) * 2);
-	if (!key_value)
-		return (prompt_error("malloc error 8", NULL, data, 1), NULL);
+	if (key_value == NULL)
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	key_value[0] = find_key(envp, data);
 	if (key_value[0] == NULL)
-		return (NULL);
+		return (free(key_value), NULL);
 	key_value[1] = get_value(envp, data);
 	if (key_value[1] == NULL)
-		return (NULL);
+		return (free(key_value[0]), free(key_value), NULL);
 	return (key_value);
 }
 
@@ -104,23 +104,26 @@ t_env	*get_env(char **envp, t_data *data)
 	int		i;
 
 	i = 0;
+	env = new_env("head", "value of head", data);
+	if (env == NULL)
+		return (NULL);
+	env->exported = 1;
+	env->show_value = 0;
+	env->hidden = 1;
+	env->unsetable = 1;
+	tmp = env;
 	while (envp[i])
 	{
 		key_value = get_key_value(envp[i], data);
-		if (i == 0)
-		{
-			env = new_env(key_value[0], key_value[1], data);
-			if (env == NULL)
-				return (NULL);
-			env->exported = 0;
-			tmp = env;
-		}
-		else
-			if (add_env(tmp, key_value[0], key_value[1], data) == NULL)
-				return (NULL);
+		if (add_env(tmp, key_value[0], key_value[1], data) == NULL)
+			return (free(key_value[0]), free(key_value[1]), free(key_value),
+			 NULL);
+		// free(key_value[0]);
+		// free(key_value[1]);
+		free(key_value);
 		i++;
 	}
 	if (set_shlvl(env, data) == NULL)
-		return (NULL);
+		return (free(key_value), NULL);
 	return (env);
 }

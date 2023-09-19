@@ -25,7 +25,7 @@ t_data	*set_data(char **envp)
 	data->linked_env = get_linked_env(envp, data);
 	if (!data->linked_env)
 		return (NULL);
-	add_hidden_env(data->linked_env, "PATH",
+	add_hidden_env(data->linked_env, ft_strdup("PATH"),
 		ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
 	return (data);
 }
@@ -52,4 +52,10 @@ int	main(int argc, char **argv, char **envp)
 		free_garbage();
 	}
 	return (0);
+}
+
+void	free_to_null(void **ptr)
+{
+	free(ptr);
+	return (NULL);
 }

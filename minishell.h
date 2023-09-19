@@ -47,6 +47,7 @@ typedef struct s_env{
 	int				exported;
 	int				show_value;
 	int				hidden;
+	int				unsetable;
 	struct s_env	*next;
 }t_env;
 
@@ -185,5 +186,6 @@ t_env		*get_linked_env(char **envp, t_data *data);
 void		signalher(int sig);
 int			get_exitstate(int wait_status);
 int			set_g_exit(void);
+void		free_to_null(void **ptr)
 
 #endif

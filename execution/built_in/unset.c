@@ -53,7 +53,7 @@ t_env	*remove_variable(t_data *data, char *var_name)
 	}
 	while (env)
 	{
-		if (ft_strcmp(env->key, var_name) == 0)
+		if (ft_strcmp(env->key, var_name) == 0 && env->unsetable == 0)
 		{
 			free_me = env;
 			if (prev == NULL)

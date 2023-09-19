@@ -59,20 +59,16 @@ int	ft_only_dig(char *str)
 void	free_enve(t_data *data)
 {
 	t_env	*env;
-	t_env	*last;
 
 	env = data->linked_env;
 	while (env)
 	{
 		if (env->exported == 1)
 		{
-			if (last)
-				last->next = env->next;
 			free(env->key);
 			free(env->value);
 			free(env);
 		}
-		last = env;
 		env = env->next;
 	}
 }

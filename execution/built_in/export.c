@@ -73,6 +73,7 @@ char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 	else
 		value = update_value(new_param, tmp, data);
 	free(value);
+	value = NULL;
 	return (tmp->value);
 }
 
@@ -90,7 +91,7 @@ char	*update_param(t_data *data, char *key, char *new_param)
 		{
 			value = change_var_value(new_param, key, tmp, data);
 			if (value == NULL)
-				return (NULL);
+				return (free(key_to_find), NULL);
 			tmp->show_value = 1;
 		}
 		tmp = tmp->next;

@@ -30,6 +30,8 @@ int	check_min(char *arg, t_data *data)
 
 void	check_exit_errors(char **args, t_data *data)
 {
+	if (args[1] == NULL)
+		return ;
 	if (!ft_only_dig(args[1])
 		|| !check_min(args[1], data)
 		|| !check_max(args[1], data)
