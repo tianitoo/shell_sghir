@@ -42,7 +42,7 @@ char	*update_value(char *new_param, t_env *tmp, t_data *data)
 {
 	char	*value;
 
-	free(tmp->value);
+	// free(tmp->value);
 	value = get_value(new_param, data);
 	if (!value)
 		return (NULL);
