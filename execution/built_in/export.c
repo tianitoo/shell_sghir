@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:28 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:30:42 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:51:44 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,25 +48,31 @@ char	*update_value(char *new_param, t_data *data)
 	return (value);
 }
 
+char	*append_value(char *new_param, t_env *tmp, t_data *data)
+{
+	char	*value;
+
+	value = get_value(new_param, data);
+	if (value == NULL)
+		return (NULL);
+	if (tmp->value)
+		tmp->value = ft_strjoin(tmp->value, value, 1);
+	else
+	{
+		tmp->value = ft_strdup(value);
+		if (tmp->value == NULL)
+			return (prompt_error("malloc error", NULL, data, 1),
+				free(value), NULL);
+	}
+	return (value);
+}
+
 char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 {
 	char	*value;
 
 	if (new_param[ft_strlen(key)] == '+')
-	{
-		value = get_value(new_param, data);
-		if (value == NULL)
-			return (NULL);
-		if (tmp->value)
-			tmp->value = ft_strjoin(tmp->value, value, 1);
-		else
-		{
-			tmp->value = ft_strdup(value);
-			if (tmp->value == NULL)
-				return (prompt_error("malloc error", NULL, data, 1),
-					free(value), NULL);
-		}
-	}
+		value = append_value(new_param, tmp, data);
 	else
 	{
 		value = get_value(new_param, data);

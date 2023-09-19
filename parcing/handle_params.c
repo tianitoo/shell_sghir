@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:09 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:56:44 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:40:51 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_params	new_param(char *param, t_data *data)
 	new = malloc(sizeof(t_param)); 
 	if (new == NULL)
 	{
-		prompt_error("malloc error 1", NULL, data, 1);
+		prompt_error("malloc error", NULL, data, 1);
 		return (NULL);
 	}
 	new->parameter = param;
@@ -77,7 +77,7 @@ t_params	clone_t_params(t_params params, t_data *data)
 	new = malloc(sizeof(t_param));
 	if (new == NULL)
 	{
-		prompt_error("malloc error 8", NULL, data, 1);
+		prompt_error("malloc error", NULL, data, 1);
 		return (NULL);
 	}
 	if (add_garbage(data, new) == NULL)

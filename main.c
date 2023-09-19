@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:32 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:37:10 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:41:53 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd)
 	}
 	else
 	{
-		ft_printf("Error: %s: command not found 2", cmd);
+		ft_printf("Error: %s: command not found", cmd);
 		prompt_error("", cmd_list, data, 127);
 		return (NULL);
 	}

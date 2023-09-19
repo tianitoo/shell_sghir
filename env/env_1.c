@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:17 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:31:28 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:40:13 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_env	*new_env(char *key, char *value, t_data *data)
 	env = malloc(sizeof(t_env));
 	if (!env)
 	{
-		prompt_error("malloc error 7", NULL, data, 1);
+		prompt_error("malloc error", NULL, data, 1);
 		return (NULL);
 	}
 	env->key = key;

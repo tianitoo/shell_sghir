@@ -68,7 +68,7 @@ t_cmd	*new_cmd(t_data *data)
 
 	cmd = malloc(sizeof(t_cmd)); 
 	if (cmd == NULL)
-		return (prompt_error("malloc error 2", NULL, data, 1), NULL);
+		return (prompt_error("malloc error", NULL, data, 1), NULL);
 	if (add_garbage(data, cmd) == NULL)
 		return (NULL);
 	cmd->cmd = NULL;

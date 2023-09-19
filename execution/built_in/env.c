@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:10 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:58:49 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 21:03:36 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,10 @@ int	cwd(t_data *data)
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (free(cwd),
-			prompt_error("cd: error retrieving current directory",
+			ft_printf("cd: error retrieving current directory: getcwd: cannot"),
+			ft_printf(" access parent directories: No such file or directory"),
+			prompt_error(
+				"",
 				NULL, data, 1), 0);
 	free(cwd);
 	return (1);

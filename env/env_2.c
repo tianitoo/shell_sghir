@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:29:53 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:20:15 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:39:04 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ char	*add_new_env(char *key, t_params tmp, t_env *linked_env, t_data *data)
 	while (linked_env && linked_env->next)
 		linked_env = linked_env->next;
 	linked_env->next = new_env(new_key, value, data);
-	linked_env->next->exported = 0;
 	if (ft_strchr(tmp->parameter, '=') != NULL)
 		linked_env->next->show_value = 1;
 	return (key);
@@ -107,8 +106,7 @@ t_env	*add_to_env(t_cmd_list cmd_list, t_data *data)
 		if (tmp->parameter[0] == '='
 			|| ft_isdigit(tmp->parameter[0])
 			|| !(ft_isalpha(tmp->parameter[0]) || tmp->parameter[0] == '_'))
-			ft_printf("minishell: export: `%s': not a valid identifier\n",
-				tmp->parameter);
+			ft_printf("minishell: export: not a valid identifier\n");
 		else if (update_or_add_env(data, tmp, linked_env) == 0)
 			return (NULL);
 		tmp = tmp->next;

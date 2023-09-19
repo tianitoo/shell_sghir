@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:37:25 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:27:28 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ extern t_exit	*g_exit;
 typedef struct s_env{
 	char			*key;
 	char			*value;
-	int				exported;
 	int				show_value;
 	int				hidden;
 	int				unsetable;
@@ -163,7 +162,6 @@ int			ft_only_dig(char *str);
 t_cmd_list	init_pipes(t_data *data);
 int			check_min(char *arg);
 int			check_max(char *arg);
-void		free_enve(t_data *data);
 t_params	add_param_to_cmd(t_cmd_list cmd_list, t_params param, t_data *data);
 int			env_len(t_env *env);
 void		move_node(t_env *tmp);

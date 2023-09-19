@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:31:42 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:35:12 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:25:52 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ t_env	*get_env(char **envp, t_data *data)
 	env = new_env("head", "value of head", data);
 	if (env == NULL)
 		return (NULL);
-	env->exported = 1;
-	env->show_value = 0;
 	env->hidden = 1;
 	env->unsetable = 1;
 	tmp = env;

@@ -56,23 +56,6 @@ int	ft_only_dig(char *str)
 	return (1);
 }
 
-void	free_enve(t_data *data)
-{
-	t_env	*env;
-
-	env = data->linked_env;
-	while (env)
-	{
-		if (env->exported == 1)
-		{
-			free(env->key);
-			free(env->value);
-			free(env);
-		}
-		env = env->next;
-	}
-}
-
 void	exit_error(char *str)
 {
 	ft_putstr_fd("exit\n", 2);

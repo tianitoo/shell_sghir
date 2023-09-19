@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 19:34:39 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 21:16:18 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@ char	*current_parrent_dir(char **args, t_data *data)
 
 	old_pwd = getcwd(NULL, 0);
 	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory  d",
+		return (ft_printf("cd: %s: No such file or directory",
 				args[1]), prompt_error("", NULL, data, 1), NULL);
 	else if (cwd(data) == 0)
 	{
 		pwd = get_env_value("PWD", data);
-		if (garbage(pwd, data) == NULL)
+		if (pwd == NULL)
 			return (NULL);
-		pwd = ft_strjoin(pwd, "/", 0);
-		if (garbage(pwd, data) == NULL)
+		pwd = ft_strjoin(pwd, "/", 1);
+		if (pwd == NULL)
 			return (NULL);
-		pwd = ft_strjoin(pwd, args[1], 0);
-		if (garbage(pwd, data) == NULL)
+		pwd = ft_strjoin(pwd, args[1], 1);
+		if (pwd == NULL)
 			return (NULL);
 		if (update_env_var("PWD", pwd, data) == NULL)
 			return (NULL);
@@ -46,7 +46,7 @@ char	*move_to_dir(char **args, t_data *data)
 	if (pwd == NULL)
 		return (NULL);
 	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory  d",
+		return (ft_printf("cd: %s: No such file or directory",
 				args[1]), prompt_error("", NULL, data, 1), free(pwd), NULL);
 	return (pwd);
 }

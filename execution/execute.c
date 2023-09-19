@@ -70,8 +70,29 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 		}
 		i++;
 	}
-	return (ft_printf("Error: %s: command not found 1", cmd),
+	return (ft_printf("Error: %s: command not found", cmd),
 		prompt_error("", cmd_list, data, 127), NULL);
+}
+
+char	*check_permissions(t_data *data, t_cmd_list cmd_list)
+{
+	char	*cmd;
+
+	cmd = cmd_list->cmd;
+	if (is_directory(cmd))
+		return (ft_printf("Error: %s: is a directory", cmd),
+			prompt_error("", cmd_list, data, 126), NULL);
+	if (access(cmd, F_OK) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+			return (cmd);
+		else
+			return (ft_printf("Error: %s: permission denied", cmd),
+				prompt_error("", cmd_list, data, 126), NULL);
+	}
+	else
+		return (ft_printf("Error: %s: command not found", cmd),
+			prompt_error("", cmd_list, data, 127), NULL);
 }
 
 char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
@@ -81,21 +102,13 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 
 	cmd = cmd_list->cmd;
 	if (cmd[0] == '\0')
-		return (prompt_error("Error: command not found 3", NULL, data, 127),
+		return (prompt_error("Error: command not found", NULL, data, 127),
 			NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
-		if (access(cmd, F_OK) == 0)
-		{
-			if (access(cmd, X_OK) == 0)
-				return (cmd);
-			else
-				return (ft_printf("Error: %s: permission denied 1", cmd),
-					prompt_error("", cmd_list, data, 126), NULL);
-		}
-		else
-			return (ft_printf("Error: %s: command not found 4", cmd),
-				prompt_error("", cmd_list, data, 127), NULL);
+		if (check_permissions(data, cmd_list) == NULL)
+			return (NULL);
+		return (cmd);
 	}
 	paths = get_paths(data, cmd_list, cmd);
 	if (paths == NULL)

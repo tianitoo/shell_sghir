@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:30:34 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 18:26:02 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 20:40:36 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,49 +19,45 @@ char	**get_unset_env(void)
 
 	env = (char **) malloc(sizeof(char *) * 4);
 	if (!env)
-		return (prompt_error("malloc error 5", NULL, NULL, 1), NULL);
+		return (prompt_error("malloc error", NULL, NULL, 1), NULL);
 	pwd = getcwd(NULL, 0);
 	if (pwd == NULL)
-		return (prompt_error("malloc error 6", NULL, NULL, 1), NULL);
+		return (prompt_error("malloc error", NULL, NULL, 1), NULL);
 	env[0] = ft_strjoin("PWD=", pwd, 0);
 	free(pwd);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;
 	if (!env[0] || !env[1] || !env[2])
-		return (prompt_error("malloc error 7", NULL, NULL, 1), NULL);
+		return (prompt_error("malloc error", NULL, NULL, 1), NULL);
 	return (env);
 }
 
 t_env	*get_linked_env(char **envp, t_data *data)
 {
 	char	**env;
-	int		unset;
 	t_env	*linked_env;
 
-	unset = 0;
 	if (envp[0] == NULL)
 	{
 		env = get_unset_env();
 		if (env == NULL)
 			return (NULL);
-		unset = 1;
-	}
-	else
-		env = envp;
-	linked_env = get_env(env, data);
-	if (linked_env == NULL)
-		return (NULL);
-	if (envp[0] == NULL)
+		linked_env = get_env(env, data);
+		if (linked_env == NULL)
+			return (NULL);
 		add_hidden_env(linked_env, ft_strdup("PATH"),
 			ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
-	else
-		add_hidden_env(linked_env, "PATH",
-			ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
-	if (unset == 1)
-	{
 		free_ss(env);
 		free(env);
+	}
+	else
+	{
+		linked_env = get_env(envp, data);
+		if (linked_env == NULL)
+			return (NULL);
+		add_hidden_env(linked_env, "PATH",
+			ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
 	}
 	return (linked_env);
 }
@@ -82,7 +78,6 @@ void	add_hidden_env(t_env *env, char *key, char *value, t_data *data)
 	hidden_path = new_env(key, value, data);
 	hidden_path->hidden = 1;
 	hidden_path->show_value = 0;
-	hidden_path->exported = 0;
 	hidden_path->unsetable = 0;
 	tmp->next = hidden_path;
 }
