@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:32 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 18:09:36 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 18:21:54 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ t_data	*set_data(char **envp)
 	data->linked_env = get_linked_env(envp, data);
 	if (!data->linked_env)
 		return (NULL);
-	add_hidden_env(data->linked_env, ft_strdup("PATH"),
-		ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."), data);
 	return (data);
 }
 
