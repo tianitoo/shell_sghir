@@ -32,7 +32,7 @@ char	*find_pwd(t_data *data)
 			return (NULL);
 		free(cwd);
 	}
-	return (ft_strdup(cwd));
+	return (pwd);
 }
 
 char	*ft_pwd(t_data *data)
