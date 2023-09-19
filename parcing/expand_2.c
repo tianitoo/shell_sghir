@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:53:02 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:53:14 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/20 00:49:27 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*heredoc_delimiter(char *command_line, int *i,
 		new_command_line = ft_strjoin_char(new_command_line, '$', data);
 		if (new_command_line == NULL)
 			return (NULL);
-		i++;
+		(*i)++;
 	}
 	return (new_command_line);
 }
