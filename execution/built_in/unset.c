@@ -32,15 +32,30 @@ void	free_env(t_env *env)
 	}
 }
 
+int	delete_variable(t_data *data, char *var_name, t_env *env, t_env *prev)
+{
+	t_env	*free_me;
+
+	if (ft_strcmp(env->key, var_name) == 0 && env->unsetable == 0)
+	{
+		free_me = env;
+		if (prev == NULL)
+			data->linked_env = env->next;
+		else
+			prev->next = env->next;
+		free_env(free_me);
+		return (1);
+	}
+	return (0);
+}
+
 t_env	*remove_variable(t_data *data, char *var_name)
 {
 	t_env	*env;
 	t_env	*prev;
-	t_env	*free_me;
 	int		i;
 
 	i = 0;
-	free_me = NULL;
 	prev = NULL;
 	env = data->linked_env;
 	if (!ft_isalpha(var_name[0]) && var_name[0] != '_')
@@ -53,16 +68,8 @@ t_env	*remove_variable(t_data *data, char *var_name)
 	}
 	while (env)
 	{
-		if (ft_strcmp(env->key, var_name) == 0 && env->unsetable == 0)
-		{
-			free_me = env;
-			if (prev == NULL)
-				data->linked_env = env->next;
-			else
-				prev->next = env->next;
-			free_env(free_me);
+		if (delete_variable(data, var_name, env, prev))
 			break ;
-		}
 		prev = env;
 		env = env->next;
 	}

@@ -6,37 +6,11 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:28 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 20:51:44 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/20 00:13:18 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-char	*find_key(char *str, t_data *data)
-{
-	char	*key;
-	int		i;
-
-	i = 0;
-	while (str[i] != '=' && str[i])
-	{
-		if (str[i] == '+' && str[i + 1] == '=')
-		{
-			key = ft_substr(str, 0, i);
-			if (key == NULL)
-				return (prompt_error("malloc error", NULL, data, 1), NULL);
-			return (key);
-		}
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (prompt_error("minishell: export: not a valid identifier",
-					NULL, data, 1), NULL);
-		i++;
-	}
-	key = ft_substr(str, 0, i);
-	if (key == NULL)
-		return (prompt_error("malloc error", NULL, data, 1), NULL);
-	return (key);
-}
 
 char	*update_value(char *new_param, t_data *data)
 {

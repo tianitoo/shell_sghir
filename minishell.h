@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 21:44:11 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/20 00:16:13 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,5 +186,6 @@ void		signalher(int sig);
 int			get_exitstate(int wait_status);
 int			set_g_exit(void);
 int			cwd(t_data *data);
+int			is_directory(char *cmd);
 
 #endif

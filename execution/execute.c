@@ -12,19 +12,6 @@
 
 #include "../minishell.h"
 
-int	is_directory(char *cmd)
-{
-	DIR	*dir;
-
-	dir = opendir(cmd);
-	if (dir != NULL)
-	{
-		closedir(dir);
-		return (1);
-	}
-	return (0);
-}
-
 char	*check_commande(char *path, char *cmd,
 	t_cmd_list cmd_list, t_data *data)
 {
