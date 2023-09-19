@@ -23,7 +23,7 @@ char	*find_pwd(t_data *data)
 		if (cwd == NULL)
 			return (NULL);
 	}
-	return (cwd);
+	return (ft_strdup(cwd));
 }
 
 char	*ft_pwd(t_data *data)
