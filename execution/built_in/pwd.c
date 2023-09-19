@@ -35,6 +35,6 @@ char	*ft_pwd(t_data *data)
 		return (NULL);
 	ft_putstr_fd(cwd, 1);
 	ft_printf("\n");
-	cwd = NULL;
-	return (cwd);
+	free(cwd);
+	return (NULL);
 }

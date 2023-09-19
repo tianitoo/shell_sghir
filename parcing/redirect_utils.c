@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:18 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 00:15:58 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 03:59:51 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	open_file(char *file, t_cmd_list cmd_list, int redirect_type)
 	dir = opendir(file);
 	if (dir != NULL)
 		return (closedir(dir), ft_printf("%s: is a directory",
-				file), prompt_error(" ", cmd_list, NULL, 1), -1);
+				file), prompt_error(" ", cmd_list, NULL, 126), -1);
 	if (redirect_type == 0)
 		fd = open(file, O_RDONLY);
 	else if (redirect_type == 1)

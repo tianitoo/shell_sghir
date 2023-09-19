@@ -41,6 +41,15 @@ t_env	*remove_variable(t_data *data, char *var_name)
 	free_me = NULL;
 	prev = NULL;
 	env = data->linked_env;
+	int i = 0;
+	if (!ft_isalpha(var_name[0]) && var_name[0] != '_')
+		return (puts("error"), env);
+	while (var_name[i])
+	{
+		if (!ft_isalnum(var_name[i]) && var_name[i] != '_')
+			return (puts("error"), env);
+		i++;
+	}
 	while (env)
 	{
 		if (ft_strcmp(env->key, var_name) == 0)

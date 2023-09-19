@@ -21,8 +21,6 @@ void	prompt_error(char *error, t_cmd_list cmd_list,
 		data->parsing_error = 1;
 	else if (cmd_list)
 		cmd_list->parsing_error = 1;
-	if (data && data->original_commande_line)
-		add_history(data->original_commande_line);
 	ft_printf("%s\n", error);
 }
 
@@ -76,6 +74,8 @@ int	get_input(t_data *data)
 	g_exit->in_exec_mode = 1;
 	if (!treat_input(data))
 		return (free_params(&data->params), 0);
+	if (*data->original_commande_line)
+		add_history(data->original_commande_line);
 	if (data->params == NULL || data->parsing_error == 1)
 		return (free_params(&data->params), 0);
 	data->cmd_list = get_cmd_list(data);
@@ -83,6 +83,5 @@ int	get_input(t_data *data)
 		return (free_params(&data->params), 0);
 	if (data->cmd_list && data->parsing_error == 0)
 		execute(data);
-	add_history(data->original_commande_line);
 	return (free_params(&data->params), 1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:28 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 18:13:00 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/19 02:55:23 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,14 @@ char	*change_var_value(char *new_param, char *key, t_env *tmp, t_data *data)
 		{
 			tmp->value = ft_strdup(value);
 			if (tmp->value == NULL)
-				return (prompt_error("malloc error", NULL, data, 1), NULL);
+				return (prompt_error("malloc error", NULL, data, 1),
+					free(value), NULL);
 		}
 	}
 	else
 		value = update_value(new_param, tmp, data);
-	return (value);
+	free(value);
+	return (tmp->value);
 }
 
 char	*update_param(t_data *data, char *key, char *new_param)

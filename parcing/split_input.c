@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   split_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/17 22:17:45 by kmouradi          #+#    #+#             */
-/*   Updated: 2023/09/17 22:24:46 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/19 02:34:13 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_special_char(t_data *data, int *i)
 			if (data->commande_line[*i] == '\0'
 				|| data->commande_line[*i] == '\n')
 				return (ft_printf("Error: quote not closed"),
-					prompt_error("'", NULL, data, 1), 0);
+					prompt_error("'", NULL, data, 258), 0);
 	}
 	else if (data->commande_line[*i] == '\'')
 	{
@@ -28,7 +28,7 @@ int	is_special_char(t_data *data, int *i)
 			if (data->commande_line[*i] == '\0'
 				|| data->commande_line[*i] == '\n')
 				return (ft_printf("Error: quote not closed"),
-					prompt_error("'", NULL, data, 1), 0);
+					prompt_error("'", NULL, data, 258), 0);
 	}
 	else if (data->commande_line[*i] == '\n')
 		return (ft_printf("Error: special caracter: `%c",

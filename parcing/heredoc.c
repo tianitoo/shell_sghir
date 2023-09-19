@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:51 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 20:57:12 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/19 04:03:45 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	child_process(t_data *data, int *pip, t_params next)
 	char	*line;
 
 	g_exit->in_exec_mode = 0;
-	add_history(data->original_commande_line);
 	signal(SIGINT, signalher);
 	line = readline("> ");
 	if (garbage(line, data) == NULL)
@@ -86,7 +85,7 @@ int	handle_heredoc(t_params params, t_cmd_list cmd_list, t_data *data)
 		return (0);
 	if (g_exit->g_exit_status == 1)
 	{
-		add_history(data->original_commande_line);
+		// add_history(data->original_commande_line);
 		return (0);
 	}
 	return (1);

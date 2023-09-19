@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:27:21 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:27:22 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 02:34:47 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_cmd_list	next_command(t_cmd_list cmd_list,
 {
 	if (handling_param->next == NULL)
 		return (prompt_error("syntax error near unexpected token `|'",
-				NULL, data, 1), NULL);
+				NULL, data, 258), NULL);
 	if (handling_param->next->is_operator == 1
 		&& handling_param->next->parameter[0] == '|')
 		return (prompt_error("syntax error near unexpected token `|'",

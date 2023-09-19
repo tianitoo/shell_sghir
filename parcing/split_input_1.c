@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:22:48 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:56:22 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 02:34:00 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void	handle_quotes(t_data *data, int *i)
 		lenght++;
 	}
 	if (!data->commande_line[j])
-		prompt_error("Error: quote not closed", NULL, data, 1);
+		prompt_error("Error: quote not closed", NULL, data, 258);
 	else
 	{
 		ft_memmove(&data->commande_line[j], &data->commande_line[j + 1],

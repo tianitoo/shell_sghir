@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmouradi <kmouradi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 19:16:55 by kmouradi         ###   ########.fr       */
+/*   Updated: 2023/09/19 01:56:00 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*move_to_dir(char **args, t_data *data)
 		return (NULL);
 	if (chdir(args[1]) == -1)
 		return (ft_printf("cd: %s: No such file or directory  d",
-				args[1]), prompt_error("", NULL, data, 1), NULL);
+				args[1]), prompt_error("", NULL, data, 1),free(pwd), NULL);
 	return (pwd);
 }
 
@@ -55,6 +55,8 @@ char	*change_directory(char **args, t_data *data)
 {
 	char	*pwd;
 
+	if (args == NULL)
+		return (NULL);
 	if (strcmp(args[1], ".") == 0 || strcmp(args[1], "..") == 0
 		|| strcmp(args[1], "./") == 0 || strcmp(args[1], "../") == 0)
 	{
@@ -74,17 +76,20 @@ char	*change_directory(char **args, t_data *data)
 char	*go_to_new_dir(char **args, t_env *env, t_data *data)
 {
 	char	*old_pwd;
+	char	*home;
 
-	if (args == NULL)
-		return (NULL);
-	if (args[1] == NULL)
+	if (args == NULL || args[1] == NULL)
 	{
 		old_pwd = getcwd(NULL, 0);
-		if (chdir(get_variable(env, "HOME")) == -1)
-			return (prompt_error("cd: HOME not set", NULL, data, 1), NULL);
+		home = get_variable(env, "HOME");
+		if (home == NULL || chdir(home) == -1)
+			return (prompt_error("cd: HOME not set", NULL, data, 1),
+				free(old_pwd), NULL);
 	}
 	else
 	{
+		if (args == NULL)
+			return (NULL);
 		old_pwd = change_directory(args, data);
 		if (old_pwd == NULL)
 			return (NULL);
@@ -100,21 +105,21 @@ t_data	*ft_cd(t_params params, t_data *data)
 	t_env	*env;
 
 	env = data->linked_env;
-	args = args_to_double_pointer(params, data);
+	if (params->next && params->next->parameter[0] == '\0')
+		return (data);
+	args = NULL;
+	if (params->next != NULL)
+		args = args_to_double_pointer(params, data);
 	old_pwd = go_to_new_dir(args, env, data);
+	if (old_pwd == NULL)
+		return (NULL);
 	pwd = getcwd(NULL, 0);
 	if (garbage(pwd, data) == NULL)
 		return (NULL);
-	if (key_exists(env, "OLDPWD") == 0)
-		data->linked_env = add_env(env, "OLDPWD", old_pwd, data);
-	else if (update_env_var("OLDPWD", old_pwd, data) == NULL)
-		return (NULL);
-	else
-	{
+	if (*old_pwd)
 		free(old_pwd);
-		old_pwd = NULL;
-	}
 	if (update_env_var("PWD", pwd, data) == NULL)
 		return (NULL);
+	ft_printf("go to new dir\n");
 	return (data);
 }

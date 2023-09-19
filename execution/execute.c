@@ -25,12 +25,33 @@ int	is_directory(char *cmd)
 	return (0);
 }
 
+char	*check_commande(char *path, char *cmd, t_cmd_list cmd_list, t_data *data)
+{
+	char	*tmp;
+	char	*cmd_path;
+
+	tmp = ft_strjoin(path, "/", 0);
+	if (!tmp)
+		return (NULL);
+	cmd_path = ft_strjoin(tmp, cmd, 1);
+	if (garbage(cmd_path, data) == NULL)
+		return (NULL);
+	if (access(cmd_path, F_OK) == 0)
+	{
+		if (access(cmd_path, X_OK) == 0)
+			return (cmd_path);
+		else
+			return (ft_printf("Error: %s: permission denied", cmd),
+				prompt_error("", cmd_list, data, 126), NULL);
+	}
+	return (NULL);
+}
+
 char	*get_cmd_path_from_paths(char **paths, char *cmd,
 	t_cmd_list cmd_list, t_data *data)
 {
 	int		i;
 	char	*cmd_path;
-	char	*tmp;
 
 	i = 0;
 	if (is_directory(cmd))
@@ -40,14 +61,12 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 		return (NULL);
 	while (paths[i])
 	{
-		tmp = ft_strjoin(paths[i], "/", 0);
-		if (!tmp)
-			return (NULL);
-		cmd_path = ft_strjoin(tmp, cmd, 1);
-		if (garbage(cmd_path, data) == NULL)
-			return (NULL);
-		if (access(cmd_path, F_OK) == 0 && access(cmd_path, X_OK) == 0)
+		cmd_path = check_commande(paths[i], cmd, cmd_list, data);
+		if (cmd_path != NULL)
+		{
+			free(cmd);
 			return (cmd_path);
+		}
 		i++;
 	}
 	return (ft_printf("Error: %s: command not found1", cmd),
@@ -88,8 +107,14 @@ char	*get_cmd_path(t_data *data, t_cmd_list cmd_list)
 			NULL);
 	if (cmd[0] == '/' || cmd[0] == '.')
 	{
-		if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
-			return (cmd);
+		if (access(cmd, F_OK) == 0)
+		{
+			if (access(cmd, X_OK) == 0)
+				return (cmd);
+			else
+				return (ft_printf("Error: %s: permission denied 1", cmd),
+					prompt_error("", cmd_list, data, 126), NULL);
+		}
 		else
 			return (ft_printf("Error: %s: command not found", cmd),
 				prompt_error("", cmd_list, data, 127), NULL);
@@ -118,6 +143,7 @@ int	set_up_execve(t_cmd_list cmd_list, t_data *data)
 	env = env_to_double_pointer(data->linked_env, data);
 	if (env == NULL)
 		exit(g_exit->g_exit_status);
+	ft_printf("am here\n");
 	pipes_work(cmd_list);
 	if (execve(cmd, args, env) == -1)
 	{

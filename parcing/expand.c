@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:28:30 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:57:04 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 02:38:17 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*expand(int *i, t_data *data, char *new_command_line, int *quotes)
 	new_command_line = not_expandable(command_line, i, data, new_command_line);
 	if (new_command_line == NULL)
 		return (NULL);
-	else if (!quotes[0] && command_line[*i] == '$' && !(quotes[1]
+	else if ((!quotes[0] || g_exit->in_exec_mode == 0) && command_line[*i] == '$' && !(quotes[1]
 			&& command_line[*i + 1] == '"'))
 	{
 		new_command_line = expand_join_variable(command_line,
