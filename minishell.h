@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 20:27:28 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 21:44:11 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,5 +185,6 @@ char		**get_paths(t_data *data, t_cmd_list cmd_list, char *cmd);
 void		signalher(int sig);
 int			get_exitstate(int wait_status);
 int			set_g_exit(void);
+int			cwd(t_data *data);
 
 #endif

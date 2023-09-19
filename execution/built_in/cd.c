@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 21:16:18 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 21:47:24 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 char	*current_parrent_dir(char **args, t_data *data)
 {
 	char	*pwd;
-	char	*old_pwd;
 
-	old_pwd = getcwd(NULL, 0);
+	pwd = NULL;
 	if (chdir(args[1]) == -1)
 		return (ft_printf("cd: %s: No such file or directory",
 				args[1]), prompt_error("", NULL, data, 1), NULL);
@@ -35,19 +34,20 @@ char	*current_parrent_dir(char **args, t_data *data)
 		if (update_env_var("PWD", pwd, data) == NULL)
 			return (NULL);
 	}
-	return (old_pwd);
+	return (pwd);
 }
 
 char	*move_to_dir(char **args, t_data *data)
 {
 	char	*pwd;
 
+	
+	if (chdir(args[1]) == -1)
+		return (ft_printf("cd: %s: No such file or directory",
+				args[1]), prompt_error("", NULL, data, 1), NULL);
 	pwd = find_pwd(data);
 	if (pwd == NULL)
 		return (NULL);
-	if (chdir(args[1]) == -1)
-		return (ft_printf("cd: %s: No such file or directory",
-				args[1]), prompt_error("", NULL, data, 1), free(pwd), NULL);
 	return (pwd);
 }
 
@@ -75,32 +75,31 @@ char	*change_directory(char **args, t_data *data)
 
 char	*go_to_new_dir(char **args, t_env *env, t_data *data)
 {
-	char	*old_pwd;
+	char	*pwd;
 	char	*home;
 
 	if (args == NULL || args[1] == NULL)
 	{
-		old_pwd = getcwd(NULL, 0);
 		home = get_variable(env, "HOME");
 		if (home == NULL || chdir(home) == -1)
 			return (prompt_error("cd: HOME not set", NULL, data, 1),
-				free(old_pwd), NULL);
+				NULL);
+		pwd = getcwd(NULL, 0);
 	}
 	else
 	{
 		if (args == NULL)
 			return (NULL);
-		old_pwd = change_directory(args, data);
-		if (old_pwd == NULL)
+		pwd = change_directory(args, data);
+		if (pwd == NULL)
 			return (NULL);
 	}
-	return (old_pwd);
+	return (pwd);
 }
 
 t_data	*ft_cd(t_params params, t_data *data)
 {
 	char	*pwd;
-	char	*old_pwd;
 	char	**args;
 	t_env	*env;
 
@@ -110,14 +109,11 @@ t_data	*ft_cd(t_params params, t_data *data)
 	args = NULL;
 	if (params->next != NULL)
 		args = args_to_double_pointer(params, data);
-	old_pwd = go_to_new_dir(args, env, data);
-	if (old_pwd == NULL)
+	pwd = go_to_new_dir(args, env, data);
+	if (pwd == NULL)
 		return (NULL);
-	pwd = getcwd(NULL, 0);
 	if (garbage(pwd, data) == NULL)
 		return (NULL);
-	if (*old_pwd)
-		free(old_pwd);
 	if (update_env_var("PWD", pwd, data) == NULL)
 		return (NULL);
 	return (data);
