@@ -15,6 +15,7 @@
 char	*find_pwd(t_data *data)
 {
 	char	*cwd;
+	char	*pwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -22,6 +23,14 @@ char	*find_pwd(t_data *data)
 		cwd = get_env_value("PWD", data);
 		if (cwd == NULL)
 			return (NULL);
+		pwd = ft_strdup(cwd);
+	}
+	else
+	{
+		pwd = ft_strdup(cwd);
+		if (pwd == NULL)
+			return (NULL);
+		free(cwd);
 	}
 	return (ft_strdup(cwd));
 }

@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 22:26:19 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 23:23:53 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	*current_parrent_dir(char **args, t_data *data)
 		pwd = get_env_value("PWD", data);
 		if (pwd == NULL)
 			return (NULL);
-		new_pwd = ft_strjoin(pwd, "/", 1);
+		new_pwd = ft_strjoin(pwd, "/", 0);
 		if (new_pwd == NULL)
 			return (NULL);
 		new_pwd = ft_strjoin(new_pwd, args[1], 1);
