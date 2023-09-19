@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_5.c                                            :+:      :+:    :+:   */
+/*   env_4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:31:42 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:59:30 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 04:44:54 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ char	**get_key_value(char *envp, t_data *data)
 	key_value = malloc(sizeof(char *) * 2);
 	if (!key_value)
 		return (prompt_error("malloc error 8", NULL, data, 1), NULL);
-	if (add_garbage(data, key_value) == NULL)
-		return (NULL);
 	key_value[0] = find_key(envp, data);
 	if (key_value[0] == NULL)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 01:56:00 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 04:26:56 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,5 @@ t_data	*ft_cd(t_params params, t_data *data)
 		free(old_pwd);
 	if (update_env_var("PWD", pwd, data) == NULL)
 		return (NULL);
-	ft_printf("go to new dir\n");
 	return (data);
 }

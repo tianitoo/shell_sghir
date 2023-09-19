@@ -69,7 +69,7 @@ char	*get_cmd_path_from_paths(char **paths, char *cmd,
 		}
 		i++;
 	}
-	return (ft_printf("Error: %s: command not found1", cmd),
+	return (ft_printf("Error: %s: command not found", cmd),
 		prompt_error("", cmd_list, data, 127), NULL);
 }
 
@@ -143,7 +143,6 @@ int	set_up_execve(t_cmd_list cmd_list, t_data *data)
 	env = env_to_double_pointer(data->linked_env, data);
 	if (env == NULL)
 		exit(g_exit->g_exit_status);
-	ft_printf("am here\n");
 	pipes_work(cmd_list);
 	if (execve(cmd, args, env) == -1)
 	{
