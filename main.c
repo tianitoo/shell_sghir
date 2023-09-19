@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:24:32 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 01:54:57 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 18:09:36 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,4 @@ int	main(int argc, char **argv, char **envp)
 		free_garbage();
 	}
 	return (0);
-}
-
-void	free_to_null(void **ptr)
-{
-	free(ptr);
-	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:30:34 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/18 04:59:38 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 18:09:49 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	**get_unset_env(void)
 	if (pwd == NULL)
 		return (prompt_error("malloc error 6", NULL, NULL, 1), NULL);
 	env[0] = ft_strjoin("PWD=", pwd, 0);
-	pwd = free_to_null(pwd);
+	free(pwd);
 	env[1] = ft_strdup("SHLVL=1");
 	env[2] = ft_strdup("_=/usr/bin/env");
 	env[3] = NULL;

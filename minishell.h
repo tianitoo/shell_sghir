@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 05:35:50 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 03:27:38 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/19 18:08:28 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,5 @@ t_env		*get_linked_env(char **envp, t_data *data);
 void		signalher(int sig);
 int			get_exitstate(int wait_status);
 int			set_g_exit(void);
-void		free_to_null(void **ptr)
 
 #endif
