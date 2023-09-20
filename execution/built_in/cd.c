@@ -6,7 +6,7 @@
 /*   By: hnait <hnait@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/18 04:23:01 by hnait             #+#    #+#             */
-/*   Updated: 2023/09/19 23:46:05 by hnait            ###   ########.fr       */
+/*   Updated: 2023/09/20 01:02:17 by hnait            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ char	*current_parrent_dir(char **args, t_data *data)
 		new_pwd = ft_strjoin(new_pwd, args[1], 1);
 		if (new_pwd == NULL)
 			return (NULL);
-		if (update_env_var("PWD", new_pwd, data) == NULL)
-			return (NULL);
 	}
 	return (new_pwd);
 }
@@ -43,6 +41,9 @@ char	*move_to_dir(char **args, t_data *data)
 {
 	char	*pwd;
 
+	if (is_directory(args[1]) == 0)
+		return (ft_printf("cd: %s: Not a directory", args[1]),
+			prompt_error("", NULL, data, 1), NULL);
 	if (chdir(args[1]) == -1)
 		return (ft_printf("cd: %s: No such file or directory",
 				args[1]), prompt_error("", NULL, data, 1), NULL);
@@ -89,8 +90,6 @@ char	*go_to_new_dir(char **args, t_env *env, t_data *data)
 	}
 	else
 	{
-		if (args == NULL)
-			return (NULL);
 		pwd = change_directory(args, data);
 		if (pwd == NULL)
 			return (NULL);
